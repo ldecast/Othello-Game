@@ -16,7 +16,9 @@
   <body>
     <form id="menu" runat="server">
     <div class="container">
-        <h1 class="display-1 text-center my-4 text-white">Hola Usuario!</h1>
+        <%--<h1 class="display-1 text-center my-4 text-white">Hola</h1>--%>
+        <asp:Label runat="server" id="Label1" CssClass="display-1 text-center my-4 text-white" Text="Hola "/>
+        <asp:Label runat="server" id="usuario" CssClass="display-1 text-center my-4 text-white" Text="Usuario!"/>
         <br>
         <div class="row py-4">
             <div class="col-sm-12 col-md-6 col-lg-6 text-center mb-2 border-right border-secondary">
@@ -24,8 +26,8 @@
                 <form name="formulario" method="post" action="/send.php" enctype="multipart/form-data">
                     <!-- ¡No olvides el enctype! -->
                     <!-- Campo de selección de archivo -->
-                    <asp:FileUpload runat="server" CssClass="btn btn-dark btn-lg"/><br><br>
-                    <asp:Button runat="server" id="cargar" CssClass="btn btn-dark btn-lg" Text="Cargar" />
+                    <asp:FileUpload runat="server" id="upload" CssClass="btn btn-dark btn-lg"/><br><br>
+                    <asp:Button runat="server" id="cargar" CssClass="btn btn-dark btn-lg" Text="Cargar" OnClick="Redireccionar" />
                     <%--<input type="file" class="btn btn-dark btn-lg" name="adjunto" accept=".pdf,.jpg,.png"/><br><br>--%>
 <%--                    <input type="button" class="btn btn-outline-dark btn-lg" value="Cargar">--%>
                   </form>
@@ -33,7 +35,7 @@
             </div>
             <div class="col-sm-12 col-md-6 col-lg-6 text-center mb-2">
                 <h1>Juego nuevo</h1>
-                    <input type="button" class="btn btn-warning btn-lg" value="Iniciar partida">
+                    <asp:Button runat="server" id="newGame" class="btn btn-warning btn-lg" Text="Iniciar partida" OnClick="newGame_Click"/>
             </div>
         </div>
         <div class="row py-4">

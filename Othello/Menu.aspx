@@ -17,9 +17,10 @@
     <form id="menu" runat="server">
     <div class="container">
         <%--<h1 class="display-1 text-center my-4 text-white">Hola</h1>--%>
-        <asp:Label runat="server" id="Label1" CssClass="display-1 text-center my-4 text-white" Text="Hola "/>
-        <asp:Label runat="server" id="usuario" CssClass="display-1 text-center my-4 text-white" Text="Usuario!"/>
-        <br>
+        <div class="container-fluid text-center mt-4 mb-3">
+        <asp:Label runat="server" id="Label1" class="display-1 text-white titulo" Text="Hola "/>
+        <asp:Label runat="server" id="usuario" class="display-1 text-white titulo" Text="Usuario!"/>
+        </div><br>
         <div class="row py-4">
             <div class="col-sm-12 col-md-6 col-lg-6 text-center mb-2 border-right border-secondary">
                 <h1>Cargar partida</h1>
@@ -35,7 +36,8 @@
             </div>
             <div class="col-sm-12 col-md-6 col-lg-6 text-center mb-2">
                 <h1>Juego nuevo</h1>
-                    <asp:Button runat="server" id="newGame" class="btn btn-warning btn-lg" Text="Iniciar partida" OnClick="newGame_Click"/>
+                    <asp:Button runat="server" id="newGame" class="btn btn-warning btn-lg" Text="Uno contra uno" OnClick="newGame_Click"/><br><br>
+                    <asp:Button runat="server" id="juegoSolo" class="btn btn-warning btn-lg" Text="Contra la máquina" OnClick="newGame_Click"/>
             </div>
         </div>
         <div class="row py-4">

@@ -29,5 +29,10 @@ namespace Othello
         {
             Response.Redirect("GameBoard.aspx?Parametro=" + usuario.Text);
         }
+
+        protected void NewGame_Alone(object sender, EventArgs e)
+        {
+            Response.Redirect("GameOnePlayer.aspx?Parametro=" + usuario.Text);
+        }
     }
 }

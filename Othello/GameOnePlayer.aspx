@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OthelloLoaded.aspx.cs" Inherits="Othello.OthelloLoaded" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="GameOnePlayer.aspx.cs" Inherits="Othello.GameOnePlayer" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 <title>Othello game</title>
   
-  <style>body{background-color: #2e86c1;} #guardar{margin-top: 260px;}#iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;}</style>
+  <style>body{background-color: #2e86c1;} #guardar{margin-top: 260px;}</style>
   </head>
   <body>
       <form id="tablero" runat="server">
@@ -19,7 +19,6 @@
         <br>
     </div>
         <div class="container">
-            <asp:Button runat="server" id="iniciar" CssClass="text-center btn btn-outline-warning btn-lg" Text="Iniciar" OnClick="Leer_xml"/>
             <div class="row mb-5">
                 <div class="col-sm-12 col-lg-2 text-right border-left border-dark">
                     <h3>Turno de:</h3><hr>
@@ -78,8 +77,8 @@
                         <asp:Button runat="server" type="button" id="a4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="a4_Click"/>
                         <asp:Button runat="server" type="button" id="b4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="b4_Click"/>
                         <asp:Button runat="server" type="button" id="c4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="c4_Click"/>
-                        <asp:Button runat="server" type="button" id="d4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="d4_Click"/>
-                        <asp:Button runat="server" type="button" id="e4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="e4_Click"/>
+                        <asp:Button runat="server" type="button" id="d4" CssClass="btn btn-light btn-lg border-dark rounded-0" text="     " OnClick="d4_Click"/>
+                        <asp:Button runat="server" type="button" id="e4" CssClass="btn btn-dark btn-lg border-dark rounded-0" text="     " OnClick="e4_Click"/>
                         <asp:Button runat="server" type="button" id="f4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="f4_Click"/>
                         <asp:Button runat="server" type="button" id="g4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="g4_Click"/>
                         <asp:Button runat="server" type="button" id="h4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="h4_Click"/>
@@ -89,8 +88,8 @@
                         <asp:Button runat="server" type="button" id="a5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="a5_Click"/>
                         <asp:Button runat="server" type="button" id="b5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="b5_Click"/>
                         <asp:Button runat="server" type="button" id="c5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="c5_Click"/>
-                        <asp:Button runat="server" type="button" id="d5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="d5_Click"/>
-                        <asp:Button runat="server" type="button" id="e5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="e5_Click"/>
+                        <asp:Button runat="server" type="button" id="d5" CssClass="btn btn-dark btn-lg border-dark rounded-0" text="     " OnClick="d5_Click"/>
+                        <asp:Button runat="server" type="button" id="e5" CssClass="btn btn-light btn-lg border-dark rounded-0" text="     " OnClick="e5_Click"/>
                         <asp:Button runat="server" type="button" id="f5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="f5_Click"/>
                         <asp:Button runat="server" type="button" id="g5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="g5_Click"/>
                         <asp:Button runat="server" type="button" id="h5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="h5_Click"/>

@@ -11,7 +11,7 @@ namespace Othello
 {
 
 
-    public partial class OthelloLoaded
+    public partial class GameOnePlayer
     {
 
         /// <summary>
@@ -22,15 +22,6 @@ namespace Othello
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm tablero;
-
-        /// <summary>
-        /// Control iniciar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button iniciar;
 
         /// <summary>
         /// Control turno.

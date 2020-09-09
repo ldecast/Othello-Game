@@ -13,10 +13,10 @@ namespace Othello
         protected void Page_Load(object sender, EventArgs e)
         {
             //Leer_xml();
-            Get_Score();
+            //Get_Score();
         }
 
-        public void Leer_xml()
+        public void Leer_xml(object sender, EventArgs e)
         {
             string ruta = "";
             if (Session["archivo"] != null)
@@ -47,6 +47,8 @@ namespace Othello
                         break;
                 }
             }
+            iniciar.Visible = false;
+            Get_Score();
         }
 
         public void Get_Score()
@@ -226,7 +228,9 @@ namespace Othello
             string[] col = { "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H" };
             string[] fila = { "1", "1", "1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3", "3", "3", "3", "3", "4", "4", "4", "4", "4", "4", "4", "4", "5", "5", "5", "5", "5", "5", "5", "5", "6", "6", "6", "6", "6", "6", "6", "6", "7", "7", "7", "7", "7", "7", "7", "7", "8", "8", "8", "8", "8", "8", "8", "8" };
 
-            XmlWriter xmlWriter = XmlWriter.Create(@"C:\Users\luisd\Desktop\XML\archivo.xml", settings);
+            string ruta = "C:\\Users\\luisd\\Desktop\\XML\\partida-actualizada.xml";
+
+            XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
 
             xmlWriter.WriteStartDocument();
 

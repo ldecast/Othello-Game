@@ -7,11 +7,11 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace WebApplication1
+namespace Othello
 {
 
 
-    public partial class Othello
+    public partial class GameBoard
     {
 
         /// <summary>

@@ -1,0 +1,16 @@
+﻿body {
+    background-image: url(https://motionarray-portfolio.imgix.net/preview-92385-bfbc45af1fbac16a1143a087c0ded259-high.jpg);
+    background-size: cover;
+}
+
+h1 {
+    margin-bottom: 35px;
+}
+
+.reportes input {
+    width: 200px;
+}
+
+.row {
+    background-color: #95a5a6;
+}

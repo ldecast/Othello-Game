@@ -1,0 +1,64 @@
+﻿body {
+    background-image: url(https://cdn.lowgif.com/full/f66e610809ec89a1-animated-gif-background-html-code-background-editing-picsart.gif);
+}
+
+.fondo {
+    color: ghostwhite;
+}
+
+.titulo {
+    background-image: url(https://motionarray-portfolio.imgix.net/preview-92385-bfbc45af1fbac16a1143a087c0ded259-high.jpg);
+    background-size: cover;
+    color: white;
+}
+
+h2 {
+    width: 200px;
+    height: 48px;
+    background-color: grey;
+    line-height: 44px;
+}
+
+#registro {
+    padding-left: 90px;
+}
+
+    #registro label {
+        margin-bottom: 2px;
+    }
+
+.registro input {
+    margin-bottom: 15px;
+    width: 350px;
+    background-color: #e5e8e8;
+}
+
+#login {
+    margin-left: 100px;
+}
+
+    #login label {
+        margin-bottom: 2px;
+    }
+
+    #login input {
+        margin-bottom: 15px;
+        width: 250px;
+        background-color: #e5e8e8;
+    }
+
+#enviar {
+    margin-left: 70px;
+    margin-bottom: 35px;
+    margin-top: 30px;
+    width: 200px;
+    height: 50px;
+    font-size: 18px;
+}
+
+#logear {
+    margin-bottom: 30px;
+    margin-top: 25px;
+    height: 50px;
+    font-size: 18px;
+}

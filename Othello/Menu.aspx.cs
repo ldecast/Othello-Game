@@ -19,7 +19,9 @@ namespace Othello
         public void Redireccionar(object sender, EventArgs e)
         {
             //Session["archivo"] = ""+upload.FileName;
-            string ruta = "C:\\Users\\luisd\\Desktop\\XML\\"+upload.FileName;
+            upload.SaveAs(Server.MapPath(".") + "\\XML\\"+ upload.FileName);
+            string ruta = Server.MapPath(".") + "\\XML\\" + upload.FileName;
+            
 
             Session["archivo"] = ruta;
             Response.Redirect("OthelloLoaded.aspx?Parametro="+usuario.Text);

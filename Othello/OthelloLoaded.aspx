@@ -19,7 +19,7 @@
         <br>
     </div>
         <div class="container">
-            <asp:Button runat="server" id="iniciar" CssClass="text-center btn btn-outline-warning btn-lg" Text="Iniciar" OnClick="Leer_xml"/>
+            <asp:Button runat="server" id="iniciar" CssClass="text-center btn btn-warning btn-lg" Text="Iniciar" OnClick="Leer_xml"/>
             <div class="row mb-5">
                 <div class="col-sm-12 col-lg-2 text-right border-left border-dark">
                     <h3>Turno de:</h3><hr>

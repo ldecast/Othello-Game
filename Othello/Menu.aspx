@@ -19,7 +19,8 @@
         <%--<h1 class="display-1 text-center my-4 text-white">Hola</h1>--%>
         <div class="container-fluid text-center mt-4 mb-3">
         <asp:Label runat="server" id="Label1" class="display-1 text-white titulo" Text="Hola "/>
-        <asp:Label runat="server" id="usuario" class="display-1 text-white titulo" Text="Usuario!"/>
+        <asp:Label runat="server" id="usuario" class="display-1 text-white titulo" Text="Usuario"/>
+        <asp:Label runat="server" id="Label2" class="display-1 text-white titulo" Text="!"/>
         </div><br>
         <div class="row py-4">
             <div class="col-sm-12 col-md-6 col-lg-6 text-center mb-2 border-right border-secondary">

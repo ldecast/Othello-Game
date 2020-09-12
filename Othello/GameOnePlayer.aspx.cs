@@ -14,7 +14,7 @@ namespace Othello
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //Get_Score();
+
         }
 
         protected string Ver_ficha(int boton)

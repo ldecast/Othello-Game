@@ -19,17 +19,10 @@ h2 {
     line-height: 44px;
 }
 
-#registro {
-    padding-left: 90px;
-}
-
-    #registro label {
-        margin-bottom: 2px;
-    }
-
-.registro input {
+.cajon {
     margin-bottom: 15px;
     width: 350px;
+    height: 31px;
     background-color: #e5e8e8;
 }
 
@@ -37,28 +30,24 @@ h2 {
     margin-left: 100px;
 }
 
-    #login label {
-        margin-bottom: 2px;
-    }
-
-    #login input {
-        margin-bottom: 15px;
-        width: 250px;
-        background-color: #e5e8e8;
-    }
+.paddo {
+    padding-left: 90px;
+}
 
 #enviar {
-    margin-left: 70px;
+    margin-left: 60px;
     margin-bottom: 35px;
     margin-top: 30px;
-    width: 200px;
+    width: 220px;
     height: 50px;
     font-size: 18px;
 }
 
 #logear {
     margin-bottom: 30px;
-    margin-top: 25px;
+    margin-top: 20px;
     height: 50px;
     font-size: 18px;
+    width: 170px;
+    margin-left: 90px;
 }

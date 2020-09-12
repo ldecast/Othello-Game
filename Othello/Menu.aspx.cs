@@ -13,7 +13,11 @@ namespace Othello
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (Request.Params["Parametro"] != null)
+            {
+                string user = Request.Params["Parametro"];
+                usuario.Text = user;
+            }
         }
 
         public void Redireccionar(object sender, EventArgs e)

@@ -12,55 +12,62 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 <link rel="stylesheet" href="css\StyleSheet1.css" type="text/css">
 <title>Login</title>
+    <script type="text/javascript">
+        function registrado() { alert("Registro completado! \nInicie sesión para continuar."); }
+        function notMatch() { alert("Los datos de usuario y/o contraseña son incorrectos. \nInténtelo de nuevo o complete el registro"); }
+        function invalid() { alert("Por favor, revise que todos los campos estén llenos. \Intente de nuevo"); }
+    </script>
   </head>
   <body>
+    <form runat="server">
     <div class="container-fluid bg-success py-3 titulo text-center">
       <h1 class="display-2"><b>¡Welcome to Othello!</b></h1>
     </div>
-    <div class="container pt-5 mb-5 fondo">
+    <div class="container px-5 pt-5 mb-5 fondo">
       <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-6">
           <h2 class="mb-4 text-center rounded">Regístrate</h2>
           <form class="registro" id="registro">
 
-          <label for="fname">Nombres:</label><br>
-          <input type="text" id="fname" name="fname"><br>
+          <label for="fname" class="mb-1">Nombres:</label><br>
+          <asp:TextBox runat="server" class="cajon" id="fname"/><br/>
 
-          <label for="sname">Apellidos:</label><br>
-          <input type="text" id="sname" name="sname"><br>
+          <label for="sname" class="mb-1">Apellidos:</label><br>
+          <asp:TextBox runat="server" id="sname" class="cajon"/><br/>
 
-          <label for="fnac">Fecha de nacimiento:</label><br>
-          <input type="date" id="fnac" name="fnac"><br>
+          <label for="fnac" class="mb-1">Fecha de nacimiento:</label><br>
+          <asp:TextBox runat="server" id="fnac" class="cajon" TextMode="Date"/><br/>
 
           <label for="pais">País:</label><br>
-          <input type="text" id="pais" name="pais"><br>
+          <asp:TextBox runat="server" id="pais" class="cajon"/><br/>
 
-          <label for="uname">Username:</label><br>
-          <input type="text" id="uname" name="uname"><br>
+          <label for="uname" class="mb-1">Username:</label><br>
+          <asp:TextBox runat="server" id="uname" class="cajon"/><br/>
           
-          <label for="correo">Correo:</label><br>
-          <input type="email" id="correo" name="correo"><br>
+          <label for="correo" class="mb-1">Correo:</label><br>
+          <asp:TextBox runat="server" id="correo" class="cajon" TextMode="Email"/><br/>
 
-          <label for="password">Contraseña:</label><br>
-          <input type="password" id="password" name="password"><br>
+          <label for="password" class="mb-1">Contraseña:</label><br>
+          <asp:TextBox runat="server" id="password" class="cajon" TextMode="Password"/><br/>
 
-          <input id="enviar" type="submit" class="btn btn-outline-dark" value="Registrarse">
-          </form>
+          <asp:Button runat="server" id="enviar" CssClass="btn btn-outline-light" Text="Registrarse" OnClick="Registrar"/>
+          <%--</form>--%>
         </div>
-        <div class="col-sm-12 col-md-12 col-lg-6 border-left border-secondary">
+        <div class="col-sm-12 col-md-12 col-lg-6 border-left border-secondary paddo">
           <h2 class="text-center mb-4 rounded">Inicia sesión</h2>
-          <form class="login pl-5" id="login">
-            <label for="uname">Username:</label><br>
-            <input type="text" id="uname" name="uname"><br>
+          <%--<form class="login" id="login">--%>
+            <label for="loginname" class="mb-1">Username:</label><br>
+            <asp:TextBox runat="server" id="loginname" class="cajon"/><br/>
 
-            <label for="pass">Contraseña:</label><br>
-            <input type="password" id="pass" name="pass"><br>
-            <input id="logear" type="submit" class="btn btn-outline-dark" value="Ingresar">
+            <label for="loginpassword" class="mb-1">Contraseña:</label><br>
+            <asp:TextBox runat="server" id="loginpassword" class="cajon" TextMode="Password"/><br/>
+
+            <asp:Button runat="server" id="logear" CssClass="btn btn-outline-light" Text="Ingresar" OnClick="Logear"/>
           </form>
         </div>
       </div>
     </div>
-
+    </form>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

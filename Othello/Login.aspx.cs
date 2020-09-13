@@ -17,7 +17,9 @@ namespace Othello
 
         protected void Registrar(object sender, EventArgs e)
         {
-            if (uname.Text.Length!=0 && password.Text.Length != 0) {
+            try
+            {
+                if (uname.Text.Length!=0 && password.Text.Length != 0) {
                 //codigo de Tutoriales Ya.com
                 string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
                 SqlConnection conexion = new SqlConnection(a);
@@ -30,6 +32,11 @@ namespace Othello
             }
             else
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "invalid()", true);
+            }
+            catch (Exception ex)
+            {
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error: valide que no registre un usuario ya existente.\")", true);
+            }
         }
 
         protected void Logear(object sender, EventArgs e)

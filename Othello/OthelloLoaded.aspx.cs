@@ -45,6 +45,12 @@ namespace Othello
                         botones[i].CssClass = "btn btn-success btn-lg border-dark rounded-0";
                         i++;
                         break;
+                    case "NegroNext":
+                        turno.Text = "Negro";
+                        break;
+                    case "BlancoNext":
+                        turno.Text = "Blanco";
+                        break;
                 }
             }
             iniciar.Visible = false;
@@ -267,10 +273,15 @@ namespace Othello
                 xmlWriter.WriteEndElement();
             }
 
+            xmlWriter.WriteStartElement("siguienteTiro");
+            xmlWriter.WriteStartElement("color");
+            xmlWriter.WriteString(turno.Text+"Next");
             xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndDocument();
             xmlWriter.Close();
-
             Response.Write("Partida guardada en: " + ruta);
         }
 

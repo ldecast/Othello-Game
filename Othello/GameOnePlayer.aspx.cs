@@ -219,9 +219,16 @@ namespace Othello
                 xmlWriter.WriteEndElement();
             }
 
+            xmlWriter.WriteStartElement("siguienteTiro");
+            xmlWriter.WriteStartElement("color");
+            xmlWriter.WriteString(turno.Text+"Next");
             xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndDocument();
             xmlWriter.Close();
+            Response.Write("Partida guardada en: " + ruta);
 
         }
 

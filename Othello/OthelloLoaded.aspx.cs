@@ -25,34 +25,160 @@ namespace Othello
                 Response.Write("Partida desde: "+ruta);
             }
 
-            XmlTextReader reader = new XmlTextReader(ruta);
-            int i = 0;
+            XmlDocument reader = new XmlDocument();
+            reader.Load(ruta);
             WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8, };
 
-            while (reader.Read())
+            XmlNodeList fichas = reader.GetElementsByTagName("ficha");
+            for (int i = 0; i < fichas.Count; i++)
             {
-                switch (reader.ReadString())
+                if (fichas[i].InnerText.Contains("blanco"))
                 {
-                    case "blanco":
-                        botones[i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
-                        i++;
-                        break;
-                    case "negro":
-                        botones[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
-                        i++;
-                        break;
-                    case "vacio":
-                        botones[i].CssClass = "btn btn-success btn-lg border-dark rounded-0";
-                        i++;
-                        break;
-                    case "NegroNext":
-                        turno.Text = "Negro";
-                        break;
-                    case "BlancoNext":
-                        turno.Text = "Blanco";
-                        break;
+                    if (fichas[i].InnerText.Contains("A1")){botones[0].CssClass = "btn btn-light btn-lg border-dark rounded-0";}
+                    if (fichas[i].InnerText.Contains("B1")){botones[1].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C1")){botones[2].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D1")){botones[3].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E1")){botones[4].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F1")){botones[5].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G1")){botones[6].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H1")){botones[7].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A2")){botones[8].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B2")){botones[9].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C2")){botones[10].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D2")){botones[11].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E2")){botones[12].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F2")){botones[13].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G2")){botones[14].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H2")){botones[15].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A3")){botones[16].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B3")){botones[17].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C3")){botones[18].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D3")){botones[19].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E3")){botones[20].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F3")){botones[21].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G3")){botones[22].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H3")){botones[23].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A4")){botones[24].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B4")){botones[25].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C4")){botones[26].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D4")){botones[27].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E4")){botones[28].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F4")){botones[29].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G4")){botones[30].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H4")){botones[31].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A5")){botones[32].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B5")){botones[33].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C5")){botones[34].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D5")){botones[35].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E5")){botones[36].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F5")){botones[37].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G5")){botones[38].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H5")){botones[39].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A6")) { botones[40].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B6")) { botones[41].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C6")) { botones[42].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D6")) { botones[43].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E6")) { botones[44].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F6")) { botones[45].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G6")) { botones[46].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H6")) { botones[47].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A7")) { botones[48].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B7")) { botones[49].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C7")) { botones[50].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D7")) { botones[51].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E7")) { botones[52].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F7")) { botones[53].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G7")) { botones[54].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H7")) { botones[55].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A8")) { botones[56].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B8")) { botones[57].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C8")) { botones[58].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D8")) { botones[59].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E8")) { botones[60].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F8")) { botones[61].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G8")) { botones[62].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H8")) { botones[63].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
                 }
+                if (fichas[i].InnerText.Contains("negro"))
+                {
+                    if (fichas[i].InnerText.Contains("A1")) { botones[0].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B1")) { botones[1].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C1")) { botones[2].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D1")) { botones[3].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E1")) { botones[4].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F1")) { botones[5].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G1")) { botones[6].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H1")) { botones[7].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A2")) { botones[8].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B2")) { botones[9].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C2")) { botones[10].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D2")) { botones[11].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E2")) { botones[12].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F2")) { botones[13].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G2")) { botones[14].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H2")) { botones[15].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A3")) { botones[16].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B3")) { botones[17].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C3")) { botones[18].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D3")) { botones[19].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E3")) { botones[20].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F3")) { botones[21].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G3")) { botones[22].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H3")) { botones[23].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A4")) { botones[24].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B4")) { botones[25].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C4")) { botones[26].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D4")) { botones[27].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E4")) { botones[28].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F4")) { botones[29].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G4")) { botones[30].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H4")) { botones[31].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A5")) { botones[32].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B5")) { botones[33].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C5")) { botones[34].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D5")) { botones[35].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E5")) { botones[36].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F5")) { botones[37].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G5")) { botones[38].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H5")) { botones[39].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A6")) { botones[40].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B6")) { botones[41].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C6")) { botones[42].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D6")) { botones[43].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E6")) { botones[44].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F6")) { botones[45].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G6")) { botones[46].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H6")) { botones[47].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A7")) { botones[48].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B7")) { botones[49].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C7")) { botones[50].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D7")) { botones[51].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E7")) { botones[52].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F7")) { botones[53].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G7")) { botones[54].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H7")) { botones[55].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("A8")) { botones[56].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("B8")) { botones[57].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("C8")) { botones[58].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("D8")) { botones[59].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("E8")) { botones[60].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("F8")) { botones[61].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("G8")) { botones[62].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    if (fichas[i].InnerText.Contains("H8")) { botones[63].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                }
+                //Response.Write(fichas[i].InnerXml + "\n");
             }
+
+            XmlNodeList tiro = reader.GetElementsByTagName("siguienteTiro");
+            for (int i = 0; i < tiro.Count; i++)
+            {
+                if (tiro[i].InnerText.Contains("blanco"))
+                    turno.Text = "Blanco";
+                if (tiro[i].InnerText.Contains("negro"))
+                    turno.Text = "Negro";
+                //Response.Write(tiro[i].InnerXml);
+            }
+
             iniciar.Visible = false;
             Get_Score();
         }
@@ -258,26 +384,57 @@ namespace Othello
 
             for (int i = 0; i < 64; i++)
             {
-                xmlWriter.WriteStartElement("ficha");
-                xmlWriter.WriteStartElement("color");
-                xmlWriter.WriteString(Ver_ficha(i + 1));
-                xmlWriter.WriteEndElement();
+                string color = Ver_ficha(i + 1);
+                if (color == "blanco")
+                {
+                    xmlWriter.WriteStartElement("ficha");
 
-                xmlWriter.WriteStartElement("columna");
-                xmlWriter.WriteString(col[i]);
-                xmlWriter.WriteEndElement();
+                    xmlWriter.WriteStartElement("color");
+                    xmlWriter.WriteString(color);
+                    xmlWriter.WriteEndElement();
 
-                xmlWriter.WriteStartElement("fila");
-                xmlWriter.WriteString(fila[i]);
-                xmlWriter.WriteEndElement();
-                xmlWriter.WriteEndElement();
+                    xmlWriter.WriteStartElement("columna");
+                    xmlWriter.WriteString(col[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("fila");
+                    xmlWriter.WriteString(fila[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteEndElement();
+                }
+                if (color == "negro")
+                {
+                    xmlWriter.WriteStartElement("ficha");
+
+                    xmlWriter.WriteStartElement("color");
+                    xmlWriter.WriteString(color);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("columna");
+                    xmlWriter.WriteString(col[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("fila");
+                    xmlWriter.WriteString(fila[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteEndElement();
+                }
+                else
+                    continue;
             }
+
 
             xmlWriter.WriteStartElement("siguienteTiro");
             xmlWriter.WriteStartElement("color");
-            xmlWriter.WriteString(turno.Text+"Next");
+            if (turno.Text == "Blanco")
+                xmlWriter.WriteString("blanco");
+            else
+                xmlWriter.WriteString("negro");
             xmlWriter.WriteEndElement();
             xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteEndDocument();

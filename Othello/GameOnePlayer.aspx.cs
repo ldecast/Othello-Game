@@ -204,26 +204,57 @@ namespace Othello
 
             for (int i = 0; i < 64; i++)
             {
-                xmlWriter.WriteStartElement("ficha");
-                xmlWriter.WriteStartElement("color");
-                xmlWriter.WriteString(Ver_ficha(i + 1));
-                xmlWriter.WriteEndElement();
+                string color = Ver_ficha(i + 1);
+                if (color == "blanco")
+                {
+                    xmlWriter.WriteStartElement("ficha");
 
-                xmlWriter.WriteStartElement("columna");
-                xmlWriter.WriteString(col[i]);
-                xmlWriter.WriteEndElement();
+                    xmlWriter.WriteStartElement("color");
+                    xmlWriter.WriteString(color);
+                    xmlWriter.WriteEndElement();
 
-                xmlWriter.WriteStartElement("fila");
-                xmlWriter.WriteString(fila[i]);
-                xmlWriter.WriteEndElement();
-                xmlWriter.WriteEndElement();
+                    xmlWriter.WriteStartElement("columna");
+                    xmlWriter.WriteString(col[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("fila");
+                    xmlWriter.WriteString(fila[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteEndElement();
+                }
+                if (color == "negro")
+                {
+                    xmlWriter.WriteStartElement("ficha");
+
+                    xmlWriter.WriteStartElement("color");
+                    xmlWriter.WriteString(color);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("columna");
+                    xmlWriter.WriteString(col[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("fila");
+                    xmlWriter.WriteString(fila[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteEndElement();
+                }
+                else
+                    continue;
             }
+
 
             xmlWriter.WriteStartElement("siguienteTiro");
             xmlWriter.WriteStartElement("color");
-            xmlWriter.WriteString(turno.Text+"Next");
+            if (turno.Text == "Blanco")
+                xmlWriter.WriteString("blanco");
+            else
+                xmlWriter.WriteString("negro");
             xmlWriter.WriteEndElement();
             xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteEndDocument();

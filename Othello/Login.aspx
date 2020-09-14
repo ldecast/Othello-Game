@@ -13,9 +13,9 @@
 <link rel="stylesheet" href="css\StyleSheet1.css" type="text/css">
 <title>Login</title>
     <script type="text/javascript">
-        function registrado() { alert("Registro completado! \nInicie sesión para continuar."); }
-        function notMatch() { alert("Los datos de usuario y/o contraseña son incorrectos. \nInténtelo de nuevo o complete el registro"); }
-        function invalid() { alert("Por favor, revise que todos los campos estén llenos. \Intente de nuevo"); }
+        function registrado() { alert("\tRegistro completado! \nInicie sesión para continuar."); }
+        function notMatch() { alert("Los datos de usuario y/o contraseña son incorrectos. \n\tInténtelo de nuevo o complete el registro"); }
+        function invalid() { alert("Por favor, revise que todos los campos estén llenos. Intente de nuevo"); }
     </script>
   </head>
   <body>

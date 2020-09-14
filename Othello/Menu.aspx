@@ -26,7 +26,7 @@
             <div class="col-sm-12 col-md-6 col-lg-6 text-center mb-2 border-right border-secondary">
                 <h1>Cargar partida</h1>
                 <form name="formulario" method="post" action="/send.php" enctype="multipart/form-data">
-                    <asp:FileUpload runat="server" id="upload" CssClass="btn btn-dark btn-lg"/><br><br>
+                    <asp:FileUpload runat="server" id="upload" accept=".xml" AllowMultiple="false" CssClass="btn btn-dark btn-lg"/><br><br>
                     <asp:Button runat="server" id="cargar" CssClass="btn btn-dark btn-lg" Text="Cargar" OnClick="Redireccionar" />
                     <%--<input type="file" class="btn btn-dark btn-lg" name="adjunto" accept=".pdf,.jpg,.png"/><br><br>--%>
 <%--                    <input type="button" class="btn btn-outline-dark btn-lg" value="Cargar">--%>

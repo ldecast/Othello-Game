@@ -22,7 +22,7 @@
             <div class="row mb-5">
                 <div class="col-sm-12 col-lg-2 text-right border-left border-dark">
                     <h3>Turno de:</h3><hr>
-                    <asp:Label runat="server" id="turno" CssClass="display-4" text="Blanco" />
+                    <asp:Label runat="server" id="turno" CssClass="display-4" text="Negro" />
                     <%--<a href="#" id="turno" class="letra btn btn-lg disabled">Blanco</a>--%>
                     <asp:Button runat="server" type="button" id="guardar" CssClass="btn btn-outline-dark btn-lg" text="Guardar partida" OnClick="generarXml"/>
                 </div>

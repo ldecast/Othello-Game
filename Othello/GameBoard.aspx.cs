@@ -6,6 +6,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using System.Text;
+using System.Diagnostics.Eventing.Reader;
+using System.Collections;
 
 namespace Othello
 {
@@ -274,6 +276,135 @@ namespace Othello
             Response.Write("Partida guardada en: " + ruta);
         }
 
+        public bool estaVacio(WebControl casilla)
+        {
+            if (casilla.CssClass == "btn btn-success btn-lg border-dark rounded-0")
+                return true;
+            else
+                return false;
+        }
+
+        public bool fichaAlApar(WebControl casilla)
+        {
+            if (casilla.CssClass == "btn btn-light btn-lg border-dark rounded-0" || casilla.CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                return true;
+            else
+                return false;
+        }
+
+        public bool tableroLleno()
+        {
+            WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8, };
+            bool lleno = false;
+            for (int i = 0; i < botones.Length; i++)
+            {
+                if (botones[i].CssClass == "btn btn-light btn-lg border-dark rounded-0" || botones[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                    lleno = true;
+                else
+                    lleno = false;
+            }
+            return lleno;
+        }
+
+        public int topeBlack(WebControl[] botones)
+        {
+            //WebControl max = null;
+            int[] indice = new int[8];
+            for (int i = 0 ; i < botones.Length; i++)
+            {
+                if (botones[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                {
+                    indice[i] = i;
+                    break;
+                }
+            }
+            if (indice.Max() == 0)
+                return -1;
+            else
+                return indice.Max();
+        }
+
+        public int indice(int i)
+        {
+            return i;
+        }
+
+        public WebControl topeWhite(WebControl[] botones)
+        {
+            WebControl max = null;
+            for (int i = 0; i < botones.Length; i++)
+            {
+                if (botones[i].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                    max = botones[i];
+                break;
+            }
+            return max;
+        }
+
+        public void movimiento(object sender, EventArgs e)
+        {
+            WebControl[] casilla = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8, };
+            for (int i = 0; i < 64; i++)
+            {
+                if (casilla[i].CssClass== "btn btn-success btn-lg border-dark rounded-0")
+                {
+
+                }
+            }
+        }
+
+        public int verificar(WebControl[] casilla, string color)
+        {
+            bool permitido = false;
+            int indice = -1;
+            if (color == "negro")
+            {
+                for (int i = 0; i < casilla.Length; i++)
+                {
+                    if (casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                    {
+                        permitido = true;
+                        indice = i;
+                        break;
+                    }
+                }
+            }
+            if (color == "blanco")
+            {
+                for (int i = 0; i < casilla.Length; i++)
+                {
+                    if (casilla[i].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                    {
+                        permitido = true;
+                        indice = i;
+                        break;
+                    }
+                }
+            }
+            if (permitido == true)
+                return indice;
+            else
+                return -1;
+        }
+
+        public void comerFicha(WebControl [] casilla, string color, int inicio, int final)
+        {
+            if (color == "negro")
+            {
+                for (int i = inicio; i < final; i++)
+                {
+                    casilla[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
+                }
+            }
+            if (color == "blanco")
+            {
+                for (int i = inicio; i < final; i++)
+                {
+                    casilla[i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
+                }
+            }
+        }
+
         public void a1_Click(object sender, EventArgs e)
         {
             if (turno.Text == "Blanco")
@@ -459,10 +590,158 @@ namespace Othello
 
         protected void d3_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Blanco")
-            { d3.CssClass = "btn btn-light btn-lg border-dark rounded-0"; turno.Text = "Negro"; }
+            WebControl[] columna = { d1, d2, d3, d4, d5, d6, d7, d8 };
+            WebControl[] fila = { a3, b3, c3, d3, e3, f3, g3, h3 };
+            WebControl[] diagonal1 = { f1, e2, d3, c4, b5, a6 };
+            WebControl[] diagonal2 = { b1, c2, d3, e4, f5, g6, h7 };
+            if (turno.Text == "Negro")
+            {
+                int index = verificar(columna, "negro");
+                int index2 = verificar(fila, "negro");
+                int index3 = verificar(diagonal1, "negro");
+                int index4 = verificar(diagonal2, "negro");
+
+
+                if (index>2)
+                {
+                    comerFicha(columna, "negro",2,index);
+                }
+                if (index<2 && index >-1)
+                {
+                    WebControl[] aux = { d1, d2 };
+                    comerFicha(aux, "negro",index,2);
+                }
+
+
+                if (index2 > 3)
+                {
+                    comerFicha(fila, "negro", 3, index2);
+                }
+                if (index2 < 3 && index2 > -1)
+                {
+                    WebControl[] aux = { a3, b3,c3 };
+                    comerFicha(aux, "negro", index2, 3);
+                }
+
+
+                if (index3 > 2)
+                {
+                    comerFicha(diagonal1, "negro", 2, index3);
+                }
+                if (index3 < 2 && index3 > -1)
+                {
+                    WebControl[] aux = { f1, e2 };
+                    comerFicha(aux, "negro", index3, 2);
+                }
+
+
+                if (index4 > 2)
+                {
+                    comerFicha(diagonal2, "negro", 2, index4);
+                }
+                if (index4 < 2 && index4 > -1)
+                {
+                    WebControl[] aux = { b1, c2 };
+                    comerFicha(aux, "negro", index4, 2);
+                }
+            }
             else
-            { d3.CssClass = "btn btn-dark btn-lg border-dark rounded-0"; turno.Text = "Blanco"; }
+            {
+                int index = verificar(columna, "blanco");
+                int index2 = verificar(fila, "blanco");
+                int index3 = verificar(diagonal1, "blanco");
+                int index4 = verificar(diagonal2, "blanco");
+
+
+                if (index > 2)
+                {
+                    comerFicha(columna, "blanco", 2, index);
+                }
+                if (index < 2 && index > -1)
+                {
+                    WebControl[] aux = { d1, d2 };
+                    comerFicha(aux, "blanco", index, 2);
+                }
+
+
+                if (index2 > 3)
+                {
+                    comerFicha(fila, "blanco", 3, index2);
+                }
+                if (index2 < 3 && index2 > -1)
+                {
+                    WebControl[] aux = { a3, b3, c3 };
+                    comerFicha(aux, "blanco", index2, 3);
+                }
+
+
+                if (index3 > 2)
+                {
+                    comerFicha(diagonal1, "blanco", 2, index3);
+                }
+                if (index3 < 2 && index3 > -1)
+                {
+                    WebControl[] aux = { f1, e2 };
+                    comerFicha(aux, "blanco", index3, 2);
+                }
+
+
+                if (index4 > 2)
+                {
+                    comerFicha(diagonal2, "blanco", 2, index4);
+                }
+                if (index4 < 2 && index4 > -1)
+                {
+                    WebControl[] aux = { b1, c2 };
+                    comerFicha(aux, "blanco", index4, 2);
+                }
+            }
+
+            //if (turno.Text == "Negro")
+            //{
+            //    int auxfila;
+            //    int auxcol;
+            //    int auxdiag1;
+            //    int auxdiag2;
+            //    WebControl[] fila = { a3, b3, c3, d3, e3, f3, g3, h3 };
+            //    //WebControl[] col = { d1, d8, d2, d7, d3, d6, d4, d5 };
+            //    WebControl[] col = { d1, d2, d3, d4, d5, d6, d7, d8 };
+            //    WebControl[] diagonal1 = { f1, e2,d3, c4, b5, a6};
+            //    WebControl[] diagonal2 = { b1, c2,d3, e4, f5, g6,h7};
+
+            //    auxfila = topeBlack(fila);
+            //    auxcol = topeBlack(col);
+            //    auxdiag1 = topeBlack(diagonal1);
+            //    auxdiag2 = topeBlack(diagonal2);
+            //    Response.Write(auxdiag1);
+            //    if (auxcol > 2) { for (int i = 2; i < auxcol; i++) { col[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; } } if(auxcol < 2 && auxcol >0) { for (int i = auxcol; i <= 2; i++) { col[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; } }
+            //    if (auxfila>3){for (int i = 3; i < auxfila; i++){fila[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";}} if(auxfila < 3 && auxfila > 0) { for (int i = auxfila; i <= 3; i++) { fila[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; } }
+            //    if (auxdiag1> 2){for (int i = 2; i < auxdiag1; i++){diagonal1[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";}} if(auxdiag1 < 2 && auxdiag1 > 0) { for (int i = auxdiag1; i <= 2; i++) { diagonal1[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; } }
+            //    if (auxdiag2 > 2){for (int i = 2; i < auxdiag2; i++){diagonal2[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";}} if(auxdiag2 < 2 && auxdiag2 > 0) { for (int i = auxdiag2; i <= 2; i++) { diagonal2[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; } }
+            //    turno.Text = "Blanco";
+            //}
+            //else
+            //{
+            //    int auxfila;
+            //    int auxcol;
+            //    int auxdiag1;
+            //    int auxdiag2;
+            //    WebControl[] col = { d1, d2, d3, d4, d5, d6, d7, d8 };
+            //    WebControl[] fila = { a3, b3, c3, d3, e3, f3, g3, h3 };
+            //    WebControl[] diagonal1 = { f1, e2, d3, c4, b5, a6 };
+            //    WebControl[] diagonal2 = { b1, c2, d3, e4, f5, g6, h7 };
+
+            //    auxfila = topeBlack(fila);
+            //    auxcol = topeBlack(col);
+            //    auxdiag1 = topeBlack(diagonal1);
+            //    auxdiag2 = topeBlack(diagonal2);
+            //    Response.Write(auxcol);
+            //    if (auxcol > 2) { for (int i = 2; i < auxcol; i++) { col[i].CssClass = "btn btn-light btn-lg border-dark rounded-0"; } } if(auxcol < 2 && auxcol >0) { for (int i = auxcol; i <= 2; i++) { col[i].CssClass = "btn btn-light btn-lg border-dark rounded-0"; } }
+            //    if (auxfila > 3) { for (int i = 3; i < auxfila; i++) { fila[i].CssClass = "btn btn-light btn-lg border-dark rounded-0"; } } if(auxfila < 3 && auxfila > 0) { for (int i = auxfila; i <= 3; i++) { fila[i].CssClass = "btn btn-light btn-lg border-dark rounded-0"; } }
+            //    if (auxdiag1 > 2) { for (int i = 2; i < auxdiag1; i++) { diagonal1[i].CssClass = "btn btn-light btn-lg border-dark rounded-0"; } } if(auxdiag1 < 2 && auxdiag1 > 0) { for (int i = auxdiag1; i <= 2; i++) { diagonal1[i].CssClass = "btn btn-light btn-lg border-dark rounded-0"; } }
+            //    if (auxdiag2 >2) { for (int i = 2; i < auxdiag2; i++) { diagonal2[i].CssClass = "btn btn-light btn-lg border-dark rounded-0"; } } if(auxdiag2 < 2 && auxdiag2 > 0) { for (int i = auxdiag2; i <= 2; i++) { diagonal2[i].CssClass = "btn btn-light btn-lg border-dark rounded-0"; } }
+            //    turno.Text = "Negro";
+            //}
             Get_Score();
         }
 
@@ -521,10 +800,8 @@ namespace Othello
 
         protected void c4_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Blanco")
-            { c4.CssClass = "btn btn-light btn-lg border-dark rounded-0"; turno.Text = "Negro"; }
-            else
-            { c4.CssClass = "btn btn-dark btn-lg border-dark rounded-0"; turno.Text = "Blanco"; }
+            c4.CssClass= "btn btn-light btn-lg border-dark rounded-0";
+            turno.Text = "Negro";
             Get_Score();
         }
 

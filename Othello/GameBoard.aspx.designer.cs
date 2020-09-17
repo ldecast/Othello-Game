@@ -42,6 +42,33 @@ namespace Othello
         protected global::System.Web.UI.WebControls.Button guardar;
 
         /// <summary>
+        /// Control resultados.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel resultados;
+
+        /// <summary>
+        /// Control ganador.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label ganador;
+
+        /// <summary>
+        /// Control gameBoard.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel gameBoard;
+
+        /// <summary>
         /// Control a1.
         /// </summary>
         /// <remarks>

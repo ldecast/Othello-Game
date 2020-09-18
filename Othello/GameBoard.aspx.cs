@@ -8,6 +8,7 @@ using System.Xml;
 using System.Text;
 using System.Diagnostics.Eventing.Reader;
 using System.Collections;
+using System.Drawing;
 
 namespace Othello
 {
@@ -19,6 +20,7 @@ namespace Othello
             //Get_Score();
             if (tableroLleno() == true)
                 gameOver();
+            
         }
 
         protected string Ver_ficha(int boton)
@@ -390,25 +392,66 @@ namespace Othello
                 return false;
         }
 
-        public bool fichaAlApar(WebControl casilla)
+        public bool fichaAlApar(WebControl[] casilla, string color, int clic)
         {
-            if (casilla.CssClass == "btn btn-light btn-lg border-dark rounded-0" || casilla.CssClass == "btn btn-dark btn-lg border-dark rounded-0")
-                return true;
-            else
-                return false;
+            bool permitido = true;
+            //Response.Write(casilla.Length);
+            if (clic+1 < casilla.Length && clic-1 >= 0 && casilla.Length > 1)
+            {
+                if (color == "negro")
+                {
+                    if (casilla[clic + 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0" || casilla[clic - 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                        permitido = false;
+                }
+                if (color == "blanco")
+                {
+                    if (casilla[clic + 1].CssClass == "btn btn-light btn-lg border-dark rounded-0" || casilla[clic - 1].CssClass == "btn btn-light btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                        permitido = false;
+                }
+            }
+            if (clic - 1 == -1 && casilla.Length>1)
+            {
+                if (color == "negro")
+                {
+                    if (casilla[clic + 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                        permitido = false;
+                }
+                if (color == "blanco")
+                {
+                    if (casilla[clic + 1].CssClass == "btn btn-light btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                        permitido = false;
+                }
+            }
+            if (clic > casilla.Length && casilla.Length > 1)
+            {
+                if (color == "negro")
+                {
+                    if (casilla[clic - 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                        permitido = false;
+                }
+                if (color == "blanco")
+                {
+                    if (casilla[clic - 1].CssClass == "btn btn-light btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                        permitido = false;
+                }
+            }
+            return permitido;
         }
 
         public bool tableroLleno()
         {
             WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8, };
             bool lleno = false;
+            int colocado = 0;
             for (int i = 0; i < botones.Length; i++)
             {
                 if (botones[i].CssClass == "btn btn-light btn-lg border-dark rounded-0" || botones[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
-                    lleno = true;
+                    colocado++;
                 else
                     lleno = false;
             }
+            if (colocado >= 63)
+                lleno = true;
             return lleno;
         }
 
@@ -417,39 +460,9 @@ namespace Othello
             gameBoard.Visible = false;
             if (int.Parse(score1.Text) > int.Parse(score2.Text))
                 ganador.Text = "GAME OVER\nBlanco wins!";
-            else
+            if (int.Parse(score1.Text) < int.Parse(score2.Text))
                 ganador.Text = "GAME OVER\nNegro wins!";
             resultados.Visible = true;
-        }
-
-        public int topeBlack(WebControl[] botones)
-        {
-            //WebControl max = null;
-            int[] indice = new int[8];
-            for (int i = 0; i < botones.Length; i++)
-            {
-                if (botones[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
-                {
-                    indice[i] = i;
-                    break;
-                }
-            }
-            if (indice.Max() == 0)
-                return -1;
-            else
-                return indice.Max();
-        }
-
-        public WebControl topeWhite(WebControl[] botones)
-        {
-            WebControl max = null;
-            for (int i = 0; i < botones.Length; i++)
-            {
-                if (botones[i].CssClass == "btn btn-light btn-lg border-dark rounded-0")
-                    max = botones[i];
-                break;
-            }
-            return max;
         }
 
         public int verificar(WebControl[] casilla, string color)
@@ -492,45 +505,62 @@ namespace Othello
             //{
             //    turno.BackColor = System.Drawing.Color.Red;
             //}
-            if (index != -1 )
+            //Response.Write(fichaAlApar(casilla, color, index));
+            if (fichaAlApar(casilla, color, clic))
             {
-                if (color == "negro")
+            if (index != -1)
+            {
+                if (verVacio(casilla, clic + 1, index) == true || verVacio(casilla, clic - 1, index) == true)
                 {
-                    if (index < clic)
+                    try
                     {
-                        for (int i = index; i <= clic; i++)
+
+                        if (color == "negro")
                         {
-                            casilla[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
+                            if (index < clic)
+                            {
+                                for (int i = index; i <= clic; i++)
+                                {
+                                    casilla[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
+                                }
+                            }
+                            if (index > clic)
+                            {
+                                for (int i = clic; i <= index; i++)
+                                {
+                                    casilla[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
+                                }
+                            }
+                            turno.Text = "Blanco";
+                        }
+                        if (color == "blanco")
+                        {
+
+                            if (index < clic)
+                            {
+                                for (int i = index; i <= clic; i++)
+                                {
+                                    casilla[i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
+                                }
+                            }
+                            if (index > clic)
+                            {
+                                for (int i = clic; i <= index; i++)
+                                {
+                                    casilla[i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
+                                }
+                            }
+                            turno.Text = "Negro";
+
                         }
                     }
-                    if (index > clic)
+                    catch (IndexOutOfRangeException)
                     {
-                        for (int i = clic; i <= index; i++)
-                        {
-                            casilla[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
-                        }
+                        turno.BackColor = Color.Red;
                     }
-                    turno.Text = "Blanco";
-                }
-                if (color == "blanco")
-                {
-                    if (index < clic)
-                    {
-                        for (int i = index; i <= clic; i++)
-                        {
-                            casilla[i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
-                        }
-                    }
-                    if (index > clic)
-                    {
-                        for (int i = clic; i <= index; i++)
-                        {
-                            casilla[i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
-                        }
-                    }
-                    turno.Text = "Negro";
                 }
             }
+        }
         }
 
         public bool verVacio(WebControl[] casilla, int clic, int index)
@@ -538,20 +568,27 @@ namespace Othello
             bool permitido = true;
             if (index != -1)
             {
+                try
+                {
                     if (index < clic)
                     {
                         for (int i = index; i <= clic; i++)
                         {
-                            if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0") permitido = false;
+                            if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0") { permitido = false; break; }
                         }
                     }
                     if (index > clic)
                     {
                         for (int i = clic; i <= index; i++)
                         {
-                            if (casilla[i].CssClass== "btn btn-success btn-lg border-dark rounded-0") permitido = false;
+                            if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0") { permitido = false; break; }
                         }
                     }
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    permitido = false;
+                }
             }
             return permitido;
         }
@@ -561,7 +598,7 @@ namespace Othello
             if (turno.Text == "Negro")
             {
                 int iCol = verificar(tipo("colA"), "negro");
-                Response.Write(iCol);
+                //Response.Write(iCol);
                 int iFil = verificar(tipo("fila1"), "negro");
                 int iDiag1 = verificar(tipo("diagPos1"), "negro");
                 int iDiag2 = verificar(tipo("diagNeg8"), "negro");
@@ -574,7 +611,7 @@ namespace Othello
             else
             {
                 int iCol = verificar(tipo("colA"), "blanco");
-                Response.Write(iCol);
+                //Response.Write(iCol);
                 int iFil = verificar(tipo("fila1"), "blanco");
                 int iDiag1 = verificar(tipo("diagPos1"), "blanco");
                 int iDiag2 = verificar(tipo("diagNeg8"), "blanco");
@@ -859,14 +896,14 @@ namespace Othello
             {
                 comerFicha(tipo("colH"), "negro", 1, verificar(tipo("colH"), "negro"));
                 comerFicha(tipo("fila2"), "negro", 7, verificar(tipo("fila2"), "negro"));
-                comerFicha(tipo("diagPos9"), "negro", 7, verificar(tipo("diagPos9"), "negro"));
+                comerFicha(tipo("diagPos9"), "negro", 6, verificar(tipo("diagPos9"), "negro"));
                 comerFicha(tipo("diagNeg2"), "negro", 1, verificar(tipo("diagNeg2"), "negro"));
             }
             else
             {
                 comerFicha(tipo("colH"), "blanco", 1, verificar(tipo("colH"), "blanco"));
                 comerFicha(tipo("fila2"), "blanco", 7, verificar(tipo("fila2"), "blanco"));
-                comerFicha(tipo("diagPos9"), "blanco", 7, verificar(tipo("diagPos9"), "blanco"));
+                comerFicha(tipo("diagPos9"), "blanco", 6, verificar(tipo("diagPos9"), "blanco"));
                 comerFicha(tipo("diagNeg2"), "blanco", 1, verificar(tipo("diagNeg2"), "blanco"));
             }
             Get_Score();
@@ -1055,54 +1092,54 @@ namespace Othello
             //Get_Score();
         }
 
-        public bool permitido(WebControl[] casilla, string color, int clic, int index)
-        {
-            bool posible = true;
-            if (color == "negro")
-            {
-                if (index < clic)
-                {
-                    for (int i = index; i <= clic; i++)
-                    {
-                        if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0" || casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0") { posible = false; break; }
-                    }
-                }
-                if (index > clic)
-                {
-                    for (int i = clic; i <= index; i++)
-                    {
-                        if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0" || casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0") { posible = false; break; }
-                    }
-                }
-            }
+        //public bool permitido(WebControl[] casilla, string color, int clic, int index)
+        //{
+        //    bool posible = true;
+        //    if (color == "negro")
+        //    {
+        //        if (index < clic)
+        //        {
+        //            for (int i = index; i <= clic; i++)
+        //            {
+        //                if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0" || casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0") { posible = false; break; }
+        //            }
+        //        }
+        //        if (index > clic)
+        //        {
+        //            for (int i = clic; i <= index; i++)
+        //            {
+        //                if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0" || casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0") { posible = false; break; }
+        //            }
+        //        }
+        //    }
 
-            if (color == "blanco")
-            {
-                if (index < clic)
-                {
-                    for (int i = index; i <= clic; i++)
-                    {
-                        if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0" || casilla[i].CssClass == "btn btn-light btn-lg border-dark rounded-0") { posible = false; break; }
-                    }
-                }
-                if (index > clic)
-                {
-                    for (int i = clic; i <= index; i++)
-                    {
-                        if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0" || casilla[i].CssClass == "btn btn-light btn-lg border-dark rounded-0") { posible = false; break; }
-                    }
-                }
-            }
+        //    if (color == "blanco")
+        //    {
+        //        if (index < clic)
+        //        {
+        //            for (int i = index; i <= clic; i++)
+        //            {
+        //                if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0" || casilla[i].CssClass == "btn btn-light btn-lg border-dark rounded-0") { posible = false; break; }
+        //            }
+        //        }
+        //        if (index > clic)
+        //        {
+        //            for (int i = clic; i <= index; i++)
+        //            {
+        //                if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0" || casilla[i].CssClass == "btn btn-light btn-lg border-dark rounded-0") { posible = false; break; }
+        //            }
+        //        }
+        //    }
 
-            return posible;
-        }
+        //    return posible;
+        //}
 
         protected void e3_Click(object sender, EventArgs e)
         {
             if (turno.Text == "Negro")
             {
                 int iCol = verificar(tipo("colE"), "negro");
-                Response.Write(iCol);
+                //Response.Write(iCol);
                 int iFil = verificar(tipo("fila3"), "negro");
                 int iDiag1 = verificar(tipo("diagPos7"), "negro");
                 int iDiag2 = verificar(tipo("diagNeg6"), "negro");
@@ -1115,7 +1152,7 @@ namespace Othello
             else
             {
                 int iCol = verificar(tipo("colE"), "blanco");
-                Response.Write(iCol);
+                //Response.Write(iCol);
                 int iFil = verificar(tipo("fila3"), "blanco");
                 int iDiag1 = verificar(tipo("diagPos7"), "blanco");
                 int iDiag2 = verificar(tipo("diagNeg6"), "blanco");

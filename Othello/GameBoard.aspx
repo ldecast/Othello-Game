@@ -134,10 +134,10 @@
                 
                 <div class="col-sm-12 col-lg-2 text-left border-right border-dark">
                     <h3>SCORE</h3><hr><br>
-                    <h4>Blanco: </h4>
-                    <asp:Label runat="server" id="score1" CssClass="display-4" text="2" />
+                    <h4 class="text-white">Blanco</h4>
+                    <asp:Label runat="server" id="score1" CssClass="display-4 text-white" text="2" />
                     <br><br>
-                    <h4>Negro: </h4>
+                    <h4>Negro</h4>
                     <asp:Label runat="server" id="score2" CssClass="display-4" text="2" />
                 </div>
 

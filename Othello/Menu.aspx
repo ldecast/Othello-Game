@@ -24,19 +24,38 @@
         </div><br>
         <div class="row py-4">
             <div class="col-sm-12 col-md-6 col-lg-6 text-center mb-2 border-right border-secondary">
-                <h1>Cargar partida</h1>
-                <form name="formulario" method="post" action="/send.php" enctype="multipart/form-data">
-                    <asp:FileUpload runat="server" id="upload" accept=".xml" AllowMultiple="false" CssClass="btn btn-dark btn-lg"/><br><br>
-                    <asp:Button runat="server" id="cargar" CssClass="btn btn-dark btn-lg" Text="Cargar" OnClick="Redireccionar" />
-                    <%--<input type="file" class="btn btn-dark btn-lg" name="adjunto" accept=".pdf,.jpg,.png"/><br><br>--%>
-<%--                    <input type="button" class="btn btn-outline-dark btn-lg" value="Cargar">--%>
-                  </form>
+                <asp:Label runat="server" id="Label3" class="h1 text-center" Text="Cargar partida" /><br>
+
+                    <asp:FileUpload runat="server" id="upload" accept=".xml" AllowMultiple="false" CssClass="btn btn-dark btn-lg mt-4" Visible="false"/><br><br>
+                    <asp:Button runat="server" id="cargar1" CssClass="btn btn-dark btn-lg m-1" Text="2 jugadores" OnClick="cargarElegir1"/>
+                    <asp:Button runat="server" id="cargar2" CssClass="btn btn-dark btn-lg m-1" Text="Individual" OnClick="cargarElegir2"/>
+
+                <asp:Panel runat="server" id="Panel1" class="mt-0 pt-0" Visible="false">
+                    <asp:Button runat="server" id="Button1" class="btn btn-outline-light btn-lg mx-3" Text="Blanco" OnClick="Redireccionar1"/>
+                    <asp:Button runat="server" id="Button2" class="btn btn-outline-dark btn-lg block" Text="Negro" OnClick="Redireccionar2"/>
+                </asp:Panel>
+
+                <asp:Panel runat="server" id="Panel2" class="mt-0 pt-0" Visible="false">
+                    <asp:Button runat="server" id="Button3" class="btn btn-outline-light btn-lg mx-3" Text="Blanco" OnClick="Redireccionar3"/>
+                    <asp:Button runat="server" id="Button4" class="btn btn-outline-dark btn-lg block" Text="Negro" OnClick="Redireccionar4"/>
+                </asp:Panel>
                   
             </div>
             <div class="col-sm-12 col-md-6 col-lg-6 text-center mb-2">
-                <h1>Juego nuevo</h1>
-                    <asp:Button runat="server" id="newGame" class="btn btn-warning btn-lg" Text="Uno contra uno" OnClick="newGame_Click"/><br><br>
-                    <asp:Button runat="server" id="juegoSolo" class="btn btn-warning btn-lg" Text="Contra la máquina" OnClick="newGame_Click"/>
+                <asp:Label runat="server" id="juegoNuevo" class="h1" Text="Juego nuevo" /><br>
+
+                    <asp:Button runat="server" id="newGame" class="btn btn-warning btn-lg mt-4" Text="Uno contra uno" OnClick="chooseColor1"/><br><br>
+                    <asp:Button runat="server" id="juegoSolo" class="btn btn-warning btn-lg" Text="Contra la máquina" OnClick="chooseColor2"/>
+
+                <asp:Panel runat="server" id="selectColor" class="mt-0 pt-0" Visible="false">
+                    <asp:Button runat="server" id="BlancoSelect" class="btn btn-outline-light btn-lg mx-3" Text="Blanco" OnClick="newGame_Click_White"/>
+                    <asp:Button runat="server" id="NegroSelect" class="btn btn-outline-dark btn-lg block" Text="Negro" OnClick="newGame_Click_Black"/>
+                </asp:Panel>
+
+                <asp:Panel runat="server" id="selectColor2" class="mt-0 pt-0" Visible="false">
+                    <asp:Button runat="server" id="BlancoSelect2" class="btn btn-outline-light btn-lg mx-3" Text="Blanco" OnClick="NewGame_Alone_White"/>
+                    <asp:Button runat="server" id="NegroSelect2" class="btn btn-outline-dark btn-lg block" Text="Negro" OnClick="NewGame_Alone_Black"/>
+                </asp:Panel>
             </div>
         </div>
         <div class="row py-4">

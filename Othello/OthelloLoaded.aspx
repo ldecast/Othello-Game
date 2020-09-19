@@ -23,12 +23,14 @@
             <div class="row mb-5">
                 <div class="col-sm-12 col-lg-2 text-right border-left border-dark">
                     <h3>Turno de:</h3><hr>
-                    <asp:Label runat="server" id="turno" CssClass="display-4" text="Blanco" />
+                    <asp:Label runat="server" id="turno" CssClass="display-4" text="Negro" />
                     <%--<a href="#" id="turno" class="letra btn btn-lg disabled">Blanco</a>--%>
                     <asp:Button runat="server" type="button" id="guardar" CssClass="btn btn-outline-dark btn-lg" text="Guardar partida" OnClick="generarXml"/>
                 </div>
-                
-                <div class="col-sm-12 col-lg-8 text-center">
+                <asp:Panel runat="server" id="resultados" Cssclass="col-sm-12 col-lg-8 text-center" Visible="false">
+                    <asp:Label runat="server" id="ganador" CssClass="display-2"/>
+                </asp:Panel>
+                <asp:Panel runat="server" id="gameBoard" Cssclass="col-sm-12 col-lg-8 text-center">
                     <%--<form id="tablero" runat="server">--%>
                     <a href="#" class="numero btn btn-lg disabled"></a>
                     <a href="#" class="letra btn btn-lg disabled">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A</a>
@@ -129,15 +131,15 @@
                         <asp:Button runat="server" type="button" id="h8" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="h8_Click"/>
                     </div>
                    <%--</form>--%> 
-                </div>
+                </asp:Panel>
                 
                 <div class="col-sm-12 col-lg-2 text-left border-right border-dark">
                     <h3>SCORE</h3><hr><br>
-                    <h4>Blanco: </h4>
-                    <asp:Label runat="server" id="score1" CssClass="display-4" text="2" />
+                    <h4 class="text-white">Blanco</h4>
+                    <asp:Label runat="server" id="score1" CssClass="display-4 text-white" text="0" />
                     <br><br>
-                    <h4>Negro: </h4>
-                    <asp:Label runat="server" id="score2" CssClass="display-4" text="2" />
+                    <h4>Negro</h4>
+                    <asp:Label runat="server" id="score2" CssClass="display-4" text="0" />
                 </div>
 
             </div>

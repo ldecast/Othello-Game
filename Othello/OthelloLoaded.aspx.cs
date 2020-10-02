@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Drawing;
 using System.Xml;
+using System.IO;
 
 namespace Othello
 {
@@ -13,8 +14,14 @@ namespace Othello
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (tableroLleno() == true)
-                gameOver();
+            if (!tableroVacio())
+            {
+                if (tableroLleno())
+                {
+                    Get_Score();
+                    gameOver();
+                }
+            }
         }
 
         public void Leer_xml(object sender, EventArgs e)
@@ -455,6 +462,9 @@ namespace Othello
             }
             score1.Text = score_white.ToString();
             score2.Text = score_black.ToString();
+
+            if (score_white == 0 && score_black > 0) gameOver();
+            if (score_black == 0 && score_white > 0) gameOver();
         }
 
         protected void generarXml(object sender, EventArgs e)
@@ -466,9 +476,9 @@ namespace Othello
             string[] col = { "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H" };
             string[] fila = { "1", "1", "1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3", "3", "3", "3", "3", "4", "4", "4", "4", "4", "4", "4", "4", "5", "5", "5", "5", "5", "5", "5", "5", "6", "6", "6", "6", "6", "6", "6", "6", "7", "7", "7", "7", "7", "7", "7", "7", "8", "8", "8", "8", "8", "8", "8", "8" };
 
-            DateTime dateTime = DateTime.UtcNow.Date;
-            string date = dateTime.ToString("dd-MM-yyyy");
-            string hms = DateTime.Now.ToString("HH-mm");
+            //DateTime dateTime = DateTime.UtcNow.Date;
+            //string date = dateTime.ToString("dd-MM-yyyy");
+            //string hms = DateTime.Now.ToString("HH-mm");
 
             string persona = "";
             if (Request.Params["Parametro"] != null)
@@ -476,9 +486,19 @@ namespace Othello
                 persona = Request.Params["Parametro"] + " ";
             }
 
-            string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
+            //string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
 
-            string ruta = mdoc + "Partida nueva " + persona + date + " " + hms + ".xml";
+            //string ruta = mdoc + "Partida nueva " + persona + date + " " + hms + ".xml";
+
+            string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
+            int id = 1;
+            string ruta = mdoc + "Partida solitario " + persona + "(" + id + ").xml";
+
+            while (File.Exists(ruta))
+            {
+                id++;
+                ruta = mdoc + "Partida solitario " + persona + "(" + id + ").xml";
+            }
 
             XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
 
@@ -637,16 +657,41 @@ namespace Othello
             }
             if (colocado >= 63)
                 lleno = true;
+
             return lleno;
+        }
+
+        public bool tableroVacio()
+        {
+            WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8, };
+            int a = 0;
+            for (int i = 0; i < botones.Length; i++)
+            {
+                if (botones[i].CssClass != "btn btn-success btn-lg border-dark rounded-0")
+                    a++;
+            }
+            if (a == 0) return true;
+            else return false;
         }
 
         public void gameOver()
         {
             gameBoard.Visible = false;
             if (int.Parse(score1.Text) > int.Parse(score2.Text))
-                ganador.Text = "GAME OVER\nBlanco wins!";
+            {
+                ganador.Text = "GAME OVER\nBlanco gana!";
+                ganador.ForeColor = Color.White;
+            }
             if (int.Parse(score1.Text) < int.Parse(score2.Text))
-                ganador.Text = "GAME OVER\nNegro wins!";
+            {
+                ganador.Text = "GAME OVER\nNegro gana!";
+                ganador.ForeColor = Color.Black;
+            }
+            if (int.Parse(score1.Text) == int.Parse(score2.Text) && int.Parse(score1.Text)>0)
+            {
+                ganador.Text = "GAME OVER\n¡Empate!";
+                ganador.ForeColor = Color.Orange;
+            }
             resultados.Visible = true;
         }
 
@@ -977,17 +1022,17 @@ namespace Othello
             {
                 if (turno.Text == "Negro")
                 {
-                    comerFicha(tipo("colA"), "negro", 0, verificar2(tipo("colB"), "negro", 0));
+                    comerFicha(tipo("colA"), "negro", 0, verificar2(tipo("colA"), "negro", 0));
                     comerFicha(tipo("fila1"), "negro", 0, verificar2(tipo("fila1"), "negro", 0));
-                    comerFicha(tipo("diagPos1"), "negro", 0, verificar2(tipo("diagPos2"), "negro", 0));
-                    comerFicha(tipo("diagNeg8"), "negro", 0, verificar2(tipo("diagNeg7"), "negro", 0));
+                    comerFicha(tipo("diagPos1"), "negro", 0, verificar2(tipo("diagPos1"), "negro", 0));
+                    comerFicha(tipo("diagNeg8"), "negro", 0, verificar2(tipo("diagNeg8"), "negro", 0));
                 }
                 else
                 {
-                    comerFicha(tipo("colA"), "blanco", 0, verificar2(tipo("colB"), "blanco", 0));
+                    comerFicha(tipo("colA"), "blanco", 0, verificar2(tipo("colA"), "blanco", 0));
                     comerFicha(tipo("fila1"), "blanco", 0, verificar2(tipo("fila1"), "blanco", 0));
-                    comerFicha(tipo("diagPos1"), "blanco", 0, verificar2(tipo("diagPos2"), "blanco", 0));
-                    comerFicha(tipo("diagNeg8"), "blanco", 0, verificar2(tipo("diagNeg7"), "blanco", 0));
+                    comerFicha(tipo("diagPos1"), "blanco", 0, verificar2(tipo("diagPos1"), "blanco", 0));
+                    comerFicha(tipo("diagNeg8"), "blanco", 0, verificar2(tipo("diagNeg8"), "blanco", 0));
                 }
                 Get_Score();
             }
@@ -999,7 +1044,7 @@ namespace Othello
             {
                 if (turno.Text == "Negro")
                 {
-                    comerFicha(tipo("colB"), "negro", 0, verificar2(tipo("colB"), "negro", 1));
+                    comerFicha(tipo("colB"), "negro", 0, verificar2(tipo("colB"), "negro", 0));
                     comerFicha(tipo("fila1"), "negro", 1, verificar2(tipo("fila1"), "negro", 1));
                     comerFicha(tipo("diagPos2"), "negro", 1, verificar2(tipo("diagPos2"), "negro", 1));
                     comerFicha(tipo("diagNeg7"), "negro", 0, verificar2(tipo("diagNeg7"), "negro", 0));
@@ -1966,10 +2011,10 @@ namespace Othello
             {
                 if (turno.Text == "Negro")
                 {
-                    //comerFicha(tipo("colF"), "negro", 5, verificar2(tipo("colF"), "negro", 5));
+                    comerFicha(tipo("colF"), "negro", 5, verificar2(tipo("colF"), "negro", 5));
                     comerFicha(tipo("fila6"), "negro", 5, verificar2(tipo("fila6"), "negro", 5));
-                    //comerFicha(tipo("diagPos11"), "negro", 2, verificar2(tipo("diagPos11"), "negro", 2));
-                    //comerFicha(tipo("diagNeg8"), "negro", 5, verificar2(tipo("diagNeg8"), "negro", 5));
+                    comerFicha(tipo("diagPos11"), "negro", 2, verificar2(tipo("diagPos11"), "negro", 2));
+                    comerFicha(tipo("diagNeg8"), "negro", 5, verificar2(tipo("diagNeg8"), "negro", 5));
                 }
                 else
                 {

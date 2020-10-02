@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using System.Text;
+using System.IO;
 
 namespace Othello
 {
@@ -194,7 +195,21 @@ namespace Othello
             string[] col = { "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H" };
             string[] fila = { "1", "1", "1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3", "3", "3", "3", "3", "4", "4", "4", "4", "4", "4", "4", "4", "5", "5", "5", "5", "5", "5", "5", "5", "6", "6", "6", "6", "6", "6", "6", "6", "7", "7", "7", "7", "7", "7", "7", "7", "8", "8", "8", "8", "8", "8", "8", "8" };
 
-            string ruta = "C:\\Users\\luisd\\Desktop\\XML\\partida.xml";
+            string persona = "";
+            if (Request.Params["Parametro"] != null)
+            {
+                persona = Request.Params["Parametro"] + " ";
+            }
+
+            string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
+            int id = 1;
+            string ruta = mdoc + "Partida solitario " + persona +"("+ id + ").xml";
+
+            while (File.Exists(ruta))
+            {
+                id++;
+                ruta = mdoc + "Partida solitario " + persona + "(" + id + ").xml";
+            }
 
             XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
 
@@ -245,7 +260,6 @@ namespace Othello
                     continue;
             }
 
-
             xmlWriter.WriteStartElement("siguienteTiro");
             xmlWriter.WriteStartElement("color");
             if (turno.Text == "Blanco")
@@ -260,7 +274,6 @@ namespace Othello
             xmlWriter.WriteEndDocument();
             xmlWriter.Close();
             Response.Write("Partida guardada en: " + ruta);
-
         }
 
         public void a1_Click(object sender, EventArgs e)

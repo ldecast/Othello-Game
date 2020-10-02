@@ -55,7 +55,7 @@ namespace Othello
                 upload.SaveAs(Server.MapPath(".") + "\\XML\\" + upload.FileName);
                 string ruta = Server.MapPath(".") + "\\XML\\" + upload.FileName;
                 Session["archivo"] = ruta;
-                Response.Redirect("OthelloLoadedOnePlayer.aspx?Parametro=" + usuario.Text + "/Blanco");
+                Response.Redirect("OthelloLoadedOnePlayer.aspx?Parametro=" + usuario.Text + "-Blanco");
             }
             else
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error: por favor seleccione un archivo\")", true);
@@ -68,7 +68,7 @@ namespace Othello
                 upload.SaveAs(Server.MapPath(".") + "\\XML\\" + upload.FileName);
                 string ruta = Server.MapPath(".") + "\\XML\\" + upload.FileName;
                 Session["archivo"] = ruta;
-                Response.Redirect("OthelloLoadedOnePlayer.aspx?Parametro=" + usuario.Text + "/Negro");
+                Response.Redirect("OthelloLoadedOnePlayer.aspx?Parametro=" + usuario.Text + "-Negro");
             }
             else
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error: por favor seleccione un archivo\")", true);
@@ -76,20 +76,20 @@ namespace Othello
 
         protected void newGame_Click_White(object sender, EventArgs e)
         {
-            Response.Redirect("GameBoard.aspx?Parametro=" + usuario.Text+"/Blanco");
+            Response.Redirect("GameBoard.aspx?Parametro=" + usuario.Text+"-Blanco");
         }
         protected void newGame_Click_Black(object sender, EventArgs e)
         {
-            Response.Redirect("GameBoard.aspx?Parametro=" + usuario.Text + "/Negro");
+            Response.Redirect("GameBoard.aspx?Parametro=" + usuario.Text + "-Negro");
         }
 
         protected void NewGame_Alone_White(object sender, EventArgs e)
         {
-            Response.Redirect("GameOnePlayer.aspx?Parametro=" + usuario.Text + "/Blanco");
+            Response.Redirect("GameOnePlayer.aspx?Parametro=" + usuario.Text + "-Blanco");
         }
         protected void NewGame_Alone_Black(object sender, EventArgs e)
         {
-            Response.Redirect("GameOnePlayer.aspx?Parametro=" + usuario.Text + "/Negro");
+            Response.Redirect("GameOnePlayer.aspx?Parametro=" + usuario.Text + "-Negro");
         }
 
         protected void cargarElegir1(object sender, EventArgs e)

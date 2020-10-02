@@ -41,12 +41,12 @@
           <label for="pais">País:</label><br>
           <asp:TextBox runat="server" id="pais" class="cajon"/><br/>
 
-          <label for="uname" class="mb-1">Username:</label><br>
-          <asp:TextBox runat="server" id="uname" class="cajon"/><br/>
-          
           <label for="correo" class="mb-1">Correo:</label><br>
           <asp:TextBox runat="server" id="correo" class="cajon" TextMode="Email"/><br/>
 
+          <label for="uname" class="mb-1">Username:</label><br>
+          <asp:TextBox runat="server" id="uname" class="cajon"/><br/>
+          
           <label for="password" class="mb-1">Contraseña:</label><br>
           <asp:TextBox runat="server" id="password" class="cajon" TextMode="Password"/><br/>
 

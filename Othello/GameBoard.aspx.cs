@@ -9,6 +9,8 @@ using System.Text;
 using System.Diagnostics.Eventing.Reader;
 using System.Collections;
 using System.Drawing;
+using System.IO;
+using System.Data.SqlClient;
 
 namespace Othello
 {
@@ -17,8 +19,7 @@ namespace Othello
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (tableroLleno() == true)
-                gameOver();
+            Get_Score(null);
         }
 
         protected string Ver_ficha(int boton)
@@ -273,11 +274,27 @@ namespace Othello
             else return null;
         }
 
-        public void Get_Score()
+        public void Ceder_turno(object sender, EventArgs e)
+        {
+            if (turno.Text == "Blanco")
+            {
+                turno.Text = "Negro";
+                turno.ForeColor = Color.Black;
+            }
+            else if (turno.Text == "Negro")
+            {
+                turno.Text = "Blanco";
+                turno.ForeColor = Color.White;
+            }
+        }
+
+        public void Get_Score(WebControl boton)
         {
             WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8 };
             int score_white = 0;
             int score_black = 0;
+            int aux_white = int.Parse(score1.Text);
+            int aux_black = int.Parse(score2.Text);
             for (int i = 0; i < botones.Length; i++)
             {
                 switch (botones[i].CssClass.ToString())
@@ -290,8 +307,40 @@ namespace Othello
                         break;
                 }
             }
+
+            if (score_white == aux_white + 1 && score_white + score_black != 64) { boton.CssClass = "btn btn-success btn-lg border-dark rounded-0"; score_white--; turno.Text = "Blanco"; turno.ForeColor = Color.White; }
+            else if (score_black == aux_black + 1 && score_white + score_black != 64) { boton.CssClass = "btn btn-success btn-lg border-dark rounded-0"; score_black--; turno.Text = "Negro"; turno.ForeColor = Color.Black; }
+
             score1.Text = score_white.ToString();
             score2.Text = score_black.ToString();
+        }
+
+        public void Get_Move(WebControl boton)
+        {
+            int black_move = int.Parse(movimiento_negro.Text);
+            int white_move = int.Parse(movimiento_blanco.Text);
+            if (boton.CssClass != "btn btn-success btn-lg border-dark rounded-0")
+            {
+                if (boton.CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                {
+                    black_move++;
+                    movimiento_negro.Text = black_move.ToString();
+                    movimiento_negro.Visible = false;
+                    movimiento_blanco.Visible = true;
+                }
+                if (boton.CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                {
+                    white_move++;
+                    movimiento_blanco.Text = white_move.ToString();
+                    movimiento_blanco.Visible = false;
+                    movimiento_negro.Visible = true;
+                }
+            }
+            int score_white = int.Parse(score1.Text);
+            int score_black = int.Parse(score2.Text);
+            if (score_white == 0 && score_black > 0) gameOver();
+            else if (score_black == 0 && score_white > 0) gameOver();
+            if (score_white + score_black == 64) gameOver();
         }
 
         protected void generarXml(object sender, EventArgs e)
@@ -303,10 +352,6 @@ namespace Othello
             string[] col = { "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H" };
             string[] fila = { "1", "1", "1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3", "3", "3", "3", "3", "4", "4", "4", "4", "4", "4", "4", "4", "5", "5", "5", "5", "5", "5", "5", "5", "6", "6", "6", "6", "6", "6", "6", "6", "7", "7", "7", "7", "7", "7", "7", "7", "8", "8", "8", "8", "8", "8", "8", "8" };
 
-            DateTime dateTime = DateTime.UtcNow.Date;
-            string date = dateTime.ToString("dd-MM-yyyy");
-            string hms = DateTime.Now.ToString("HH-mm");
-
             string persona = "";
             if (Request.Params["Parametro"] != null)
             {
@@ -314,8 +359,14 @@ namespace Othello
             }
 
             string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
+            int id = 1;
+            string ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
 
-            string ruta = mdoc + "Partida nueva " + persona + date + " " + hms + ".xml";
+            while (File.Exists(ruta))
+            {
+                id++;
+                ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
+            }
 
             XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
 
@@ -375,6 +426,16 @@ namespace Othello
             xmlWriter.WriteEndElement();
             xmlWriter.WriteEndElement();
 
+            xmlWriter.WriteStartElement("movimientos");
+            xmlWriter.WriteStartElement("negro");
+            xmlWriter.WriteString(movimiento_negro.Text);
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("blanco");
+            xmlWriter.WriteString(movimiento_blanco.Text);
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteEndDocument();
@@ -385,192 +446,356 @@ namespace Othello
         public bool fichaAlApar(WebControl[] casilla, string color, int clic)
         {
             bool permitido = true;
-            //Response.Write(casilla.Length);
-            if (clic+1 < casilla.Length && clic-1 >= 0 && casilla.Length > 1)
+            if (clic + 1 < casilla.Length && clic != 0)
             {
                 if (color == "negro")
                 {
-                    if (casilla[clic + 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0" || casilla[clic - 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                    if (casilla[clic].CssClass != "btn btn-light btn-lg border-dark rounded-0")
+                    {
+                        if (casilla[clic + 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0" && casilla[clic - 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0" && casilla[clic].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                            permitido = false;
+                    }
+                    else
                         permitido = false;
                 }
                 if (color == "blanco")
                 {
-                    if (casilla[clic + 1].CssClass == "btn btn-light btn-lg border-dark rounded-0" || casilla[clic - 1].CssClass == "btn btn-light btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                    if (casilla[clic].CssClass != "btn btn-dark btn-lg border-dark rounded-0")
+                    {
+                        if (casilla[clic + 1].CssClass == "btn btn-light btn-lg border-dark rounded-0" && casilla[clic - 1].CssClass == "btn btn-light btn-lg border-dark rounded-0" && casilla[clic].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                            permitido = false;
+                    }
+                    else
                         permitido = false;
                 }
             }
-            if (clic - 1 == -1 && casilla.Length>1)
+            if (clic - 1 == -1)
             {
-                if (color == "negro")
+                if (color == "negro" && casilla.Length > 1)
                 {
-                    if (casilla[clic + 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                    if (casilla[clic + 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
                         permitido = false;
                 }
-                if (color == "blanco")
+                if (color == "blanco" && casilla.Length > 1)
                 {
-                    if (casilla[clic + 1].CssClass == "btn btn-light btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                    if (casilla[clic + 1].CssClass == "btn btn-light btn-lg border-dark rounded-0")
                         permitido = false;
                 }
             }
-            if (clic > casilla.Length && casilla.Length > 1)
+            if (clic + 1 >= casilla.Length)
             {
-                if (color == "negro")
+                if (color == "negro" && casilla.Length > 1)
                 {
-                    if (casilla[clic - 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                    if (casilla[clic - 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
                         permitido = false;
                 }
-                if (color == "blanco")
+                if (color == "blanco" && casilla.Length > 1)
                 {
-                    if (casilla[clic - 1].CssClass == "btn btn-light btn-lg border-dark rounded-0" || casilla[clic].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                    if (casilla[clic - 1].CssClass == "btn btn-light btn-lg border-dark rounded-0")
                         permitido = false;
                 }
             }
             return permitido;
         }
 
-        public bool tableroLleno()
-        {
-            WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8, };
-            bool lleno = false;
-            int colocado = 0;
-            for (int i = 0; i < botones.Length; i++)
-            {
-                if (botones[i].CssClass == "btn btn-light btn-lg border-dark rounded-0" || botones[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
-                    colocado++;
-                else
-                    lleno = false;
-            }
-            if (colocado >= 63)
-                lleno = true;
-            return lleno;
-        }
-
         public void gameOver()
         {
             gameBoard.Visible = false;
             if (int.Parse(score1.Text) > int.Parse(score2.Text))
-                ganador.Text = "GAME OVER\nBlanco wins!";
+            {
+                ganador.Text = "Blanco gana!";
+                ganador.CssClass = "display-2 text-white";
+                gameover.CssClass = "display-2 text-white";
+                turno.Text = "";
+                movimiento_negro.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                movimiento_blanco.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                registrar("blanco");
+            }
             if (int.Parse(score1.Text) < int.Parse(score2.Text))
-                ganador.Text = "GAME OVER\nNegro wins!";
+            {
+                ganador.Text = "Negro gana!";
+                ganador.CssClass = "display-2 text-dark";
+                gameover.CssClass = "display-2 text-dark";
+                turno.Text = "";
+                movimiento_negro.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                movimiento_blanco.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                registrar("negro");
+            }
+            if (int.Parse(score1.Text) == int.Parse(score2.Text) && int.Parse(score1.Text) > 0)
+            {
+                ganador.Text = "¡Empate!";
+                ganador.CssClass = "display-2 text-warning font-weight-bold";
+                gameover.CssClass = "display-2 text-warning font-weight-bold";
+                turno.Text = "";
+                movimiento_negro.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                movimiento_blanco.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                registrar("empate");
+            }
             resultados.Visible = true;
+            guardar.Enabled = false;
+            ceder_turno.Enabled = false;
         }
 
-        public int verificar(WebControl[] casilla, string color)
+        public void registrar(string ganador)
+        {
+            if (Request.Params["Parametro"] != null && ganador != "empate")
+            {
+                string parametro = Request.Params["Parametro"];
+                string color_host = parametro.Substring(parametro.IndexOf("-") + 1);
+                string jugador_host = parametro.Substring(0, parametro.IndexOf("-"));
+                string winner = "";
+                string loser = "";
+                string estado = "";
+                switch (color_host)
+                {
+                    case "Negro":
+                        if (ganador == "blanco") estado = "perdida";
+                        if (ganador == "negro") estado = "ganada";
+                        if (ganador == color_host.ToLower()) { winner = jugador_host; loser = "invitado"; }
+                        if (ganador != color_host.ToLower()) { winner = "invitado"; loser = jugador_host; }
+                        try
+                        {
+                            //codigo de Tutoriales Ya.com
+                            string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
+                            SqlConnection conexion = new SqlConnection(a);
+                            conexion.Open();
+                            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,ganador,perdedor,empate) values('1vs1','" +
+                                    estado + "'," + movimiento_negro.Text + ",'" + jugador_host + "','invitado','" + winner + "','" + loser + "',0)", conexion);
+                            script.ExecuteNonQuery();
+                            conexion.Close();
+                        }
+                        catch (Exception)
+                        {
+                            ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo guardar el resultado en la base de datos.\")", true);
+                        }
+                        break;
+                    case "Blanco":
+                        if (ganador == "blanco") estado = "ganada";
+                        if (ganador == "negro") estado = "perdida";
+                        if (ganador == "empate") { estado = "empate"; winner = ""; loser = ""; }
+                        if (ganador == color_host.ToLower()) { winner = jugador_host; loser = "invitado"; }
+                        if (ganador != color_host.ToLower() && ganador != "empate") { winner = "invitado"; loser = jugador_host; }
+                        try
+                        {
+                            //codigo de Tutoriales Ya.com
+                            string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
+                            SqlConnection conexion = new SqlConnection(a);
+                            conexion.Open();
+                            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,ganador,perdedor,empate) values('1vs1','" +
+                                    estado + "'," + movimiento_blanco.Text + ",'" + jugador_host + "','invitado','" + winner + "','" + loser + "',0)", conexion);
+                            script.ExecuteNonQuery();
+                            conexion.Close();
+                        }
+                        catch (Exception)
+                        {
+                            ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo guardar el resultado en la base de datos.\")", true);
+                        }
+                        break;
+                }
+            }
+            if (Request.Params["Parametro"] != null && ganador == "empate")
+            {
+                string parametro = Request.Params["Parametro"];
+                string color_host = parametro.Substring(parametro.IndexOf("-") + 1);
+                string jugador_host = parametro.Substring(0, parametro.IndexOf("-"));
+                try
+                {
+                    //codigo de Tutoriales Ya.com
+                    if (color_host == "Negro")
+                    {
+                        string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
+                        SqlConnection conexion = new SqlConnection(a);
+                        conexion.Open();
+                        SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,empate) values('1vs1','empate'," +
+                               movimiento_negro.Text + ",'" + jugador_host + "','invitado',1)", conexion);
+                        script.ExecuteNonQuery();
+                        conexion.Close();
+                    }
+                    if (color_host == "Blanco")
+                    {
+                        string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
+                        SqlConnection conexion = new SqlConnection(a);
+                        conexion.Open();
+                        SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,empate) values('1vs1','empate'," +
+                               movimiento_blanco.Text + ",'" + jugador_host + "','invitado',1)", conexion);
+                        script.ExecuteNonQuery();
+                        conexion.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Response.Write(ex);
+                    ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo guardar el resultado en la base de datos.\")", true);
+                }
+            }
+        }
+
+        public void Salir(object sender, EventArgs e)
+        {
+            if (Request.Params["Parametro"] != null)
+            {
+                string parametro = Request.Params["Parametro"];
+                string jugador_host = parametro.Substring(0, parametro.IndexOf("-"));
+                Response.Redirect("Menu.aspx?Parametro=" + jugador_host);
+            }
+            else Response.Redirect("Login.aspx");
+        }
+
+        public int verificar2(WebControl[] casilla, string color, int clic)
         {
             bool permitido = false;
-            int indice = -1;
+            bool permitido2 = false;
+            int aux = 0;
+            int aux2 = 0;
             if (color == "negro")
             {
-                for (int i = 0; i < casilla.Length; i++)
+                if (clic < casilla.Length && casilla.Length != 1)
                 {
-                    if (casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                    if (permitido == false)
                     {
-                        permitido = true;
-                        indice = i;
-                        break;
+                        for (int i = 0; i < clic; i++)
+                        {
+                            if (casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                            {
+                                permitido = true;
+                                aux = i;
+                            }
+                        }
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
+                        {
+                            if (casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                            {
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
+                            }
+                        }
                     }
                 }
             }
             if (color == "blanco")
             {
-                for (int i = 0; i < casilla.Length; i++)
+                if (clic < casilla.Length && casilla.Length != 1)
                 {
-                    if (casilla[i].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                    if (permitido == false)
                     {
-                        permitido = true;
-                        indice = i;
-                        break;
+                        for (int i = 0; i < clic; i++)
+                        {
+                            if (casilla[i].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                            {
+                                permitido = true;
+                                aux = i;
+                            }
+                        }
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
+                        {
+                            if (casilla[i].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                            {
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
+                            }
+                        }
                     }
                 }
             }
-            if (permitido == true)
-                return indice;
+            if (permitido != permitido2)
+            {
+                if (permitido2) return aux2;
+                else return aux;
+            }
+            if (permitido && permitido2)
+            {
+                comerFicha(casilla, color, clic, aux);
+                comerFicha(casilla, color, clic, aux2);
+                return -1;
+            }
             else
                 return -1;
         }
 
         public void comerFicha(WebControl[] casilla, string color, int clic, int index)
         {
-            if (index == -1)
-            {
-                //turno.BackColor = System.Drawing.Color.Red;
-            }
-            //Response.Write(fichaAlApar(casilla, color, index));
             if (fichaAlApar(casilla, color, clic))
             {
-            if (index != -1)
-            {
-                if (verVacio(casilla, clic + 1, index) == true || verVacio(casilla, clic - 1, index) == true)
+                if (index != -1)
                 {
-                    try
+                    if (verVacio(casilla, clic, index) == true)
                     {
-
-                        if (color == "negro")
+                        try
                         {
-                            if (index < clic)
+                            if (color == "negro")
                             {
-                                for (int i = index; i <= clic; i++)
+                                if (index < clic)
                                 {
-                                    casilla[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
+                                    for (int i = index; i <= clic; i++)
+                                    {
+                                        casilla[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
+                                    }
                                 }
-                            }
-                            if (index > clic)
-                            {
-                                for (int i = clic; i <= index; i++)
+                                if (index > clic)
                                 {
-                                    casilla[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
+                                    for (int i = clic; i <= index; i++)
+                                    {
+                                        casilla[i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
+                                    }
                                 }
-                            }
                                 turno.Text = "Blanco";
                                 turno.ForeColor = Color.White;
-                        }
-                        if (color == "blanco")
-                        {
+                            }
+                            if (color == "blanco")
+                            {
 
-                            if (index < clic)
-                            {
-                                for (int i = index; i <= clic; i++)
+                                if (index < clic)
                                 {
-                                    casilla[i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
+                                    for (int i = index; i <= clic; i++)
+                                    {
+                                        casilla[i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
+                                    }
                                 }
-                            }
-                            if (index > clic)
-                            {
-                                for (int i = clic; i <= index; i++)
+                                if (index > clic)
                                 {
-                                    casilla[i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
+                                    for (int i = clic; i <= index; i++)
+                                    {
+                                        casilla[i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
+                                    }
                                 }
-                            }
                                 turno.Text = "Negro";
                                 turno.ForeColor = Color.Black;
                             }
                         }
-                    catch (IndexOutOfRangeException)
-                    {
-                        
+                        catch (IndexOutOfRangeException)
+                        {
+
+                        }
                     }
                 }
             }
-        }
         }
 
         public bool verVacio(WebControl[] casilla, int clic, int index)
         {
             bool permitido = true;
-            if (index != -1)
+            if (index != -1 && clic != 0 && clic < casilla.Length)
             {
                 try
                 {
                     if (index < clic)
                     {
-                        for (int i = index; i <= clic; i++)
+                        for (int i = index; i < clic; i++)
                         {
                             if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0") { permitido = false; break; }
                         }
                     }
                     if (index > clic)
                     {
-                        for (int i = clic; i <= index; i++)
+                        for (int i = clic + 1; i <= index; i++)
                         {
                             if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0") { permitido = false; break; }
                         }
@@ -581,1232 +806,1492 @@ namespace Othello
                     permitido = false;
                 }
             }
+            if (clic == 0 && casilla.Length > 1 && index != -1)
+            {
+                for (int i = clic + 1; i <= index; i++)
+                {
+                    if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0") { permitido = false; break; }
+                }
+            }
+            if (clic + 1 >= casilla.Length && casilla.Length > 1 && index != -1)
+            {
+                for (int i = index; i < clic; i++)
+                {
+                    if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0") { permitido = false; break; }
+                }
+            }
             return permitido;
         }
 
         public void a1_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (a1.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                int iCol = verificar(tipo("colA"), "negro");
-                int iFil = verificar(tipo("fila1"), "negro");
-                int iDiag1 = verificar(tipo("diagPos1"), "negro");
-                int iDiag2 = verificar(tipo("diagNeg8"), "negro");
-
-                comerFicha(tipo("colA"), "negro", 0, iCol);
-                comerFicha(tipo("fila1"), "negro", 0, iFil);
-                comerFicha(tipo("diagPos1"), "negro", 0, iDiag1);
-                comerFicha(tipo("diagNeg8"), "negro", 0, iDiag2);
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colA"), "negro", 0, verificar2(tipo("colA"), "negro", 0));
+                    comerFicha(tipo("fila1"), "negro", 0, verificar2(tipo("fila1"), "negro", 0));
+                    comerFicha(tipo("diagPos1"), "negro", 0, verificar2(tipo("diagPos1"), "negro", 0));
+                    comerFicha(tipo("diagNeg8"), "negro", 0, verificar2(tipo("diagNeg8"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colA"), "blanco", 0, verificar2(tipo("colA"), "blanco", 0));
+                    comerFicha(tipo("fila1"), "blanco", 0, verificar2(tipo("fila1"), "blanco", 0));
+                    comerFicha(tipo("diagPos1"), "blanco", 0, verificar2(tipo("diagPos1"), "blanco", 0));
+                    comerFicha(tipo("diagNeg8"), "blanco", 0, verificar2(tipo("diagNeg8"), "blanco", 0));
+                }
+                Get_Score(a1);
+                Get_Move(a1);
             }
-            else
-            {
-                int iCol = verificar(tipo("colA"), "blanco");
-                int iFil = verificar(tipo("fila1"), "blanco");
-                int iDiag1 = verificar(tipo("diagPos1"), "blanco");
-                int iDiag2 = verificar(tipo("diagNeg8"), "blanco");
-
-                comerFicha(tipo("colA"), "blanco", 0, iCol);
-                comerFicha(tipo("fila1"), "blanco", 0, iFil);
-                comerFicha(tipo("diagPos1"), "blanco", 0, iDiag1);
-                comerFicha(tipo("diagNeg8"), "blanco", 0, iDiag2);
-            }
-            Get_Score();
         }
 
         public void b1_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (b1.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colB"), "negro", 0, verificar(tipo("colB"), "negro"));
-                comerFicha(tipo("fila1"), "negro", 1, verificar(tipo("fila1"), "negro"));
-                comerFicha(tipo("diagPos2"), "negro", 1, verificar(tipo("diagPos2"), "negro"));
-                comerFicha(tipo("diagNeg7"), "negro", 0, verificar(tipo("diagNeg7"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colB"), "negro", 0, verificar2(tipo("colB"), "negro", 0));
+                    comerFicha(tipo("fila1"), "negro", 1, verificar2(tipo("fila1"), "negro", 1));
+                    comerFicha(tipo("diagPos2"), "negro", 1, verificar2(tipo("diagPos2"), "negro", 1));
+                    comerFicha(tipo("diagNeg7"), "negro", 0, verificar2(tipo("diagNeg7"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colB"), "blanco", 0, verificar2(tipo("colB"), "blanco", 0));
+                    comerFicha(tipo("fila1"), "blanco", 1, verificar2(tipo("fila1"), "blanco", 1));
+                    comerFicha(tipo("diagPos2"), "blanco", 1, verificar2(tipo("diagPos2"), "blanco", 1));
+                    comerFicha(tipo("diagNeg7"), "blanco", 0, verificar2(tipo("diagNeg7"), "blanco", 0));
+                }
+                Get_Score(b1);
+                Get_Move(b1);
             }
-            else
-            {
-                comerFicha(tipo("colB"), "blanco", 0, verificar(tipo("colB"), "blanco"));
-                comerFicha(tipo("fila1"), "blanco", 1, verificar(tipo("fila1"), "blanco"));
-                comerFicha(tipo("diagPos2"), "blanco", 1, verificar(tipo("diagPos2"), "blanco"));
-                comerFicha(tipo("diagNeg7"), "blanco", 0, verificar(tipo("diagNeg7"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void c1_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (c1.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colC"), "negro", 0, verificar(tipo("colC"), "negro"));
-                comerFicha(tipo("fila1"), "negro", 2, verificar(tipo("fila1"), "negro"));
-                comerFicha(tipo("diagPos3"), "negro", 2, verificar(tipo("diagPos3"), "negro"));
-                comerFicha(tipo("diagNeg6"), "negro", 0, verificar(tipo("diagNeg6"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colC"), "negro", 0, verificar2(tipo("colC"), "negro", 0));
+                    comerFicha(tipo("fila1"), "negro", 2, verificar2(tipo("fila1"), "negro", 2));
+                    comerFicha(tipo("diagPos3"), "negro", 2, verificar2(tipo("diagPos3"), "negro", 2));
+                    comerFicha(tipo("diagNeg6"), "negro", 0, verificar2(tipo("diagNeg6"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colC"), "blanco", 0, verificar2(tipo("colC"), "blanco", 0));
+                    comerFicha(tipo("fila1"), "blanco", 2, verificar2(tipo("fila1"), "blanco", 2));
+                    comerFicha(tipo("diagPos3"), "blanco", 2, verificar2(tipo("diagPos3"), "blanco", 2));
+                    comerFicha(tipo("diagNeg6"), "blanco", 0, verificar2(tipo("diagNeg6"), "blanco", 0));
+                }
+                Get_Score(c1);
+                Get_Move(c1);
             }
-            else
-            {
-                comerFicha(tipo("colC"), "blanco", 0, verificar(tipo("colC"), "blanco"));
-                comerFicha(tipo("fila1"), "blanco", 2, verificar(tipo("fila1"), "blanco"));
-                comerFicha(tipo("diagPos3"), "blanco", 2, verificar(tipo("diagPos3"), "blanco"));
-                comerFicha(tipo("diagNeg6"), "blanco", 0, verificar(tipo("diagNeg6"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void d1_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (d1.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colD"), "negro", 0, verificar(tipo("colD"), "negro"));
-                comerFicha(tipo("fila1"), "negro", 3, verificar(tipo("fila1"), "negro"));
-                comerFicha(tipo("diagPos4"), "negro", 3, verificar(tipo("diagPos4"), "negro"));
-                comerFicha(tipo("diagNeg5"), "negro", 0, verificar(tipo("diagNeg5"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colD"), "negro", 0, verificar2(tipo("colD"), "negro", 0));
+                    comerFicha(tipo("fila1"), "negro", 3, verificar2(tipo("fila1"), "negro", 3));
+                    comerFicha(tipo("diagPos4"), "negro", 3, verificar2(tipo("diagPos4"), "negro", 3));
+                    comerFicha(tipo("diagNeg5"), "negro", 0, verificar2(tipo("diagNeg5"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colD"), "blanco", 0, verificar2(tipo("colD"), "blanco", 0));
+                    comerFicha(tipo("fila1"), "blanco", 3, verificar2(tipo("fila1"), "blanco", 3));
+                    comerFicha(tipo("diagPos4"), "blanco", 3, verificar2(tipo("diagPos4"), "blanco", 3));
+                    comerFicha(tipo("diagNeg5"), "blanco", 0, verificar2(tipo("diagNeg5"), "blanco", 0));
+                }
+                Get_Score(d1);
+                Get_Move(d1);
             }
-            else
-            {
-                comerFicha(tipo("colD"), "blanco", 0, verificar(tipo("colD"), "blanco"));
-                comerFicha(tipo("fila1"), "blanco", 3, verificar(tipo("fila1"), "blanco"));
-                comerFicha(tipo("diagPos4"), "blanco", 3, verificar(tipo("diagPos4"), "blanco"));
-                comerFicha(tipo("diagNeg5"), "blanco", 0, verificar(tipo("diagNeg5"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void e1_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (e1.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colE"), "negro", 0, verificar(tipo("colE"), "negro"));
-                comerFicha(tipo("fila1"), "negro", 4, verificar(tipo("fila1"), "negro"));
-                comerFicha(tipo("diagPos5"), "negro", 4, verificar(tipo("diagPos5"), "negro"));
-                comerFicha(tipo("diagNeg4"), "negro", 0, verificar(tipo("diagNeg4"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colE"), "negro", 0, verificar2(tipo("colE"), "negro", 0));
+                    comerFicha(tipo("fila1"), "negro", 4, verificar2(tipo("fila1"), "negro", 4));
+                    comerFicha(tipo("diagPos5"), "negro", 4, verificar2(tipo("diagPos5"), "negro", 4));
+                    comerFicha(tipo("diagNeg4"), "negro", 0, verificar2(tipo("diagNeg4"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colE"), "blanco", 0, verificar2(tipo("colE"), "blanco", 0));
+                    comerFicha(tipo("fila1"), "blanco", 4, verificar2(tipo("fila1"), "blanco", 4));
+                    comerFicha(tipo("diagPos5"), "blanco", 4, verificar2(tipo("diagPos5"), "blanco", 4));
+                    comerFicha(tipo("diagNeg4"), "blanco", 0, verificar2(tipo("diagNeg4"), "blanco", 0));
+                }
+                Get_Score(e1);
+                Get_Move(e1);
             }
-            else
-            {
-                comerFicha(tipo("colE"), "blanco", 0, verificar(tipo("colE"), "blanco"));
-                comerFicha(tipo("fila1"), "blanco", 4, verificar(tipo("fila1"), "blanco"));
-                comerFicha(tipo("diagPos5"), "blanco", 4, verificar(tipo("diagPos5"), "blanco"));
-                comerFicha(tipo("diagNeg4"), "blanco", 0, verificar(tipo("diagNeg4"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void f1_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (f1.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colF"), "negro", 0, verificar(tipo("colF"), "negro"));
-                comerFicha(tipo("fila1"), "negro", 5, verificar(tipo("fila1"), "negro"));
-                comerFicha(tipo("diagPos6"), "negro", 5, verificar(tipo("diagPos6"), "negro"));
-                comerFicha(tipo("diagNeg3"), "negro", 0, verificar(tipo("diagNeg3"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colF"), "negro", 0, verificar2(tipo("colF"), "negro", 0));
+                    comerFicha(tipo("fila1"), "negro", 5, verificar2(tipo("fila1"), "negro", 5));
+                    comerFicha(tipo("diagPos6"), "negro", 5, verificar2(tipo("diagPos6"), "negro", 5));
+                    comerFicha(tipo("diagNeg3"), "negro", 0, verificar2(tipo("diagNeg3"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colF"), "blanco", 0, verificar2(tipo("colF"), "blanco", 0));
+                    comerFicha(tipo("fila1"), "blanco", 5, verificar2(tipo("fila1"), "blanco", 5));
+                    comerFicha(tipo("diagPos6"), "blanco", 5, verificar2(tipo("diagPos6"), "blanco", 5));
+                    comerFicha(tipo("diagNeg3"), "blanco", 0, verificar2(tipo("diagNeg3"), "blanco", 0));
+                }
+                Get_Score(f1);
+                Get_Move(f1);
             }
-            else
-            {
-                comerFicha(tipo("colF"), "blanco", 0, verificar(tipo("colF"), "blanco"));
-                comerFicha(tipo("fila1"), "blanco", 5, verificar(tipo("fila1"), "blanco"));
-                comerFicha(tipo("diagPos6"), "blanco", 5, verificar(tipo("diagPos6"), "blanco"));
-                comerFicha(tipo("diagNeg3"), "blanco", 0, verificar(tipo("diagNeg3"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void g1_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (g1.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colG"), "negro", 0, verificar(tipo("colG"), "negro"));
-                comerFicha(tipo("fila1"), "negro", 6, verificar(tipo("fila1"), "negro"));
-                comerFicha(tipo("diagPos7"), "negro", 6, verificar(tipo("diagPos7"), "negro"));
-                comerFicha(tipo("diagNeg2"), "negro", 0, verificar(tipo("diagNeg2"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colG"), "negro", 0, verificar2(tipo("colG"), "negro", 0));
+                    comerFicha(tipo("fila1"), "negro", 6, verificar2(tipo("fila1"), "negro", 6));
+                    comerFicha(tipo("diagPos7"), "negro", 6, verificar2(tipo("diagPos7"), "negro", 6));
+                    comerFicha(tipo("diagNeg2"), "negro", 0, verificar2(tipo("diagNeg2"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colG"), "blanco", 0, verificar2(tipo("colG"), "blanco", 0));
+                    comerFicha(tipo("fila1"), "blanco", 6, verificar2(tipo("fila1"), "blanco", 6));
+                    comerFicha(tipo("diagPos7"), "blanco", 6, verificar2(tipo("diagPos7"), "blanco", 6));
+                    comerFicha(tipo("diagNeg2"), "blanco", 0, verificar2(tipo("diagNeg2"), "blanco", 0));
+                }
+                Get_Score(g1);
+                Get_Move(g1);
             }
-            else
-            {
-                comerFicha(tipo("colG"), "blanco", 0, verificar(tipo("colG"), "blanco"));
-                comerFicha(tipo("fila1"), "blanco", 6, verificar(tipo("fila1"), "blanco"));
-                comerFicha(tipo("diagPos7"), "blanco", 6, verificar(tipo("diagPos7"), "blanco"));
-                comerFicha(tipo("diagNeg2"), "blanco", 0, verificar(tipo("diagNeg2"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void h1_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (h1.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colH"), "negro", 0, verificar(tipo("colH"), "negro"));
-                comerFicha(tipo("fila1"), "negro", 7, verificar(tipo("fila1"), "negro"));
-                comerFicha(tipo("diagPos8"), "negro", 7, verificar(tipo("diagPos8"), "negro"));
-                comerFicha(tipo("diagNeg1"), "negro", 0, verificar(tipo("diagNeg1"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colH"), "negro", 0, verificar2(tipo("colH"), "negro", 0));
+                    comerFicha(tipo("fila1"), "negro", 7, verificar2(tipo("fila1"), "negro", 7));
+                    comerFicha(tipo("diagPos8"), "negro", 7, verificar2(tipo("diagPos8"), "negro", 7));
+                    comerFicha(tipo("diagNeg1"), "negro", 0, verificar2(tipo("diagNeg1"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colH"), "blanco", 0, verificar2(tipo("colH"), "blanco", 0));
+                    comerFicha(tipo("fila1"), "blanco", 7, verificar2(tipo("fila1"), "blanco", 7));
+                    comerFicha(tipo("diagPos8"), "blanco", 7, verificar2(tipo("diagPos8"), "blanco", 7));
+                    comerFicha(tipo("diagNeg1"), "blanco", 0, verificar2(tipo("diagNeg1"), "blanco", 0));
+                }
+                Get_Score(h1);
+                Get_Move(h1);
             }
-            else
-            {
-                comerFicha(tipo("colH"), "blanco", 0, verificar(tipo("colH"), "blanco"));
-                comerFicha(tipo("fila1"), "blanco", 7, verificar(tipo("fila1"), "blanco"));
-                comerFicha(tipo("diagPos8"), "blanco", 7, verificar(tipo("diagPos8"), "blanco"));
-                comerFicha(tipo("diagNeg1"), "blanco", 0, verificar(tipo("diagNeg1"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void a2_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (a2.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colA"), "negro", 1, verificar(tipo("colA"), "negro"));
-                comerFicha(tipo("fila2"), "negro", 0, verificar(tipo("fila2"), "negro"));
-                comerFicha(tipo("diagPos2"), "negro", 0, verificar(tipo("diagPos2"), "negro"));
-                comerFicha(tipo("diagNeg9"), "negro", 0, verificar(tipo("diagNeg9"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colA"), "negro", 1, verificar2(tipo("colA"), "negro", 1));
+                    comerFicha(tipo("fila2"), "negro", 0, verificar2(tipo("fila2"), "negro", 0));
+                    comerFicha(tipo("diagPos2"), "negro", 0, verificar2(tipo("diagPos2"), "negro", 0));
+                    comerFicha(tipo("diagNeg9"), "negro", 0, verificar2(tipo("diagNeg9"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colA"), "blanco", 1, verificar2(tipo("colA"), "blanco", 1));
+                    comerFicha(tipo("fila2"), "blanco", 0, verificar2(tipo("fila2"), "blanco", 0));
+                    comerFicha(tipo("diagPos2"), "blanco", 0, verificar2(tipo("diagPos2"), "blanco", 0));
+                    comerFicha(tipo("diagNeg9"), "blanco", 0, verificar2(tipo("diagNeg9"), "blanco", 0));
+                }
+                Get_Score(a2);
+                Get_Move(a2);
             }
-            else
-            {
-                comerFicha(tipo("colA"), "blanco", 1, verificar(tipo("colA"), "blanco"));
-                comerFicha(tipo("fila2"), "blanco", 0, verificar(tipo("fila2"), "blanco"));
-                comerFicha(tipo("diagPos2"), "blanco", 0, verificar(tipo("diagPos2"), "blanco"));
-                comerFicha(tipo("diagNeg9"), "blanco", 0, verificar(tipo("diagNeg9"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void b2_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (b2.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colB"), "negro", 1, verificar(tipo("colB"), "negro"));
-                comerFicha(tipo("fila2"), "negro", 1, verificar(tipo("fila2"), "negro"));
-                comerFicha(tipo("diagPos3"), "negro", 1, verificar(tipo("diagPos3"), "negro"));
-                comerFicha(tipo("diagNeg8"), "negro", 1, verificar(tipo("diagNeg8"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colB"), "negro", 1, verificar2(tipo("colB"), "negro", 1));
+                    comerFicha(tipo("fila2"), "negro", 1, verificar2(tipo("fila2"), "negro", 1));
+                    comerFicha(tipo("diagPos3"), "negro", 1, verificar2(tipo("diagPos3"), "negro", 1));
+                    comerFicha(tipo("diagNeg8"), "negro", 1, verificar2(tipo("diagNeg8"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colB"), "blanco", 1, verificar2(tipo("colB"), "blanco", 1));
+                    comerFicha(tipo("fila2"), "blanco", 1, verificar2(tipo("fila2"), "blanco", 1));
+                    comerFicha(tipo("diagPos3"), "blanco", 1, verificar2(tipo("diagPos3"), "blanco", 1));
+                    comerFicha(tipo("diagNeg8"), "blanco", 1, verificar2(tipo("diagNeg8"), "blanco", 1));
+                }
+                Get_Score(b2);
+                Get_Move(b2);
             }
-            else
-            {
-                comerFicha(tipo("colB"), "blanco", 1, verificar(tipo("colB"), "blanco"));
-                comerFicha(tipo("fila2"), "blanco", 1, verificar(tipo("fila2"), "blanco"));
-                comerFicha(tipo("diagPos3"), "blanco", 1, verificar(tipo("diagPos3"), "blanco"));
-                comerFicha(tipo("diagNeg8"), "blanco", 1, verificar(tipo("diagNeg8"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void c2_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (c2.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colC"), "negro", 1, verificar(tipo("colC"), "negro"));
-                comerFicha(tipo("fila2"), "negro", 2, verificar(tipo("fila2"), "negro"));
-                comerFicha(tipo("diagPos4"), "negro", 2, verificar(tipo("diagPos4"), "negro"));
-                comerFicha(tipo("diagNeg7"), "negro", 1, verificar(tipo("diagNeg7"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colC"), "negro", 1, verificar2(tipo("colC"), "negro", 1));
+                    comerFicha(tipo("fila2"), "negro", 2, verificar2(tipo("fila2"), "negro", 2));
+                    comerFicha(tipo("diagPos4"), "negro", 2, verificar2(tipo("diagPos4"), "negro", 2));
+                    comerFicha(tipo("diagNeg7"), "negro", 1, verificar2(tipo("diagNeg7"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colC"), "blanco", 1, verificar2(tipo("colC"), "blanco", 1));
+                    comerFicha(tipo("fila2"), "blanco", 2, verificar2(tipo("fila2"), "blanco", 2));
+                    comerFicha(tipo("diagPos4"), "blanco", 2, verificar2(tipo("diagPos4"), "blanco", 2));
+                    comerFicha(tipo("diagNeg7"), "blanco", 1, verificar2(tipo("diagNeg7"), "blanco", 1));
+                }
+                Get_Score(c2);
+                Get_Move(c2);
             }
-            else
-            {
-                comerFicha(tipo("colC"), "blanco", 1, verificar(tipo("colC"), "blanco"));
-                comerFicha(tipo("fila2"), "blanco", 2, verificar(tipo("fila2"), "blanco"));
-                comerFicha(tipo("diagPos4"), "blanco", 2, verificar(tipo("diagPos4"), "blanco"));
-                comerFicha(tipo("diagNeg7"), "blanco", 1, verificar(tipo("diagNeg7"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void d2_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (d2.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colD"), "negro", 1, verificar(tipo("colD"), "negro"));
-                comerFicha(tipo("fila2"), "negro", 3, verificar(tipo("fila2"), "negro"));
-                comerFicha(tipo("diagPos5"), "negro", 3, verificar(tipo("diagPos5"), "negro"));
-                comerFicha(tipo("diagNeg6"), "negro", 1, verificar(tipo("diagNeg6"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colD"), "negro", 1, verificar2(tipo("colD"), "negro", 1));
+                    comerFicha(tipo("fila2"), "negro", 3, verificar2(tipo("fila2"), "negro", 3));
+                    comerFicha(tipo("diagPos5"), "negro", 3, verificar2(tipo("diagPos5"), "negro", 3));
+                    comerFicha(tipo("diagNeg6"), "negro", 1, verificar2(tipo("diagNeg6"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colD"), "blanco", 1, verificar2(tipo("colD"), "blanco", 1));
+                    comerFicha(tipo("fila2"), "blanco", 3, verificar2(tipo("fila2"), "blanco", 3));
+                    comerFicha(tipo("diagPos5"), "blanco", 3, verificar2(tipo("diagPos5"), "blanco", 3));
+                    comerFicha(tipo("diagNeg6"), "blanco", 1, verificar2(tipo("diagNeg6"), "blanco", 1));
+                }
+                Get_Score(d2);
+                Get_Move(d2);
             }
-            else
-            {
-                comerFicha(tipo("colD"), "blanco", 1, verificar(tipo("colD"), "blanco"));
-                comerFicha(tipo("fila2"), "blanco", 3, verificar(tipo("fila2"), "blanco"));
-                comerFicha(tipo("diagPos5"), "blanco", 3, verificar(tipo("diagPos5"), "blanco"));
-                comerFicha(tipo("diagNeg6"), "blanco", 1, verificar(tipo("diagNeg6"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void e2_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (e2.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colE"), "negro", 1, verificar(tipo("colE"), "negro"));
-                comerFicha(tipo("fila2"), "negro", 4, verificar(tipo("fila2"), "negro"));
-                comerFicha(tipo("diagPos6"), "negro", 4, verificar(tipo("diagPos6"), "negro"));
-                comerFicha(tipo("diagNeg5"), "negro", 1, verificar(tipo("diagNeg5"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colE"), "negro", 1, verificar2(tipo("colE"), "negro", 1));
+                    comerFicha(tipo("fila2"), "negro", 4, verificar2(tipo("fila2"), "negro", 4));
+                    comerFicha(tipo("diagPos6"), "negro", 4, verificar2(tipo("diagPos6"), "negro", 4));
+                    comerFicha(tipo("diagNeg5"), "negro", 1, verificar2(tipo("diagNeg5"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colE"), "blanco", 1, verificar2(tipo("colE"), "blanco", 1));
+                    comerFicha(tipo("fila2"), "blanco", 4, verificar2(tipo("fila2"), "blanco", 4));
+                    comerFicha(tipo("diagPos6"), "blanco", 4, verificar2(tipo("diagPos6"), "blanco", 4));
+                    comerFicha(tipo("diagNeg5"), "blanco", 1, verificar2(tipo("diagNeg5"), "blanco", 1));
+                }
+                Get_Score(e2);
+                Get_Move(e2);
             }
-            else
-            {
-                comerFicha(tipo("colE"), "blanco", 1, verificar(tipo("colE"), "blanco"));
-                comerFicha(tipo("fila2"), "blanco", 4, verificar(tipo("fila2"), "blanco"));
-                comerFicha(tipo("diagPos6"), "blanco", 4, verificar(tipo("diagPos6"), "blanco"));
-                comerFicha(tipo("diagNeg5"), "blanco", 1, verificar(tipo("diagNeg5"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void f2_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (f2.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colF"), "negro", 1, verificar(tipo("colF"), "negro"));
-                comerFicha(tipo("fila2"), "negro", 5, verificar(tipo("fila2"), "negro"));
-                comerFicha(tipo("diagPos7"), "negro", 5, verificar(tipo("diagPos7"), "negro"));
-                comerFicha(tipo("diagNeg4"), "negro", 1, verificar(tipo("diagNeg4"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colF"), "negro", 1, verificar2(tipo("colF"), "negro", 1));
+                    comerFicha(tipo("fila2"), "negro", 5, verificar2(tipo("fila2"), "negro", 5));
+                    comerFicha(tipo("diagPos7"), "negro", 5, verificar2(tipo("diagPos7"), "negro", 5));
+                    comerFicha(tipo("diagNeg4"), "negro", 1, verificar2(tipo("diagNeg4"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colF"), "blanco", 1, verificar2(tipo("colF"), "blanco", 1));
+                    comerFicha(tipo("fila2"), "blanco", 5, verificar2(tipo("fila2"), "blanco", 5));
+                    comerFicha(tipo("diagPos7"), "blanco", 5, verificar2(tipo("diagPos7"), "blanco", 5));
+                    comerFicha(tipo("diagNeg4"), "blanco", 1, verificar2(tipo("diagNeg4"), "blanco", 1));
+                }
+                Get_Score(f2);
+                Get_Move(f2);
             }
-            else
-            {
-                comerFicha(tipo("colF"), "blanco", 1, verificar(tipo("colF"), "blanco"));
-                comerFicha(tipo("fila2"), "blanco", 5, verificar(tipo("fila2"), "blanco"));
-                comerFicha(tipo("diagPos7"), "blanco", 5, verificar(tipo("diagPos7"), "blanco"));
-                comerFicha(tipo("diagNeg4"), "blanco", 1, verificar(tipo("diagNeg4"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void g2_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (g2.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colG"), "negro", 1, verificar(tipo("colG"), "negro"));
-                comerFicha(tipo("fila2"), "negro", 6, verificar(tipo("fila2"), "negro"));
-                comerFicha(tipo("diagPos8"), "negro", 6, verificar(tipo("diagPos8"), "negro"));
-                comerFicha(tipo("diagNeg3"), "negro", 1, verificar(tipo("diagNeg3"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colG"), "negro", 1, verificar2(tipo("colG"), "negro", 1));
+                    comerFicha(tipo("fila2"), "negro", 6, verificar2(tipo("fila2"), "negro", 6));
+                    comerFicha(tipo("diagPos8"), "negro", 6, verificar2(tipo("diagPos8"), "negro", 6));
+                    comerFicha(tipo("diagNeg3"), "negro", 1, verificar2(tipo("diagNeg3"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colG"), "blanco", 1, verificar2(tipo("colG"), "blanco", 1));
+                    comerFicha(tipo("fila2"), "blanco", 6, verificar2(tipo("fila2"), "blanco", 6));
+                    comerFicha(tipo("diagPos8"), "blanco", 6, verificar2(tipo("diagPos8"), "blanco", 6));
+                    comerFicha(tipo("diagNeg3"), "blanco", 1, verificar2(tipo("diagNeg3"), "blanco", 1));
+                }
+                Get_Score(g2);
+                Get_Move(g2);
             }
-            else
-            {
-                comerFicha(tipo("colG"), "blanco", 1, verificar(tipo("colG"), "blanco"));
-                comerFicha(tipo("fila2"), "blanco", 6, verificar(tipo("fila2"), "blanco"));
-                comerFicha(tipo("diagPos8"), "blanco", 6, verificar(tipo("diagPos8"), "blanco"));
-                comerFicha(tipo("diagNeg3"), "blanco", 1, verificar(tipo("diagNeg3"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void h2_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (h2.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colH"), "negro", 1, verificar(tipo("colH"), "negro"));
-                comerFicha(tipo("fila2"), "negro", 7, verificar(tipo("fila2"), "negro"));
-                comerFicha(tipo("diagPos9"), "negro", 6, verificar(tipo("diagPos9"), "negro"));
-                comerFicha(tipo("diagNeg2"), "negro", 1, verificar(tipo("diagNeg2"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colH"), "negro", 1, verificar2(tipo("colH"), "negro", 1));
+                    comerFicha(tipo("fila2"), "negro", 7, verificar2(tipo("fila2"), "negro", 7));
+                    comerFicha(tipo("diagPos9"), "negro", 6, verificar2(tipo("diagPos9"), "negro", 6));
+                    comerFicha(tipo("diagNeg2"), "negro", 1, verificar2(tipo("diagNeg2"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colH"), "blanco", 1, verificar2(tipo("colH"), "blanco", 1));
+                    comerFicha(tipo("fila2"), "blanco", 7, verificar2(tipo("fila2"), "blanco", 7));
+                    comerFicha(tipo("diagPos9"), "blanco", 6, verificar2(tipo("diagPos9"), "blanco", 6));
+                    comerFicha(tipo("diagNeg2"), "blanco", 1, verificar2(tipo("diagNeg2"), "blanco", 1));
+                }
+                Get_Score(h2);
+                Get_Move(h2);
             }
-            else
-            {
-                comerFicha(tipo("colH"), "blanco", 1, verificar(tipo("colH"), "blanco"));
-                comerFicha(tipo("fila2"), "blanco", 7, verificar(tipo("fila2"), "blanco"));
-                comerFicha(tipo("diagPos9"), "blanco", 6, verificar(tipo("diagPos9"), "blanco"));
-                comerFicha(tipo("diagNeg2"), "blanco", 1, verificar(tipo("diagNeg2"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void a3_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (a3.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colA"), "negro", 2, verificar(tipo("colA"), "negro"));
-                comerFicha(tipo("fila3"), "negro", 0, verificar(tipo("fila3"), "negro"));
-                comerFicha(tipo("diagPos3"), "negro", 0, verificar(tipo("diagPos3"), "negro"));
-                comerFicha(tipo("diagNeg10"), "negro", 0, verificar(tipo("diagNeg10"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colA"), "negro", 2, verificar2(tipo("colA"), "negro", 2));
+                    comerFicha(tipo("fila3"), "negro", 0, verificar2(tipo("fila3"), "negro", 0));
+                    comerFicha(tipo("diagPos3"), "negro", 0, verificar2(tipo("diagPos3"), "negro", 0));
+                    comerFicha(tipo("diagNeg10"), "negro", 0, verificar2(tipo("diagNeg10"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colA"), "blanco", 2, verificar2(tipo("colA"), "blanco", 2));
+                    comerFicha(tipo("fila3"), "blanco", 0, verificar2(tipo("fila3"), "blanco", 0));
+                    comerFicha(tipo("diagPos3"), "blanco", 0, verificar2(tipo("diagPos3"), "blanco", 0));
+                    comerFicha(tipo("diagNeg10"), "blanco", 0, verificar2(tipo("diagNeg10"), "blanco", 0));
+                }
+                Get_Score(a3);
+                Get_Move(a3);
             }
-            else
-            {
-                comerFicha(tipo("colA"), "blanco", 2, verificar(tipo("colA"), "blanco"));
-                comerFicha(tipo("fila3"), "blanco", 0, verificar(tipo("fila3"), "blanco"));
-                comerFicha(tipo("diagPos3"), "blanco", 0, verificar(tipo("diagPos3"), "blanco"));
-                comerFicha(tipo("diagNeg10"), "blanco", 0, verificar(tipo("diagNeg10"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void b3_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (b3.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colB"), "negro", 2, verificar(tipo("colB"), "negro"));
-                comerFicha(tipo("fila3"), "negro", 1, verificar(tipo("fila3"), "negro"));
-                comerFicha(tipo("diagPos4"), "negro", 1, verificar(tipo("diagPos4"), "negro"));
-                comerFicha(tipo("diagNeg9"), "negro", 1, verificar(tipo("diagNeg9"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colB"), "negro", 2, verificar2(tipo("colB"), "negro", 2));
+                    comerFicha(tipo("fila3"), "negro", 1, verificar2(tipo("fila3"), "negro", 1));
+                    comerFicha(tipo("diagPos4"), "negro", 1, verificar2(tipo("diagPos4"), "negro", 1));
+                    comerFicha(tipo("diagNeg9"), "negro", 1, verificar2(tipo("diagNeg9"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colB"), "blanco", 2, verificar2(tipo("colB"), "blanco", 2));
+                    comerFicha(tipo("fila3"), "blanco", 1, verificar2(tipo("fila3"), "blanco", 1));
+                    comerFicha(tipo("diagPos4"), "blanco", 1, verificar2(tipo("diagPos4"), "blanco", 1));
+                    comerFicha(tipo("diagNeg9"), "blanco", 1, verificar2(tipo("diagNeg9"), "blanco", 1));
+                }
+                Get_Score(b3);
+                Get_Move(b3);
             }
-            else
-            {
-                comerFicha(tipo("colB"), "blanco", 2, verificar(tipo("colB"), "blanco"));
-                comerFicha(tipo("fila3"), "blanco", 1, verificar(tipo("fila3"), "blanco"));
-                comerFicha(tipo("diagPos4"), "blanco", 1, verificar(tipo("diagPos4"), "blanco"));
-                comerFicha(tipo("diagNeg9"), "blanco", 1, verificar(tipo("diagNeg9"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void c3_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (c3.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colC"), "negro", 2, verificar(tipo("colC"), "negro"));
-                comerFicha(tipo("fila3"), "negro", 2, verificar(tipo("fila3"), "negro"));
-                comerFicha(tipo("diagPos5"), "negro", 2, verificar(tipo("diagPos5"), "negro"));
-                comerFicha(tipo("diagNeg8"), "negro", 2, verificar(tipo("diagNeg8"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colC"), "negro", 2, verificar2(tipo("colC"), "negro", 2));
+                    comerFicha(tipo("fila3"), "negro", 2, verificar2(tipo("fila3"), "negro", 2));
+                    comerFicha(tipo("diagPos5"), "negro", 2, verificar2(tipo("diagPos5"), "negro", 2));
+                    comerFicha(tipo("diagNeg8"), "negro", 2, verificar2(tipo("diagNeg8"), "negro", 2));
+                }
+                else
+                {
+                    comerFicha(tipo("colC"), "blanco", 2, verificar2(tipo("colC"), "blanco", 2));
+                    comerFicha(tipo("fila3"), "blanco", 2, verificar2(tipo("fila3"), "blanco", 2));
+                    comerFicha(tipo("diagPos5"), "blanco", 2, verificar2(tipo("diagPos5"), "blanco", 2));
+                    comerFicha(tipo("diagNeg8"), "blanco", 2, verificar2(tipo("diagNeg8"), "blanco", 2));
+                }
+                Get_Score(c3);
+                Get_Move(c3);
             }
-            else
-            {
-                comerFicha(tipo("colC"), "blanco", 2, verificar(tipo("colC"), "blanco"));
-                comerFicha(tipo("fila3"), "blanco", 2, verificar(tipo("fila3"), "blanco"));
-                comerFicha(tipo("diagPos5"), "blanco", 2, verificar(tipo("diagPos5"), "blanco"));
-                comerFicha(tipo("diagNeg8"), "blanco", 2, verificar(tipo("diagNeg8"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void d3_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (d3.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colD"), "negro", 2, verificar(tipo("colD"), "negro"));
-                comerFicha(tipo("fila3"), "negro", 3, verificar(tipo("fila3"), "negro"));
-                comerFicha(tipo("diagPos6"), "negro", 3, verificar(tipo("diagPos6"), "negro"));
-                comerFicha(tipo("diagNeg7"), "negro", 2, verificar(tipo("diagNeg7"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colD"), "negro", 2, verificar2(tipo("colD"), "negro", 2));
+                    comerFicha(tipo("fila3"), "negro", 3, verificar2(tipo("fila3"), "negro", 3));
+                    comerFicha(tipo("diagPos6"), "negro", 3, verificar2(tipo("diagPos6"), "negro", 3));
+                    comerFicha(tipo("diagNeg7"), "negro", 2, verificar2(tipo("diagNeg7"), "negro", 2));
+                }
+                else
+                {
+                    comerFicha(tipo("colD"), "blanco", 2, verificar2(tipo("colD"), "blanco", 2));
+                    comerFicha(tipo("fila3"), "blanco", 3, verificar2(tipo("fila3"), "blanco", 3));
+                    comerFicha(tipo("diagPos6"), "blanco", 3, verificar2(tipo("diagPos6"), "blanco", 3));
+                    comerFicha(tipo("diagNeg7"), "blanco", 2, verificar2(tipo("diagNeg7"), "blanco", 2));
+                }
+                Get_Score(d3);
+                Get_Move(d3);
             }
-            else
-            {
-                comerFicha(tipo("colD"), "blanco", 2, verificar(tipo("colD"), "blanco"));
-                comerFicha(tipo("fila3"), "blanco", 3, verificar(tipo("fila3"), "blanco"));
-                comerFicha(tipo("diagPos6"), "blanco", 3, verificar(tipo("diagPos6"), "blanco"));
-                comerFicha(tipo("diagNeg7"), "blanco", 2, verificar(tipo("diagNeg7"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void e3_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (e3.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colE"), "negro", 2, verificar(tipo("colE"), "negro"));
-                comerFicha(tipo("fila3"), "negro", 4, verificar(tipo("fila3"), "negro"));
-                comerFicha(tipo("diagPos7"), "negro", 4, verificar(tipo("diagPos7"), "negro"));
-                comerFicha(tipo("diagNeg6"), "negro", 2, verificar(tipo("diagNeg6"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colE"), "negro", 2, verificar2(tipo("colE"), "negro", 2));
+                    comerFicha(tipo("fila3"), "negro", 4, verificar2(tipo("fila3"), "negro", 4));
+                    comerFicha(tipo("diagPos7"), "negro", 4, verificar2(tipo("diagPos7"), "negro", 4));
+                    comerFicha(tipo("diagNeg6"), "negro", 2, verificar2(tipo("diagNeg6"), "negro", 2));
+                }
+                else
+                {
+                    comerFicha(tipo("colE"), "blanco", 2, verificar2(tipo("colE"), "blanco", 2));
+                    comerFicha(tipo("fila3"), "blanco", 4, verificar2(tipo("fila3"), "blanco", 4));
+                    comerFicha(tipo("diagPos7"), "blanco", 4, verificar2(tipo("diagPos7"), "blanco", 4));
+                    comerFicha(tipo("diagNeg6"), "blanco", 2, verificar2(tipo("diagNeg6"), "blanco", 2));
+                }
+                Get_Score(e3);
+                Get_Move(e3);
             }
-            else
-            {
-                comerFicha(tipo("colE"), "blanco", 2, verificar(tipo("colE"), "blanco"));
-                comerFicha(tipo("fila3"), "blanco", 4, verificar(tipo("fila3"), "blanco"));
-                comerFicha(tipo("diagPos7"), "blanco", 4, verificar(tipo("diagPos7"), "blanco"));
-                comerFicha(tipo("diagNeg6"), "blanco", 2, verificar(tipo("diagNeg6"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void f3_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (f3.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colF"), "negro", 2, verificar(tipo("colF"), "negro"));
-                comerFicha(tipo("fila3"), "negro", 5, verificar(tipo("fila3"), "negro"));
-                comerFicha(tipo("diagPos8"), "negro", 5, verificar(tipo("diagPos8"), "negro"));
-                comerFicha(tipo("diagNeg5"), "negro", 2, verificar(tipo("diagNeg5"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colF"), "negro", 2, verificar2(tipo("colF"), "negro", 2));
+                    comerFicha(tipo("fila3"), "negro", 5, verificar2(tipo("fila3"), "negro", 5));
+                    comerFicha(tipo("diagPos8"), "negro", 5, verificar2(tipo("diagPos8"), "negro", 5));
+                    comerFicha(tipo("diagNeg5"), "negro", 2, verificar2(tipo("diagNeg5"), "negro", 2));
+                }
+                else
+                {
+                    comerFicha(tipo("colF"), "blanco", 2, verificar2(tipo("colF"), "blanco", 2));
+                    comerFicha(tipo("fila3"), "blanco", 5, verificar2(tipo("fila3"), "blanco", 5));
+                    comerFicha(tipo("diagPos8"), "blanco", 5, verificar2(tipo("diagPos8"), "blanco", 5));
+                    comerFicha(tipo("diagNeg5"), "blanco", 2, verificar2(tipo("diagNeg5"), "blanco", 2));
+                }
+                Get_Score(f3);
+                Get_Move(f3);
             }
-            else
-            {
-                comerFicha(tipo("colF"), "blanco", 2, verificar(tipo("colF"), "blanco"));
-                comerFicha(tipo("fila3"), "blanco", 5, verificar(tipo("fila3"), "blanco"));
-                comerFicha(tipo("diagPos8"), "blanco", 5, verificar(tipo("diagPos8"), "blanco"));
-                comerFicha(tipo("diagNeg5"), "blanco", 2, verificar(tipo("diagNeg5"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void g3_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (g3.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colG"), "negro", 2, verificar(tipo("colG"), "negro"));
-                comerFicha(tipo("fila3"), "negro", 6, verificar(tipo("fila3"), "negro"));
-                comerFicha(tipo("diagPos9"), "negro", 5, verificar(tipo("diagPos9"), "negro"));
-                comerFicha(tipo("diagNeg4"), "negro", 2, verificar(tipo("diagNeg4"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colG"), "negro", 2, verificar2(tipo("colG"), "negro", 2));
+                    comerFicha(tipo("fila3"), "negro", 6, verificar2(tipo("fila3"), "negro", 6));
+                    comerFicha(tipo("diagPos9"), "negro", 5, verificar2(tipo("diagPos9"), "negro", 5));
+                    comerFicha(tipo("diagNeg4"), "negro", 2, verificar2(tipo("diagNeg4"), "negro", 2));
+                }
+                else
+                {
+                    comerFicha(tipo("colG"), "blanco", 2, verificar2(tipo("colG"), "blanco", 2));
+                    comerFicha(tipo("fila3"), "blanco", 6, verificar2(tipo("fila3"), "blanco", 6));
+                    comerFicha(tipo("diagPos9"), "blanco", 5, verificar2(tipo("diagPos9"), "blanco", 5));
+                    comerFicha(tipo("diagNeg4"), "blanco", 2, verificar2(tipo("diagNeg4"), "blanco", 2));
+                }
+                Get_Score(g3);
+                Get_Move(g3);
             }
-            else
-            {
-                comerFicha(tipo("colG"), "blanco", 2, verificar(tipo("colG"), "blanco"));
-                comerFicha(tipo("fila3"), "blanco", 6, verificar(tipo("fila3"), "blanco"));
-                comerFicha(tipo("diagPos9"), "blanco", 5, verificar(tipo("diagPos9"), "blanco"));
-                comerFicha(tipo("diagNeg4"), "blanco", 2, verificar(tipo("diagNeg4"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void h3_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (h3.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colH"), "negro", 2, verificar(tipo("colH"), "negro"));
-                comerFicha(tipo("fila3"), "negro", 7, verificar(tipo("fila3"), "negro"));
-                comerFicha(tipo("diagPos10"), "negro", 5, verificar(tipo("diagPos10"), "negro"));
-                comerFicha(tipo("diagNeg3"), "negro", 2, verificar(tipo("diagNeg3"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colH"), "negro", 2, verificar2(tipo("colH"), "negro", 2));
+                    comerFicha(tipo("fila3"), "negro", 7, verificar2(tipo("fila3"), "negro", 7));
+                    comerFicha(tipo("diagPos10"), "negro", 5, verificar2(tipo("diagPos10"), "negro", 5));
+                    comerFicha(tipo("diagNeg3"), "negro", 2, verificar2(tipo("diagNeg3"), "negro", 2));
+                }
+                else
+                {
+                    comerFicha(tipo("colH"), "blanco", 2, verificar2(tipo("colH"), "blanco", 2));
+                    comerFicha(tipo("fila3"), "blanco", 7, verificar2(tipo("fila3"), "blanco", 7));
+                    comerFicha(tipo("diagPos10"), "blanco", 5, verificar2(tipo("diagPos10"), "blanco", 5));
+                    comerFicha(tipo("diagNeg3"), "blanco", 2, verificar2(tipo("diagNeg3"), "blanco", 2));
+                }
+                Get_Score(h3);
+                Get_Move(h3);
             }
-            else
-            {
-                comerFicha(tipo("colH"), "blanco", 2, verificar(tipo("colH"), "blanco"));
-                comerFicha(tipo("fila3"), "blanco", 7, verificar(tipo("fila3"), "blanco"));
-                comerFicha(tipo("diagPos10"), "blanco", 5, verificar(tipo("diagPos10"), "blanco"));
-                comerFicha(tipo("diagNeg3"), "blanco", 2, verificar(tipo("diagNeg3"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void a4_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (a4.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colA"), "negro", 3, verificar(tipo("colA"), "negro"));
-                comerFicha(tipo("fila4"), "negro", 0, verificar(tipo("fila4"), "negro"));
-                comerFicha(tipo("diagPos4"), "negro", 0, verificar(tipo("diagPos4"), "negro"));
-                comerFicha(tipo("diagNeg11"), "negro", 0, verificar(tipo("diagNeg11"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colA"), "negro", 3, verificar2(tipo("colA"), "negro", 3));
+                    comerFicha(tipo("fila4"), "negro", 0, verificar2(tipo("fila4"), "negro", 0));
+                    comerFicha(tipo("diagPos4"), "negro", 0, verificar2(tipo("diagPos4"), "negro", 0));
+                    comerFicha(tipo("diagNeg11"), "negro", 0, verificar2(tipo("diagNeg11"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colA"), "blanco", 3, verificar2(tipo("colA"), "blanco", 3));
+                    comerFicha(tipo("fila4"), "blanco", 0, verificar2(tipo("fila4"), "blanco", 0));
+                    comerFicha(tipo("diagPos4"), "blanco", 0, verificar2(tipo("diagPos4"), "blanco", 0));
+                    comerFicha(tipo("diagNeg11"), "blanco", 0, verificar2(tipo("diagNeg11"), "blanco", 0));
+                }
+                Get_Score(a4);
+                Get_Move(a4);
             }
-            else
-            {
-                comerFicha(tipo("colA"), "blanco", 3, verificar(tipo("colA"), "blanco"));
-                comerFicha(tipo("fila4"), "blanco", 0, verificar(tipo("fila4"), "blanco"));
-                comerFicha(tipo("diagPos4"), "blanco", 0, verificar(tipo("diagPos4"), "blanco"));
-                comerFicha(tipo("diagNeg11"), "blanco", 0, verificar(tipo("diagNeg11"), "blanco"));
-            }
-            Get_Score();
         }
         protected void b4_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (b4.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colB"), "negro", 3, verificar(tipo("colB"), "negro"));
-                comerFicha(tipo("fila4"), "negro", 1, verificar(tipo("fila4"), "negro"));
-                comerFicha(tipo("diagPos5"), "negro", 1, verificar(tipo("diagPos5"), "negro"));
-                comerFicha(tipo("diagNeg10"), "negro", 1, verificar(tipo("diagNeg10"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colB"), "negro", 3, verificar2(tipo("colB"), "negro", 3));
+                    comerFicha(tipo("fila4"), "negro", 1, verificar2(tipo("fila4"), "negro", 1));
+                    comerFicha(tipo("diagPos5"), "negro", 1, verificar2(tipo("diagPos5"), "negro", 1));
+                    comerFicha(tipo("diagNeg10"), "negro", 1, verificar2(tipo("diagNeg10"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colB"), "blanco", 3, verificar2(tipo("colB"), "blanco", 3));
+                    comerFicha(tipo("fila4"), "blanco", 1, verificar2(tipo("fila4"), "blanco", 1));
+                    comerFicha(tipo("diagPos5"), "blanco", 1, verificar2(tipo("diagPos5"), "blanco", 1));
+                    comerFicha(tipo("diagNeg10"), "blanco", 1, verificar2(tipo("diagNeg10"), "blanco", 1));
+                }
+                Get_Score(b4);
+                Get_Move(b4);
             }
-            else
-            {
-                comerFicha(tipo("colB"), "blanco", 3, verificar(tipo("colB"), "blanco"));
-                comerFicha(tipo("fila4"), "blanco", 1, verificar(tipo("fila4"), "blanco"));
-                comerFicha(tipo("diagPos5"), "blanco", 1, verificar(tipo("diagPos5"), "blanco"));
-                comerFicha(tipo("diagNeg10"), "blanco", 1, verificar(tipo("diagNeg10"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void c4_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (c4.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colC"), "negro", 3, verificar(tipo("colC"), "negro"));
-                comerFicha(tipo("fila4"), "negro", 2, verificar(tipo("fila4"), "negro"));
-                comerFicha(tipo("diagPos6"), "negro", 2, verificar(tipo("diagPos6"), "negro"));
-                comerFicha(tipo("diagNeg9"), "negro", 2, verificar(tipo("diagNeg9"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colC"), "negro", 3, verificar2(tipo("colC"), "negro", 3));
+                    comerFicha(tipo("fila4"), "negro", 2, verificar2(tipo("fila4"), "negro", 2));
+                    comerFicha(tipo("diagPos6"), "negro", 2, verificar2(tipo("diagPos6"), "negro", 2));
+                    comerFicha(tipo("diagNeg9"), "negro", 2, verificar2(tipo("diagNeg9"), "negro", 2));
+                }
+                else
+                {
+                    comerFicha(tipo("colC"), "blanco", 3, verificar2(tipo("colC"), "blanco", 3));
+                    comerFicha(tipo("fila4"), "blanco", 2, verificar2(tipo("fila4"), "blanco", 2));
+                    comerFicha(tipo("diagPos6"), "blanco", 2, verificar2(tipo("diagPos6"), "blanco", 2));
+                    comerFicha(tipo("diagNeg9"), "blanco", 2, verificar2(tipo("diagNeg9"), "blanco", 2));
+                }
+                Get_Score(c4);
+                Get_Move(c4);
             }
-            else
-            {
-                comerFicha(tipo("colC"), "blanco", 3, verificar(tipo("colC"), "blanco"));
-                comerFicha(tipo("fila4"), "blanco", 2, verificar(tipo("fila4"), "blanco"));
-                comerFicha(tipo("diagPos6"), "blanco", 2, verificar(tipo("diagPos6"), "blanco"));
-                comerFicha(tipo("diagNeg9"), "blanco", 2, verificar(tipo("diagNeg9"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void d4_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (d4.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colD"), "negro", 3, verificar(tipo("colD"), "negro"));
-                comerFicha(tipo("fila4"), "negro", 3, verificar(tipo("fila4"), "negro"));
-                comerFicha(tipo("diagPos7"), "negro", 3, verificar(tipo("diagPos7"), "negro"));
-                comerFicha(tipo("diagNeg8"), "negro", 3, verificar(tipo("diagNeg8"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colD"), "negro", 3, verificar2(tipo("colD"), "negro", 3));
+                    comerFicha(tipo("fila4"), "negro", 3, verificar2(tipo("fila4"), "negro", 3));
+                    comerFicha(tipo("diagPos7"), "negro", 3, verificar2(tipo("diagPos7"), "negro", 3));
+                    comerFicha(tipo("diagNeg8"), "negro", 3, verificar2(tipo("diagNeg8"), "negro", 3));
+                }
+                else
+                {
+                    comerFicha(tipo("colD"), "blanco", 3, verificar2(tipo("colD"), "blanco", 3));
+                    comerFicha(tipo("fila4"), "blanco", 3, verificar2(tipo("fila4"), "blanco", 3));
+                    comerFicha(tipo("diagPos7"), "blanco", 3, verificar2(tipo("diagPos7"), "blanco", 3));
+                    comerFicha(tipo("diagNeg8"), "blanco", 3, verificar2(tipo("diagNeg8"), "blanco", 3));
+                }
+                Get_Score(d4);
+                Get_Move(d4);
             }
-            else
-            {
-                comerFicha(tipo("colD"), "blanco", 3, verificar(tipo("colD"), "blanco"));
-                comerFicha(tipo("fila4"), "blanco", 3, verificar(tipo("fila4"), "blanco"));
-                comerFicha(tipo("diagPos7"), "blanco", 3, verificar(tipo("diagPos7"), "blanco"));
-                comerFicha(tipo("diagNeg8"), "blanco", 3, verificar(tipo("diagNeg8"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void e4_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (e4.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colE"), "negro", 3, verificar(tipo("colE"), "negro"));
-                comerFicha(tipo("fila4"), "negro", 4, verificar(tipo("fila4"), "negro"));
-                comerFicha(tipo("diagPos8"), "negro", 4, verificar(tipo("diagPos8"), "negro"));
-                comerFicha(tipo("diagNeg7"), "negro", 3, verificar(tipo("diagNeg7"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colE"), "negro", 3, verificar2(tipo("colE"), "negro", 3));
+                    comerFicha(tipo("fila4"), "negro", 4, verificar2(tipo("fila4"), "negro", 4));
+                    comerFicha(tipo("diagPos8"), "negro", 4, verificar2(tipo("diagPos8"), "negro", 4));
+                    comerFicha(tipo("diagNeg7"), "negro", 3, verificar2(tipo("diagNeg7"), "negro", 3));
+                }
+                else
+                {
+                    comerFicha(tipo("colE"), "blanco", 3, verificar2(tipo("colE"), "blanco", 3));
+                    comerFicha(tipo("fila4"), "blanco", 4, verificar2(tipo("fila4"), "blanco", 4));
+                    comerFicha(tipo("diagPos8"), "blanco", 4, verificar2(tipo("diagPos8"), "blanco", 4));
+                    comerFicha(tipo("diagNeg7"), "blanco", 3, verificar2(tipo("diagNeg7"), "blanco", 3));
+                }
+                Get_Score(e4);
+                Get_Move(e4);
             }
-            else
-            {
-                comerFicha(tipo("colE"), "blanco", 3, verificar(tipo("colE"), "blanco"));
-                comerFicha(tipo("fila4"), "blanco", 4, verificar(tipo("fila4"), "blanco"));
-                comerFicha(tipo("diagPos8"), "blanco", 4, verificar(tipo("diagPos8"), "blanco"));
-                comerFicha(tipo("diagNeg7"), "blanco", 3, verificar(tipo("diagNeg7"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void f4_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (f4.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colF"), "negro", 3, verificar(tipo("colF"), "negro"));
-                comerFicha(tipo("fila4"), "negro", 5, verificar(tipo("fila4"), "negro"));
-                comerFicha(tipo("diagPos9"), "negro", 4, verificar(tipo("diagPos9"), "negro"));
-                comerFicha(tipo("diagNeg6"), "negro", 3, verificar(tipo("diagNeg6"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colF"), "negro", 3, verificar2(tipo("colF"), "negro", 3));
+                    comerFicha(tipo("fila4"), "negro", 5, verificar2(tipo("fila4"), "negro", 5));
+                    comerFicha(tipo("diagPos9"), "negro", 4, verificar2(tipo("diagPos9"), "negro", 4));
+                    comerFicha(tipo("diagNeg6"), "negro", 3, verificar2(tipo("diagNeg6"), "negro", 3));
+                }
+                else
+                {
+                    comerFicha(tipo("colF"), "blanco", 3, verificar2(tipo("colF"), "blanco", 3));
+                    comerFicha(tipo("fila4"), "blanco", 5, verificar2(tipo("fila4"), "blanco", 5));
+                    comerFicha(tipo("diagPos9"), "blanco", 4, verificar2(tipo("diagPos9"), "blanco", 4));
+                    comerFicha(tipo("diagNeg6"), "blanco", 3, verificar2(tipo("diagNeg6"), "blanco", 3));
+                }
+                Get_Score(f4);
+                Get_Move(f4);
             }
-            else
-            {
-                comerFicha(tipo("colF"), "blanco", 3, verificar(tipo("colF"), "blanco"));
-                comerFicha(tipo("fila4"), "blanco", 5, verificar(tipo("fila4"), "blanco"));
-                comerFicha(tipo("diagPos9"), "blanco", 4, verificar(tipo("diagPos9"), "blanco"));
-                comerFicha(tipo("diagNeg6"), "blanco", 3, verificar(tipo("diagNeg6"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void g4_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (g4.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colG"), "negro", 3, verificar(tipo("colG"), "negro"));
-                comerFicha(tipo("fila4"), "negro", 6, verificar(tipo("fila4"), "negro"));
-                comerFicha(tipo("diagPos10"), "negro", 4, verificar(tipo("diagPos10"), "negro"));
-                comerFicha(tipo("diagNeg5"), "negro", 3, verificar(tipo("diagNeg5"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colG"), "negro", 3, verificar2(tipo("colG"), "negro", 3));
+                    comerFicha(tipo("fila4"), "negro", 6, verificar2(tipo("fila4"), "negro", 6));
+                    comerFicha(tipo("diagPos10"), "negro", 4, verificar2(tipo("diagPos10"), "negro", 4));
+                    comerFicha(tipo("diagNeg5"), "negro", 3, verificar2(tipo("diagNeg5"), "negro", 3));
+                }
+                else
+                {
+                    comerFicha(tipo("colG"), "blanco", 3, verificar2(tipo("colG"), "blanco", 3));
+                    comerFicha(tipo("fila4"), "blanco", 6, verificar2(tipo("fila4"), "blanco", 6));
+                    comerFicha(tipo("diagPos10"), "blanco", 4, verificar2(tipo("diagPos10"), "blanco", 4));
+                    comerFicha(tipo("diagNeg5"), "blanco", 3, verificar2(tipo("diagNeg5"), "blanco", 3));
+                }
+                Get_Score(g4);
+                Get_Move(g4);
             }
-            else
-            {
-                comerFicha(tipo("colG"), "blanco", 3, verificar(tipo("colG"), "blanco"));
-                comerFicha(tipo("fila4"), "blanco", 6, verificar(tipo("fila4"), "blanco"));
-                comerFicha(tipo("diagPos10"), "blanco", 4, verificar(tipo("diagPos10"), "blanco"));
-                comerFicha(tipo("diagNeg5"), "blanco", 3, verificar(tipo("diagNeg5"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void h4_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (h4.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colH"), "negro", 3, verificar(tipo("colH"), "negro"));
-                comerFicha(tipo("fila4"), "negro", 7, verificar(tipo("fila4"), "negro"));
-                comerFicha(tipo("diagPos11"), "negro", 4, verificar(tipo("diagPos11"), "negro"));
-                comerFicha(tipo("diagNeg4"), "negro", 3, verificar(tipo("diagNeg4"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colH"), "negro", 3, verificar2(tipo("colH"), "negro", 3));
+                    comerFicha(tipo("fila4"), "negro", 7, verificar2(tipo("fila4"), "negro", 7));
+                    comerFicha(tipo("diagPos11"), "negro", 4, verificar2(tipo("diagPos11"), "negro", 4));
+                    comerFicha(tipo("diagNeg4"), "negro", 3, verificar2(tipo("diagNeg4"), "negro", 3));
+                }
+                else
+                {
+                    comerFicha(tipo("colH"), "blanco", 3, verificar2(tipo("colH"), "blanco", 3));
+                    comerFicha(tipo("fila4"), "blanco", 7, verificar2(tipo("fila4"), "blanco", 7));
+                    comerFicha(tipo("diagPos11"), "blanco", 4, verificar2(tipo("diagPos11"), "blanco", 4));
+                    comerFicha(tipo("diagNeg4"), "blanco", 3, verificar2(tipo("diagNeg4"), "blanco", 3));
+                }
+                Get_Score(h4);
+                Get_Move(h4);
             }
-            else
-            {
-                comerFicha(tipo("colH"), "blanco", 3, verificar(tipo("colH"), "blanco"));
-                comerFicha(tipo("fila4"), "blanco", 7, verificar(tipo("fila4"), "blanco"));
-                comerFicha(tipo("diagPos11"), "blanco", 4, verificar(tipo("diagPos11"), "blanco"));
-                comerFicha(tipo("diagNeg4"), "blanco", 3, verificar(tipo("diagNeg4"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void a5_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (a5.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colA"), "negro", 4, verificar(tipo("colA"), "negro"));
-                comerFicha(tipo("fila5"), "negro", 0, verificar(tipo("fila5"), "negro"));
-                comerFicha(tipo("diagPos5"), "negro", 0, verificar(tipo("diagPos5"), "negro"));
-                comerFicha(tipo("diagNeg12"), "negro", 0, verificar(tipo("diagNeg12"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colA"), "negro", 4, verificar2(tipo("colA"), "negro", 4));
+                    comerFicha(tipo("fila5"), "negro", 0, verificar2(tipo("fila5"), "negro", 0));
+                    comerFicha(tipo("diagPos5"), "negro", 0, verificar2(tipo("diagPos5"), "negro", 0));
+                    comerFicha(tipo("diagNeg12"), "negro", 0, verificar2(tipo("diagNeg12"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colA"), "blanco", 4, verificar2(tipo("colA"), "blanco", 4));
+                    comerFicha(tipo("fila5"), "blanco", 0, verificar2(tipo("fila5"), "blanco", 0));
+                    comerFicha(tipo("diagPos5"), "blanco", 0, verificar2(tipo("diagPos5"), "blanco", 0));
+                    comerFicha(tipo("diagNeg12"), "blanco", 0, verificar2(tipo("diagNeg12"), "blanco", 0));
+                }
+                Get_Score(a5);
+                Get_Move(a5);
             }
-            else
-            {
-                comerFicha(tipo("colA"), "blanco", 4, verificar(tipo("colA"), "blanco"));
-                comerFicha(tipo("fila5"), "blanco", 0, verificar(tipo("fila5"), "blanco"));
-                comerFicha(tipo("diagPos5"), "blanco", 0, verificar(tipo("diagPos5"), "blanco"));
-                comerFicha(tipo("diagNeg12"), "blanco", 0, verificar(tipo("diagNeg12"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void b5_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (b5.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colB"), "negro", 4, verificar(tipo("colB"), "negro"));
-                comerFicha(tipo("fila5"), "negro", 1, verificar(tipo("fila5"), "negro"));
-                comerFicha(tipo("diagPos6"), "negro", 1, verificar(tipo("diagPos6"), "negro"));
-                comerFicha(tipo("diagNeg11"), "negro", 1, verificar(tipo("diagNeg11"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colB"), "negro", 4, verificar2(tipo("colB"), "negro", 4));
+                    comerFicha(tipo("fila5"), "negro", 1, verificar2(tipo("fila5"), "negro", 1));
+                    comerFicha(tipo("diagPos6"), "negro", 1, verificar2(tipo("diagPos6"), "negro", 1));
+                    comerFicha(tipo("diagNeg11"), "negro", 1, verificar2(tipo("diagNeg11"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colB"), "blanco", 4, verificar2(tipo("colB"), "blanco", 4));
+                    comerFicha(tipo("fila5"), "blanco", 1, verificar2(tipo("fila5"), "blanco", 1));
+                    comerFicha(tipo("diagPos6"), "blanco", 1, verificar2(tipo("diagPos6"), "blanco", 1));
+                    comerFicha(tipo("diagNeg11"), "blanco", 1, verificar2(tipo("diagNeg11"), "blanco", 1));
+                }
+                Get_Score(b5);
+                Get_Move(b5);
             }
-            else
-            {
-                comerFicha(tipo("colB"), "blanco", 4, verificar(tipo("colB"), "blanco"));
-                comerFicha(tipo("fila5"), "blanco", 1, verificar(tipo("fila5"), "blanco"));
-                comerFicha(tipo("diagPos6"), "blanco", 1, verificar(tipo("diagPos6"), "blanco"));
-                comerFicha(tipo("diagNeg11"), "blanco", 1, verificar(tipo("diagNeg11"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void c5_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (c5.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colC"), "negro", 4, verificar(tipo("colC"), "negro"));
-                comerFicha(tipo("fila5"), "negro", 2, verificar(tipo("fila5"), "negro"));
-                comerFicha(tipo("diagPos7"), "negro", 2, verificar(tipo("diagPos7"), "negro"));
-                comerFicha(tipo("diagNeg10"), "negro", 2, verificar(tipo("diagNeg10"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colC"), "negro", 4, verificar2(tipo("colC"), "negro", 4));
+                    comerFicha(tipo("fila5"), "negro", 2, verificar2(tipo("fila5"), "negro", 2));
+                    comerFicha(tipo("diagPos7"), "negro", 2, verificar2(tipo("diagPos7"), "negro", 2));
+                    comerFicha(tipo("diagNeg10"), "negro", 2, verificar2(tipo("diagNeg10"), "negro", 2));
+                }
+                else
+                {
+                    comerFicha(tipo("colC"), "blanco", 4, verificar2(tipo("colC"), "blanco", 4));
+                    comerFicha(tipo("fila5"), "blanco", 2, verificar2(tipo("fila5"), "blanco", 2));
+                    comerFicha(tipo("diagPos7"), "blanco", 2, verificar2(tipo("diagPos7"), "blanco", 2));
+                    comerFicha(tipo("diagNeg10"), "blanco", 2, verificar2(tipo("diagNeg10"), "blanco", 2));
+                }
+                Get_Score(c5);
+                Get_Move(c5);
             }
-            else
-            {
-                comerFicha(tipo("colC"), "blanco", 4, verificar(tipo("colC"), "blanco"));
-                comerFicha(tipo("fila5"), "blanco", 2, verificar(tipo("fila5"), "blanco"));
-                comerFicha(tipo("diagPos7"), "blanco", 2, verificar(tipo("diagPos7"), "blanco"));
-                comerFicha(tipo("diagNeg10"), "blanco", 2, verificar(tipo("diagNeg10"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void d5_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (d5.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colD"), "negro", 4, verificar(tipo("colD"), "negro"));
-                comerFicha(tipo("fila5"), "negro", 3, verificar(tipo("fila5"), "negro"));
-                comerFicha(tipo("diagPos8"), "negro", 3, verificar(tipo("diagPos8"), "negro"));
-                comerFicha(tipo("diagNeg9"), "negro", 3, verificar(tipo("diagNeg9"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colD"), "negro", 4, verificar2(tipo("colD"), "negro", 4));
+                    comerFicha(tipo("fila5"), "negro", 3, verificar2(tipo("fila5"), "negro", 3));
+                    comerFicha(tipo("diagPos8"), "negro", 3, verificar2(tipo("diagPos8"), "negro", 3));
+                    comerFicha(tipo("diagNeg9"), "negro", 3, verificar2(tipo("diagNeg9"), "negro", 3));
+                }
+                else
+                {
+                    comerFicha(tipo("colD"), "blanco", 4, verificar2(tipo("colD"), "blanco", 4));
+                    comerFicha(tipo("fila5"), "blanco", 3, verificar2(tipo("fila5"), "blanco", 3));
+                    comerFicha(tipo("diagPos8"), "blanco", 3, verificar2(tipo("diagPos8"), "blanco", 3));
+                    comerFicha(tipo("diagNeg9"), "blanco", 3, verificar2(tipo("diagNeg9"), "blanco", 3));
+                }
+                Get_Score(d5);
+                Get_Move(d5);
             }
-            else
-            {
-                comerFicha(tipo("colD"), "blanco", 4, verificar(tipo("colD"), "blanco"));
-                comerFicha(tipo("fila5"), "blanco", 3, verificar(tipo("fila5"), "blanco"));
-                comerFicha(tipo("diagPos8"), "blanco", 3, verificar(tipo("diagPos8"), "blanco"));
-                comerFicha(tipo("diagNeg9"), "blanco", 3, verificar(tipo("diagNeg9"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void e5_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (e5.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colE"), "negro", 4, verificar(tipo("colE"), "negro"));
-                comerFicha(tipo("fila5"), "negro", 4, verificar(tipo("fila5"), "negro"));
-                comerFicha(tipo("diagPos9"), "negro", 3, verificar(tipo("diagPos9"), "negro"));
-                comerFicha(tipo("diagNeg8"), "negro", 4, verificar(tipo("diagNeg8"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colE"), "negro", 4, verificar2(tipo("colE"), "negro", 4));
+                    comerFicha(tipo("fila5"), "negro", 4, verificar2(tipo("fila5"), "negro", 4));
+                    comerFicha(tipo("diagPos9"), "negro", 3, verificar2(tipo("diagPos9"), "negro", 3));
+                    comerFicha(tipo("diagNeg8"), "negro", 4, verificar2(tipo("diagNeg8"), "negro", 4));
+                }
+                else
+                {
+                    comerFicha(tipo("colE"), "blanco", 4, verificar2(tipo("colE"), "blanco", 4));
+                    comerFicha(tipo("fila5"), "blanco", 4, verificar2(tipo("fila5"), "blanco", 4));
+                    comerFicha(tipo("diagPos9"), "blanco", 3, verificar2(tipo("diagPos9"), "blanco", 3));
+                    comerFicha(tipo("diagNeg8"), "blanco", 4, verificar2(tipo("diagNeg8"), "blanco", 4));
+                }
+                Get_Score(e5);
+                Get_Move(e5);
             }
-            else
-            {
-                comerFicha(tipo("colE"), "blanco", 4, verificar(tipo("colE"), "blanco"));
-                comerFicha(tipo("fila5"), "blanco", 4, verificar(tipo("fila5"), "blanco"));
-                comerFicha(tipo("diagPos9"), "blanco", 3, verificar(tipo("diagPos9"), "blanco"));
-                comerFicha(tipo("diagNeg8"), "blanco", 4, verificar(tipo("diagNeg8"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void f5_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (f5.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colF"), "negro", 4, verificar(tipo("colF"), "negro"));
-                comerFicha(tipo("fila5"), "negro", 5, verificar(tipo("fila5"), "negro"));
-                comerFicha(tipo("diagPos10"), "negro", 3, verificar(tipo("diagPos10"), "negro"));
-                comerFicha(tipo("diagNeg7"), "negro", 4, verificar(tipo("diagNeg7"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colF"), "negro", 4, verificar2(tipo("colF"), "negro", 4));
+                    comerFicha(tipo("fila5"), "negro", 5, verificar2(tipo("fila5"), "negro", 5));
+                    comerFicha(tipo("diagPos10"), "negro", 3, verificar2(tipo("diagPos10"), "negro", 3));
+                    comerFicha(tipo("diagNeg7"), "negro", 4, verificar2(tipo("diagNeg7"), "negro", 4));
+                }
+                else
+                {
+                    comerFicha(tipo("colF"), "blanco", 4, verificar2(tipo("colF"), "blanco", 4));
+                    comerFicha(tipo("fila5"), "blanco", 5, verificar2(tipo("fila5"), "blanco", 5));
+                    comerFicha(tipo("diagPos10"), "blanco", 3, verificar2(tipo("diagPos10"), "blanco", 3));
+                    comerFicha(tipo("diagNeg7"), "blanco", 4, verificar2(tipo("diagNeg7"), "blanco", 4));
+                }
+                Get_Score(f5);
+                Get_Move(f5);
             }
-            else
-            {
-                comerFicha(tipo("colF"), "blanco", 4, verificar(tipo("colF"), "blanco"));
-                comerFicha(tipo("fila5"), "blanco", 5, verificar(tipo("fila5"), "blanco"));
-                comerFicha(tipo("diagPos10"), "blanco", 3, verificar(tipo("diagPos10"), "blanco"));
-                comerFicha(tipo("diagNeg7"), "blanco", 4, verificar(tipo("diagNeg7"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void g5_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (g5.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colG"), "negro", 4, verificar(tipo("colG"), "negro"));
-                comerFicha(tipo("fila5"), "negro", 6, verificar(tipo("fila5"), "negro"));
-                comerFicha(tipo("diagPos11"), "negro", 3, verificar(tipo("diagPos11"), "negro"));
-                comerFicha(tipo("diagNeg6"), "negro", 4, verificar(tipo("diagNeg6"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colG"), "negro", 4, verificar2(tipo("colG"), "negro", 4));
+                    comerFicha(tipo("fila5"), "negro", 6, verificar2(tipo("fila5"), "negro", 6));
+                    comerFicha(tipo("diagPos11"), "negro", 3, verificar2(tipo("diagPos11"), "negro", 3));
+                    comerFicha(tipo("diagNeg6"), "negro", 4, verificar2(tipo("diagNeg6"), "negro", 4));
+                }
+                else
+                {
+                    comerFicha(tipo("colG"), "blanco", 4, verificar2(tipo("colG"), "blanco", 4));
+                    comerFicha(tipo("fila5"), "blanco", 6, verificar2(tipo("fila5"), "blanco", 6));
+                    comerFicha(tipo("diagPos11"), "blanco", 3, verificar2(tipo("diagPos11"), "blanco", 3));
+                    comerFicha(tipo("diagNeg6"), "blanco", 4, verificar2(tipo("diagNeg6"), "blanco", 4));
+                }
+                Get_Score(g5);
+                Get_Move(g5);
             }
-            else
-            {
-                comerFicha(tipo("colG"), "blanco", 4, verificar(tipo("colG"), "blanco"));
-                comerFicha(tipo("fila5"), "blanco", 6, verificar(tipo("fila5"), "blanco"));
-                comerFicha(tipo("diagPos11"), "blanco", 3, verificar(tipo("diagPos11"), "blanco"));
-                comerFicha(tipo("diagNeg6"), "blanco", 4, verificar(tipo("diagNeg6"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void h5_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (h5.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colH"), "negro", 4, verificar(tipo("colH"), "negro"));
-                comerFicha(tipo("fila5"), "negro", 7, verificar(tipo("fila5"), "negro"));
-                comerFicha(tipo("diagPos12"), "negro", 3, verificar(tipo("diagPos12"), "negro"));
-                comerFicha(tipo("diagNeg5"), "negro", 4, verificar(tipo("diagNeg5"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colH"), "negro", 4, verificar2(tipo("colH"), "negro", 4));
+                    comerFicha(tipo("fila5"), "negro", 7, verificar2(tipo("fila5"), "negro", 7));
+                    comerFicha(tipo("diagPos12"), "negro", 3, verificar2(tipo("diagPos12"), "negro", 3));
+                    comerFicha(tipo("diagNeg5"), "negro", 4, verificar2(tipo("diagNeg5"), "negro", 4));
+                }
+                else
+                {
+                    comerFicha(tipo("colH"), "blanco", 4, verificar2(tipo("colH"), "blanco", 4));
+                    comerFicha(tipo("fila5"), "blanco", 7, verificar2(tipo("fila5"), "blanco", 7));
+                    comerFicha(tipo("diagPos12"), "blanco", 3, verificar2(tipo("diagPos12"), "blanco", 3));
+                    comerFicha(tipo("diagNeg5"), "blanco", 4, verificar2(tipo("diagNeg5"), "blanco", 4));
+                }
+                Get_Score(h5);
+                Get_Move(h5);
             }
-            else
-            {
-                comerFicha(tipo("colH"), "blanco", 4, verificar(tipo("colH"), "blanco"));
-                comerFicha(tipo("fila5"), "blanco", 7, verificar(tipo("fila5"), "blanco"));
-                comerFicha(tipo("diagPos12"), "blanco", 3, verificar(tipo("diagPos12"), "blanco"));
-                comerFicha(tipo("diagNeg5"), "blanco", 4, verificar(tipo("diagNeg5"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void a6_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (a6.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colA"), "negro", 5, verificar(tipo("colA"), "negro"));
-                comerFicha(tipo("fila6"), "negro", 0, verificar(tipo("fila6"), "negro"));
-                comerFicha(tipo("diagPos6"), "negro", 0, verificar(tipo("diagPos6"), "negro"));
-                comerFicha(tipo("diagNeg13"), "negro", 0, verificar(tipo("diagNeg13"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colA"), "negro", 5, verificar2(tipo("colA"), "negro", 5));
+                    comerFicha(tipo("fila6"), "negro", 0, verificar2(tipo("fila6"), "negro", 0));
+                    comerFicha(tipo("diagPos6"), "negro", 0, verificar2(tipo("diagPos6"), "negro", 0));
+                    comerFicha(tipo("diagNeg13"), "negro", 0, verificar2(tipo("diagNeg13"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colA"), "blanco", 5, verificar2(tipo("colA"), "blanco", 5));
+                    comerFicha(tipo("fila6"), "blanco", 0, verificar2(tipo("fila6"), "blanco", 0));
+                    comerFicha(tipo("diagPos6"), "blanco", 0, verificar2(tipo("diagPos6"), "blanco", 0));
+                    comerFicha(tipo("diagNeg13"), "blanco", 0, verificar2(tipo("diagNeg13"), "blanco", 0));
+                }
+                Get_Score(a6);
+                Get_Move(a6);
             }
-            else
-            {
-                comerFicha(tipo("colA"), "blanco", 5, verificar(tipo("colA"), "blanco"));
-                comerFicha(tipo("fila6"), "blanco", 0, verificar(tipo("fila6"), "blanco"));
-                comerFicha(tipo("diagPos6"), "blanco", 0, verificar(tipo("diagPos6"), "blanco"));
-                comerFicha(tipo("diagNeg13"), "blanco", 0, verificar(tipo("diagNeg13"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void b6_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (b6.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colB"), "negro", 5, verificar(tipo("colB"), "negro"));
-                comerFicha(tipo("fila6"), "negro", 1, verificar(tipo("fila6"), "negro"));
-                comerFicha(tipo("diagPos7"), "negro", 1, verificar(tipo("diagPos7"), "negro"));
-                comerFicha(tipo("diagNeg12"), "negro", 1, verificar(tipo("diagNeg12"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colB"), "negro", 5, verificar2(tipo("colB"), "negro", 5));
+                    comerFicha(tipo("fila6"), "negro", 1, verificar2(tipo("fila6"), "negro", 1));
+                    comerFicha(tipo("diagPos7"), "negro", 1, verificar2(tipo("diagPos7"), "negro", 1));
+                    comerFicha(tipo("diagNeg12"), "negro", 1, verificar2(tipo("diagNeg12"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colB"), "blanco", 5, verificar2(tipo("colB"), "blanco", 5));
+                    comerFicha(tipo("fila6"), "blanco", 1, verificar2(tipo("fila6"), "blanco", 1));
+                    comerFicha(tipo("diagPos7"), "blanco", 1, verificar2(tipo("diagPos7"), "blanco", 1));
+                    comerFicha(tipo("diagNeg12"), "blanco", 1, verificar2(tipo("diagNeg12"), "blanco", 1));
+                }
+                Get_Score(b6);
+                Get_Move(b6);
             }
-            else
-            {
-                comerFicha(tipo("colB"), "blanco", 5, verificar(tipo("colB"), "blanco"));
-                comerFicha(tipo("fila6"), "blanco", 1, verificar(tipo("fila6"), "blanco"));
-                comerFicha(tipo("diagPos7"), "blanco", 1, verificar(tipo("diagPos7"), "blanco"));
-                comerFicha(tipo("diagNeg12"), "blanco", 1, verificar(tipo("diagNeg12"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void c6_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (c6.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colC"), "negro", 5, verificar(tipo("colC"), "negro"));
-                comerFicha(tipo("fila6"), "negro", 2, verificar(tipo("fila6"), "negro"));
-                comerFicha(tipo("diagPos8"), "negro", 2, verificar(tipo("diagPos8"), "negro"));
-                comerFicha(tipo("diagNeg11"), "negro", 2, verificar(tipo("diagNeg11"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colC"), "negro", 5, verificar2(tipo("colC"), "negro", 5));
+                    comerFicha(tipo("fila6"), "negro", 2, verificar2(tipo("fila6"), "negro", 2));
+                    comerFicha(tipo("diagPos8"), "negro", 2, verificar2(tipo("diagPos8"), "negro", 2));
+                    comerFicha(tipo("diagNeg11"), "negro", 2, verificar2(tipo("diagNeg11"), "negro", 2));
+                }
+                else
+                {
+                    comerFicha(tipo("colC"), "blanco", 5, verificar2(tipo("colC"), "blanco", 5));
+                    comerFicha(tipo("fila6"), "blanco", 2, verificar2(tipo("fila6"), "blanco", 2));
+                    comerFicha(tipo("diagPos8"), "blanco", 2, verificar2(tipo("diagPos8"), "blanco", 2));
+                    comerFicha(tipo("diagNeg11"), "blanco", 2, verificar2(tipo("diagNeg11"), "blanco", 2));
+                }
+                Get_Score(c6);
+                Get_Move(c6);
             }
-            else
-            {
-                comerFicha(tipo("colC"), "blanco", 5, verificar(tipo("colC"), "blanco"));
-                comerFicha(tipo("fila6"), "blanco", 2, verificar(tipo("fila6"), "blanco"));
-                comerFicha(tipo("diagPos8"), "blanco", 2, verificar(tipo("diagPos8"), "blanco"));
-                comerFicha(tipo("diagNeg11"), "blanco", 2, verificar(tipo("diagNeg11"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void d6_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (d6.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colD"), "negro", 5, verificar(tipo("colD"), "negro"));
-                comerFicha(tipo("fila6"), "negro", 3, verificar(tipo("fila6"), "negro"));
-                comerFicha(tipo("diagPos9"), "negro", 2, verificar(tipo("diagPos9"), "negro"));
-                comerFicha(tipo("diagNeg10"), "negro", 3, verificar(tipo("diagNeg10"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colD"), "negro", 5, verificar2(tipo("colD"), "negro", 5));
+                    comerFicha(tipo("fila6"), "negro", 3, verificar2(tipo("fila6"), "negro", 3));
+                    comerFicha(tipo("diagPos9"), "negro", 2, verificar2(tipo("diagPos9"), "negro", 2));
+                    comerFicha(tipo("diagNeg10"), "negro", 3, verificar2(tipo("diagNeg10"), "negro", 3));
+                }
+                else
+                {
+                    comerFicha(tipo("colD"), "blanco", 5, verificar2(tipo("colD"), "blanco", 5));
+                    comerFicha(tipo("fila6"), "blanco", 3, verificar2(tipo("fila6"), "blanco", 3));
+                    comerFicha(tipo("diagPos9"), "blanco", 2, verificar2(tipo("diagPos9"), "blanco", 2));
+                    comerFicha(tipo("diagNeg10"), "blanco", 3, verificar2(tipo("diagNeg10"), "blanco", 3));
+                }
+                Get_Score(d6);
+                Get_Move(d6);
             }
-            else
-            {
-                comerFicha(tipo("colD"), "blanco", 5, verificar(tipo("colD"), "blanco"));
-                comerFicha(tipo("fila6"), "blanco", 3, verificar(tipo("fila6"), "blanco"));
-                comerFicha(tipo("diagPos9"), "blanco", 2, verificar(tipo("diagPos9"), "blanco"));
-                comerFicha(tipo("diagNeg10"), "blanco", 3, verificar(tipo("diagNeg10"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void e6_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (e6.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colE"), "negro", 5, verificar(tipo("colE"), "negro"));
-                comerFicha(tipo("fila6"), "negro", 4, verificar(tipo("fila6"), "negro"));
-                comerFicha(tipo("diagPos10"), "negro", 2, verificar(tipo("diagPos10"), "negro"));
-                comerFicha(tipo("diagNeg9"), "negro", 4, verificar(tipo("diagNeg9"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colE"), "negro", 5, verificar2(tipo("colE"), "negro", 5));
+                    comerFicha(tipo("fila6"), "negro", 4, verificar2(tipo("fila6"), "negro", 4));
+                    comerFicha(tipo("diagPos10"), "negro", 2, verificar2(tipo("diagPos10"), "negro", 2));
+                    comerFicha(tipo("diagNeg9"), "negro", 4, verificar2(tipo("diagNeg9"), "negro", 4));
+                }
+                else
+                {
+                    comerFicha(tipo("colE"), "blanco", 5, verificar2(tipo("colE"), "blanco", 5));
+                    comerFicha(tipo("fila6"), "blanco", 4, verificar2(tipo("fila6"), "blanco", 4));
+                    comerFicha(tipo("diagPos10"), "blanco", 2, verificar2(tipo("diagPos10"), "blanco", 2));
+                    comerFicha(tipo("diagNeg9"), "blanco", 4, verificar2(tipo("diagNeg9"), "blanco", 4));
+                }
+                Get_Score(e6);
+                Get_Move(e6);
             }
-            else
-            {
-                comerFicha(tipo("colE"), "blanco", 5, verificar(tipo("colE"), "blanco"));
-                comerFicha(tipo("fila6"), "blanco", 4, verificar(tipo("fila6"), "blanco"));
-                comerFicha(tipo("diagPos10"), "blanco", 2, verificar(tipo("diagPos10"), "blanco"));
-                comerFicha(tipo("diagNeg9"), "blanco", 4, verificar(tipo("diagNeg9"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void f6_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (f6.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colF"), "negro", 5, verificar(tipo("colF"), "negro"));
-                comerFicha(tipo("fila6"), "negro", 5, verificar(tipo("fila6"), "negro"));
-                comerFicha(tipo("diagPos11"), "negro", 2, verificar(tipo("diagPos11"), "negro"));
-                comerFicha(tipo("diagNeg8"), "negro", 5, verificar(tipo("diagNeg8"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colF"), "negro", 5, verificar2(tipo("colF"), "negro", 5));
+                    comerFicha(tipo("fila6"), "negro", 5, verificar2(tipo("fila6"), "negro", 5));
+                    comerFicha(tipo("diagPos11"), "negro", 2, verificar2(tipo("diagPos11"), "negro", 2));
+                    comerFicha(tipo("diagNeg8"), "negro", 5, verificar2(tipo("diagNeg8"), "negro", 5));
+                }
+                else
+                {
+                    comerFicha(tipo("colF"), "blanco", 5, verificar2(tipo("colF"), "blanco", 5));
+                    comerFicha(tipo("fila6"), "blanco", 5, verificar2(tipo("fila6"), "blanco", 5));
+                    comerFicha(tipo("diagPos11"), "blanco", 2, verificar2(tipo("diagPos11"), "blanco", 2));
+                    comerFicha(tipo("diagNeg8"), "blanco", 5, verificar2(tipo("diagNeg8"), "blanco", 5));
+                }
+                Get_Score(f6);
+                Get_Move(f6);
             }
-            else
-            {
-                comerFicha(tipo("colF"), "blanco", 5, verificar(tipo("colF"), "blanco"));
-                comerFicha(tipo("fila6"), "blanco", 5, verificar(tipo("fila6"), "blanco"));
-                comerFicha(tipo("diagPos11"), "blanco", 2, verificar(tipo("diagPos11"), "blanco"));
-                comerFicha(tipo("diagNeg8"), "blanco", 5, verificar(tipo("diagNeg8"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void g6_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (g6.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colG"), "negro", 5, verificar(tipo("colG"), "negro"));
-                comerFicha(tipo("fila6"), "negro", 6, verificar(tipo("fila6"), "negro"));
-                comerFicha(tipo("diagPos12"), "negro", 2, verificar(tipo("diagPos12"), "negro"));
-                comerFicha(tipo("diagNeg7"), "negro", 5, verificar(tipo("diagNeg7"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colG"), "negro", 5, verificar2(tipo("colG"), "negro", 5));
+                    comerFicha(tipo("fila6"), "negro", 6, verificar2(tipo("fila6"), "negro", 6));
+                    comerFicha(tipo("diagPos12"), "negro", 2, verificar2(tipo("diagPos12"), "negro", 2));
+                    comerFicha(tipo("diagNeg7"), "negro", 5, verificar2(tipo("diagNeg7"), "negro", 5));
+                }
+                else
+                {
+                    comerFicha(tipo("colG"), "blanco", 5, verificar2(tipo("colG"), "blanco", 5));
+                    comerFicha(tipo("fila6"), "blanco", 6, verificar2(tipo("fila6"), "blanco", 6));
+                    comerFicha(tipo("diagPos12"), "blanco", 2, verificar2(tipo("diagPos12"), "blanco", 2));
+                    comerFicha(tipo("diagNeg7"), "blanco", 5, verificar2(tipo("diagNeg7"), "blanco", 5));
+                }
+                Get_Score(g6);
+                Get_Move(g6);
             }
-            else
-            {
-                comerFicha(tipo("colG"), "blanco", 5, verificar(tipo("colG"), "blanco"));
-                comerFicha(tipo("fila6"), "blanco", 6, verificar(tipo("fila6"), "blanco"));
-                comerFicha(tipo("diagPos12"), "blanco", 2, verificar(tipo("diagPos12"), "blanco"));
-                comerFicha(tipo("diagNeg7"), "blanco", 5, verificar(tipo("diagNeg7"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void h6_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (h6.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colH"), "negro", 5, verificar(tipo("colH"), "negro"));
-                comerFicha(tipo("fila6"), "negro", 7, verificar(tipo("fila6"), "negro"));
-                comerFicha(tipo("diagPos13"), "negro", 2, verificar(tipo("diagPos13"), "negro"));
-                comerFicha(tipo("diagNeg6"), "negro", 5, verificar(tipo("diagNeg6"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colH"), "negro", 5, verificar2(tipo("colH"), "negro", 5));
+                    comerFicha(tipo("fila6"), "negro", 7, verificar2(tipo("fila6"), "negro", 7));
+                    comerFicha(tipo("diagPos13"), "negro", 2, verificar2(tipo("diagPos13"), "negro", 2));
+                    comerFicha(tipo("diagNeg6"), "negro", 5, verificar2(tipo("diagNeg6"), "negro", 5));
+                }
+                else
+                {
+                    comerFicha(tipo("colH"), "blanco", 5, verificar2(tipo("colH"), "blanco", 5));
+                    comerFicha(tipo("fila6"), "blanco", 7, verificar2(tipo("fila6"), "blanco", 7));
+                    comerFicha(tipo("diagPos13"), "blanco", 2, verificar2(tipo("diagPos13"), "blanco", 2));
+                    comerFicha(tipo("diagNeg6"), "blanco", 5, verificar2(tipo("diagNeg6"), "blanco", 5));
+                }
+                Get_Score(h6);
+                Get_Move(h6);
             }
-            else
-            {
-                comerFicha(tipo("colH"), "blanco", 5, verificar(tipo("colH"), "blanco"));
-                comerFicha(tipo("fila6"), "blanco", 7, verificar(tipo("fila6"), "blanco"));
-                comerFicha(tipo("diagPos13"), "blanco", 2, verificar(tipo("diagPos13"), "blanco"));
-                comerFicha(tipo("diagNeg6"), "blanco", 5, verificar(tipo("diagNeg6"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void a7_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (a7.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colA"), "negro", 6, verificar(tipo("colA"), "negro"));
-                comerFicha(tipo("fila7"), "negro", 0, verificar(tipo("fila7"), "negro"));
-                comerFicha(tipo("diagPos7"), "negro", 0, verificar(tipo("diagPos7"), "negro"));
-                comerFicha(tipo("diagNeg14"), "negro", 0, verificar(tipo("diagNeg14"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colA"), "negro", 6, verificar2(tipo("colA"), "negro", 6));
+                    comerFicha(tipo("fila7"), "negro", 0, verificar2(tipo("fila7"), "negro", 0));
+                    comerFicha(tipo("diagPos7"), "negro", 0, verificar2(tipo("diagPos7"), "negro", 0));
+                    comerFicha(tipo("diagNeg14"), "negro", 0, verificar2(tipo("diagNeg14"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colA"), "blanco", 6, verificar2(tipo("colA"), "blanco", 6));
+                    comerFicha(tipo("fila7"), "blanco", 0, verificar2(tipo("fila7"), "blanco", 0));
+                    comerFicha(tipo("diagPos7"), "blanco", 0, verificar2(tipo("diagPos7"), "blanco", 0));
+                    comerFicha(tipo("diagNeg14"), "blanco", 0, verificar2(tipo("diagNeg14"), "blanco", 0));
+                }
+                Get_Score(a7);
+                Get_Move(a7);
             }
-            else
-            {
-                comerFicha(tipo("colA"), "blanco", 6, verificar(tipo("colA"), "blanco"));
-                comerFicha(tipo("fila7"), "blanco", 0, verificar(tipo("fila7"), "blanco"));
-                comerFicha(tipo("diagPos7"), "blanco", 0, verificar(tipo("diagPos7"), "blanco"));
-                comerFicha(tipo("diagNeg14"), "blanco", 0, verificar(tipo("diagNeg14"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void b7_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (b7.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colB"), "negro", 6, verificar(tipo("colB"), "negro"));
-                comerFicha(tipo("fila7"), "negro", 1, verificar(tipo("fila7"), "negro"));
-                comerFicha(tipo("diagPos8"), "negro", 1, verificar(tipo("diagPos8"), "negro"));
-                comerFicha(tipo("diagNeg13"), "negro", 1, verificar(tipo("diagNeg13"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colB"), "negro", 6, verificar2(tipo("colB"), "negro", 6));
+                    comerFicha(tipo("fila7"), "negro", 1, verificar2(tipo("fila7"), "negro", 1));
+                    comerFicha(tipo("diagPos8"), "negro", 1, verificar2(tipo("diagPos8"), "negro", 1));
+                    comerFicha(tipo("diagNeg13"), "negro", 1, verificar2(tipo("diagNeg13"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colB"), "blanco", 6, verificar2(tipo("colB"), "blanco", 6));
+                    comerFicha(tipo("fila7"), "blanco", 1, verificar2(tipo("fila7"), "blanco", 1));
+                    comerFicha(tipo("diagPos8"), "blanco", 1, verificar2(tipo("diagPos8"), "blanco", 1));
+                    comerFicha(tipo("diagNeg13"), "blanco", 1, verificar2(tipo("diagNeg13"), "blanco", 1));
+                }
+                Get_Score(b7);
+                Get_Move(b7);
             }
-            else
-            {
-                comerFicha(tipo("colB"), "blanco", 6, verificar(tipo("colB"), "blanco"));
-                comerFicha(tipo("fila7"), "blanco", 1, verificar(tipo("fila7"), "blanco"));
-                comerFicha(tipo("diagPos8"), "blanco", 1, verificar(tipo("diagPos8"), "blanco"));
-                comerFicha(tipo("diagNeg13"), "blanco", 1, verificar(tipo("diagNeg13"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void c7_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (c7.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colC"), "negro", 6, verificar(tipo("colC"), "negro"));
-                comerFicha(tipo("fila7"), "negro", 2, verificar(tipo("fila7"), "negro"));
-                comerFicha(tipo("diagPos9"), "negro", 1, verificar(tipo("diagPos9"), "negro"));
-                comerFicha(tipo("diagNeg12"), "negro", 2, verificar(tipo("diagNeg12"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colC"), "negro", 6, verificar2(tipo("colC"), "negro", 6));
+                    comerFicha(tipo("fila7"), "negro", 2, verificar2(tipo("fila7"), "negro", 2));
+                    comerFicha(tipo("diagPos9"), "negro", 1, verificar2(tipo("diagPos9"), "negro", 1));
+                    comerFicha(tipo("diagNeg12"), "negro", 2, verificar2(tipo("diagNeg12"), "negro", 2));
+                }
+                else
+                {
+                    comerFicha(tipo("colC"), "blanco", 6, verificar2(tipo("colC"), "blanco", 6));
+                    comerFicha(tipo("fila7"), "blanco", 2, verificar2(tipo("fila7"), "blanco", 2));
+                    comerFicha(tipo("diagPos9"), "blanco", 1, verificar2(tipo("diagPos9"), "blanco", 1));
+                    comerFicha(tipo("diagNeg12"), "blanco", 2, verificar2(tipo("diagNeg12"), "blanco", 2));
+                }
+                Get_Score(c7);
+                Get_Move(c7);
             }
-            else
-            {
-                comerFicha(tipo("colC"), "blanco", 6, verificar(tipo("colC"), "blanco"));
-                comerFicha(tipo("fila7"), "blanco", 2, verificar(tipo("fila7"), "blanco"));
-                comerFicha(tipo("diagPos9"), "blanco", 1, verificar(tipo("diagPos9"), "blanco"));
-                comerFicha(tipo("diagNeg12"), "blanco", 2, verificar(tipo("diagNeg12"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void d7_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (d7.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colD"), "negro", 6, verificar(tipo("colD"), "negro"));
-                comerFicha(tipo("fila7"), "negro", 3, verificar(tipo("fila7"), "negro"));
-                comerFicha(tipo("diagPos10"), "negro", 1, verificar(tipo("diagPos10"), "negro"));
-                comerFicha(tipo("diagNeg11"), "negro", 3, verificar(tipo("diagNeg11"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colD"), "negro", 6, verificar2(tipo("colD"), "negro", 6));
+                    comerFicha(tipo("fila7"), "negro", 3, verificar2(tipo("fila7"), "negro", 3));
+                    comerFicha(tipo("diagPos10"), "negro", 1, verificar2(tipo("diagPos10"), "negro", 1));
+                    comerFicha(tipo("diagNeg11"), "negro", 3, verificar2(tipo("diagNeg11"), "negro", 3));
+                }
+                else
+                {
+                    comerFicha(tipo("colD"), "blanco", 6, verificar2(tipo("colD"), "blanco", 6));
+                    comerFicha(tipo("fila7"), "blanco", 3, verificar2(tipo("fila7"), "blanco", 3));
+                    comerFicha(tipo("diagPos10"), "blanco", 1, verificar2(tipo("diagPos10"), "blanco", 1));
+                    comerFicha(tipo("diagNeg11"), "blanco", 3, verificar2(tipo("diagNeg11"), "blanco", 3));
+                }
+                Get_Score(d7);
+                Get_Move(d7);
             }
-            else
-            {
-                comerFicha(tipo("colD"), "blanco", 6, verificar(tipo("colD"), "blanco"));
-                comerFicha(tipo("fila7"), "blanco", 3, verificar(tipo("fila7"), "blanco"));
-                comerFicha(tipo("diagPos10"), "blanco", 1, verificar(tipo("diagPos10"), "blanco"));
-                comerFicha(tipo("diagNeg11"), "blanco", 3, verificar(tipo("diagNeg11"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void e7_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (e7.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colE"), "negro", 6, verificar(tipo("colE"), "negro"));
-                comerFicha(tipo("fila7"), "negro", 4, verificar(tipo("fila7"), "negro"));
-                comerFicha(tipo("diagPos11"), "negro", 1, verificar(tipo("diagPos11"), "negro"));
-                comerFicha(tipo("diagNeg10"), "negro", 4, verificar(tipo("diagNeg10"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colE"), "negro", 6, verificar2(tipo("colE"), "negro", 6));
+                    comerFicha(tipo("fila7"), "negro", 4, verificar2(tipo("fila7"), "negro", 4));
+                    comerFicha(tipo("diagPos11"), "negro", 1, verificar2(tipo("diagPos11"), "negro", 1));
+                    comerFicha(tipo("diagNeg10"), "negro", 4, verificar2(tipo("diagNeg10"), "negro", 4));
+                }
+                else
+                {
+                    comerFicha(tipo("colE"), "blanco", 6, verificar2(tipo("colE"), "blanco", 6));
+                    comerFicha(tipo("fila7"), "blanco", 4, verificar2(tipo("fila7"), "blanco", 4));
+                    comerFicha(tipo("diagPos11"), "blanco", 1, verificar2(tipo("diagPos11"), "blanco", 1));
+                    comerFicha(tipo("diagNeg10"), "blanco", 4, verificar2(tipo("diagNeg10"), "blanco", 4));
+                }
+                Get_Score(e7);
+                Get_Move(e7);
             }
-            else
-            {
-                comerFicha(tipo("colE"), "blanco", 6, verificar(tipo("colE"), "blanco"));
-                comerFicha(tipo("fila7"), "blanco", 4, verificar(tipo("fila7"), "blanco"));
-                comerFicha(tipo("diagPos11"), "blanco", 1, verificar(tipo("diagPos11"), "blanco"));
-                comerFicha(tipo("diagNeg10"), "blanco", 4, verificar(tipo("diagNeg10"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void f7_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (f7.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colF"), "negro", 6, verificar(tipo("colF"), "negro"));
-                comerFicha(tipo("fila7"), "negro", 5, verificar(tipo("fila7"), "negro"));
-                comerFicha(tipo("diagPos12"), "negro", 1, verificar(tipo("diagPos12"), "negro"));
-                comerFicha(tipo("diagNeg9"), "negro", 5, verificar(tipo("diagNeg9"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colF"), "negro", 6, verificar2(tipo("colF"), "negro", 6));
+                    comerFicha(tipo("fila7"), "negro", 5, verificar2(tipo("fila7"), "negro", 5));
+                    comerFicha(tipo("diagPos12"), "negro", 1, verificar2(tipo("diagPos12"), "negro", 1));
+                    comerFicha(tipo("diagNeg9"), "negro", 5, verificar2(tipo("diagNeg9"), "negro", 5));
+                }
+                else
+                {
+                    comerFicha(tipo("colF"), "blanco", 6, verificar2(tipo("colF"), "blanco", 6));
+                    comerFicha(tipo("fila7"), "blanco", 5, verificar2(tipo("fila7"), "blanco", 5));
+                    comerFicha(tipo("diagPos12"), "blanco", 1, verificar2(tipo("diagPos12"), "blanco", 1));
+                    comerFicha(tipo("diagNeg9"), "blanco", 5, verificar2(tipo("diagNeg9"), "blanco", 5));
+                }
+                Get_Score(f7);
+                Get_Move(f7);
             }
-            else
-            {
-                comerFicha(tipo("colF"), "blanco", 6, verificar(tipo("colF"), "blanco"));
-                comerFicha(tipo("fila7"), "blanco", 5, verificar(tipo("fila7"), "blanco"));
-                comerFicha(tipo("diagPos12"), "blanco", 1, verificar(tipo("diagPos12"), "blanco"));
-                comerFicha(tipo("diagNeg9"), "blanco", 5, verificar(tipo("diagNeg9"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void g7_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (g7.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colG"), "negro", 6, verificar(tipo("colG"), "negro"));
-                comerFicha(tipo("fila7"), "negro", 6, verificar(tipo("fila7"), "negro"));
-                comerFicha(tipo("diagPos13"), "negro", 1, verificar(tipo("diagPos13"), "negro"));
-                comerFicha(tipo("diagNeg8"), "negro", 6, verificar(tipo("diagNeg8"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colG"), "negro", 6, verificar2(tipo("colG"), "negro", 6));
+                    comerFicha(tipo("fila7"), "negro", 6, verificar2(tipo("fila7"), "negro", 6));
+                    comerFicha(tipo("diagPos13"), "negro", 1, verificar2(tipo("diagPos13"), "negro", 1));
+                    comerFicha(tipo("diagNeg8"), "negro", 6, verificar2(tipo("diagNeg8"), "negro", 6));
+                }
+                else
+                {
+                    comerFicha(tipo("colG"), "blanco", 6, verificar2(tipo("colG"), "blanco", 6));
+                    comerFicha(tipo("fila7"), "blanco", 6, verificar2(tipo("fila7"), "blanco", 6));
+                    comerFicha(tipo("diagPos13"), "blanco", 1, verificar2(tipo("diagPos13"), "blanco", 1));
+                    comerFicha(tipo("diagNeg8"), "blanco", 6, verificar2(tipo("diagNeg8"), "blanco", 6));
+                }
+                Get_Score(g7);
+                Get_Move(g7);
             }
-            else
-            {
-                comerFicha(tipo("colG"), "blanco", 6, verificar(tipo("colG"), "blanco"));
-                comerFicha(tipo("fila7"), "blanco", 6, verificar(tipo("fila7"), "blanco"));
-                comerFicha(tipo("diagPos13"), "blanco", 1, verificar(tipo("diagPos13"), "blanco"));
-                comerFicha(tipo("diagNeg8"), "blanco", 6, verificar(tipo("diagNeg8"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void h7_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (h7.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colH"), "negro", 6, verificar(tipo("colH"), "negro"));
-                comerFicha(tipo("fila7"), "negro", 7, verificar(tipo("fila7"), "negro"));
-                comerFicha(tipo("diagPos14"), "negro", 1, verificar(tipo("diagPos14"), "negro"));
-                comerFicha(tipo("diagNeg7"), "negro", 6, verificar(tipo("diagNeg7"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colH"), "negro", 6, verificar2(tipo("colH"), "negro", 6));
+                    comerFicha(tipo("fila7"), "negro", 7, verificar2(tipo("fila7"), "negro", 7));
+                    comerFicha(tipo("diagPos14"), "negro", 1, verificar2(tipo("diagPos14"), "negro", 1));
+                    comerFicha(tipo("diagNeg7"), "negro", 6, verificar2(tipo("diagNeg7"), "negro", 6));
+                }
+                else
+                {
+                    comerFicha(tipo("colH"), "blanco", 6, verificar2(tipo("colH"), "blanco", 6));
+                    comerFicha(tipo("fila7"), "blanco", 7, verificar2(tipo("fila7"), "blanco", 7));
+                    comerFicha(tipo("diagPos14"), "blanco", 1, verificar2(tipo("diagPos14"), "blanco", 1));
+                    comerFicha(tipo("diagNeg7"), "blanco", 6, verificar2(tipo("diagNeg7"), "blanco", 6));
+                }
+                Get_Score(h7);
+                Get_Move(h7);
             }
-            else
-            {
-                comerFicha(tipo("colH"), "blanco", 6, verificar(tipo("colH"), "blanco"));
-                comerFicha(tipo("fila7"), "blanco", 7, verificar(tipo("fila7"), "blanco"));
-                comerFicha(tipo("diagPos14"), "blanco", 1, verificar(tipo("diagPos14"), "blanco"));
-                comerFicha(tipo("diagNeg7"), "blanco", 6, verificar(tipo("diagNeg7"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void a8_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (a8.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colA"), "negro", 7, verificar(tipo("colA"), "negro"));
-                comerFicha(tipo("fila8"), "negro", 0, verificar(tipo("fila8"), "negro"));
-                comerFicha(tipo("diagPos8"), "negro", 0, verificar(tipo("diagPos8"), "negro"));
-                comerFicha(tipo("diagNeg15"), "negro", 0, verificar(tipo("diagNeg15"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colA"), "negro", 7, verificar2(tipo("colA"), "negro", 7));
+                    comerFicha(tipo("fila8"), "negro", 0, verificar2(tipo("fila8"), "negro", 0));
+                    comerFicha(tipo("diagPos8"), "negro", 0, verificar2(tipo("diagPos8"), "negro", 0));
+                    comerFicha(tipo("diagNeg15"), "negro", 0, verificar2(tipo("diagNeg15"), "negro", 0));
+                }
+                else
+                {
+                    comerFicha(tipo("colA"), "blanco", 7, verificar2(tipo("colA"), "blanco", 7));
+                    comerFicha(tipo("fila8"), "blanco", 0, verificar2(tipo("fila8"), "blanco", 0));
+                    comerFicha(tipo("diagPos8"), "blanco", 0, verificar2(tipo("diagPos8"), "blanco", 0));
+                    comerFicha(tipo("diagNeg15"), "blanco", 0, verificar2(tipo("diagNeg15"), "blanco", 0));
+                }
+                Get_Score(a8);
+                Get_Move(a8);
             }
-            else
-            {
-                comerFicha(tipo("colA"), "blanco", 7, verificar(tipo("colA"), "blanco"));
-                comerFicha(tipo("fila8"), "blanco", 0, verificar(tipo("fila8"), "blanco"));
-                comerFicha(tipo("diagPos8"), "blanco", 0, verificar(tipo("diagPos8"), "blanco"));
-                comerFicha(tipo("diagNeg15"), "blanco", 0, verificar(tipo("diagNeg15"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void b8_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (b8.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colB"), "negro", 7, verificar(tipo("colB"), "negro"));
-                comerFicha(tipo("fila8"), "negro", 1, verificar(tipo("fila8"), "negro"));
-                comerFicha(tipo("diagPos9"), "negro", 0, verificar(tipo("diagPos9"), "negro"));
-                comerFicha(tipo("diagNeg14"), "negro", 1, verificar(tipo("diagNeg14"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colB"), "negro", 7, verificar2(tipo("colB"), "negro", 7));
+                    comerFicha(tipo("fila8"), "negro", 1, verificar2(tipo("fila8"), "negro", 1));
+                    comerFicha(tipo("diagPos9"), "negro", 0, verificar2(tipo("diagPos9"), "negro", 0));
+                    comerFicha(tipo("diagNeg14"), "negro", 1, verificar2(tipo("diagNeg14"), "negro", 1));
+                }
+                else
+                {
+                    comerFicha(tipo("colB"), "blanco", 7, verificar2(tipo("colB"), "blanco", 7));
+                    comerFicha(tipo("fila8"), "blanco", 1, verificar2(tipo("fila8"), "blanco", 1));
+                    comerFicha(tipo("diagPos9"), "blanco", 0, verificar2(tipo("diagPos9"), "blanco", 0));
+                    comerFicha(tipo("diagNeg14"), "blanco", 1, verificar2(tipo("diagNeg14"), "blanco", 1));
+                }
+                Get_Score(b8);
+                Get_Move(b8);
             }
-            else
-            {
-                comerFicha(tipo("colB"), "blanco", 7, verificar(tipo("colB"), "blanco"));
-                comerFicha(tipo("fila8"), "blanco", 1, verificar(tipo("fila8"), "blanco"));
-                comerFicha(tipo("diagPos9"), "blanco", 0, verificar(tipo("diagPos9"), "blanco"));
-                comerFicha(tipo("diagNeg14"), "blanco", 1, verificar(tipo("diagNeg14"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void c8_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (c8.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colC"), "negro", 7, verificar(tipo("colC"), "negro"));
-                comerFicha(tipo("fila8"), "negro", 2, verificar(tipo("fila8"), "negro"));
-                comerFicha(tipo("diagPos10"), "negro", 0, verificar(tipo("diagPos10"), "negro"));
-                comerFicha(tipo("diagNeg13"), "negro", 2, verificar(tipo("diagNeg13"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colC"), "negro", 7, verificar2(tipo("colC"), "negro", 7));
+                    comerFicha(tipo("fila8"), "negro", 2, verificar2(tipo("fila8"), "negro", 2));
+                    comerFicha(tipo("diagPos10"), "negro", 0, verificar2(tipo("diagPos10"), "negro", 0));
+                    comerFicha(tipo("diagNeg13"), "negro", 2, verificar2(tipo("diagNeg13"), "negro", 2));
+                }
+                else
+                {
+                    comerFicha(tipo("colC"), "blanco", 7, verificar2(tipo("colC"), "blanco", 7));
+                    comerFicha(tipo("fila8"), "blanco", 2, verificar2(tipo("fila8"), "blanco", 2));
+                    comerFicha(tipo("diagPos10"), "blanco", 0, verificar2(tipo("diagPos10"), "blanco", 0));
+                    comerFicha(tipo("diagNeg13"), "blanco", 2, verificar2(tipo("diagNeg13"), "blanco", 2));
+                }
+                Get_Score(c8);
+                Get_Move(c8);
             }
-            else
-            {
-                comerFicha(tipo("colC"), "blanco", 7, verificar(tipo("colC"), "blanco"));
-                comerFicha(tipo("fila8"), "blanco", 2, verificar(tipo("fila8"), "blanco"));
-                comerFicha(tipo("diagPos10"), "blanco", 0, verificar(tipo("diagPos10"), "blanco"));
-                comerFicha(tipo("diagNeg13"), "blanco", 2, verificar(tipo("diagNeg13"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void d8_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (d8.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colD"), "negro", 7, verificar(tipo("colD"), "negro"));
-                comerFicha(tipo("fila8"), "negro", 3, verificar(tipo("fila8"), "negro"));
-                comerFicha(tipo("diagPos11"), "negro", 0, verificar(tipo("diagPos11"), "negro"));
-                comerFicha(tipo("diagNeg12"), "negro", 3, verificar(tipo("diagNeg12"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colD"), "negro", 7, verificar2(tipo("colD"), "negro", 7));
+                    comerFicha(tipo("fila8"), "negro", 3, verificar2(tipo("fila8"), "negro", 3));
+                    comerFicha(tipo("diagPos11"), "negro", 0, verificar2(tipo("diagPos11"), "negro", 0));
+                    comerFicha(tipo("diagNeg12"), "negro", 3, verificar2(tipo("diagNeg12"), "negro", 3));
+                }
+                else
+                {
+                    comerFicha(tipo("colD"), "blanco", 7, verificar2(tipo("colD"), "blanco", 7));
+                    comerFicha(tipo("fila8"), "blanco", 3, verificar2(tipo("fila8"), "blanco", 3));
+                    comerFicha(tipo("diagPos11"), "blanco", 0, verificar2(tipo("diagPos11"), "blanco", 0));
+                    comerFicha(tipo("diagNeg12"), "blanco", 3, verificar2(tipo("diagNeg12"), "blanco", 3));
+                }
+                Get_Score(d8);
+                Get_Move(d8);
             }
-            else
-            {
-                comerFicha(tipo("colD"), "blanco", 7, verificar(tipo("colD"), "blanco"));
-                comerFicha(tipo("fila8"), "blanco", 3, verificar(tipo("fila8"), "blanco"));
-                comerFicha(tipo("diagPos11"), "blanco", 0, verificar(tipo("diagPos11"), "blanco"));
-                comerFicha(tipo("diagNeg12"), "blanco", 3, verificar(tipo("diagNeg12"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void e8_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (e8.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colE"), "negro", 7, verificar(tipo("colE"), "negro"));
-                comerFicha(tipo("fila8"), "negro", 4, verificar(tipo("fila8"), "negro"));
-                comerFicha(tipo("diagPos12"), "negro", 0, verificar(tipo("diagPos12"), "negro"));
-                comerFicha(tipo("diagNeg11"), "negro", 4, verificar(tipo("diagNeg11"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colE"), "negro", 7, verificar2(tipo("colE"), "negro", 7));
+                    comerFicha(tipo("fila8"), "negro", 4, verificar2(tipo("fila8"), "negro", 4));
+                    comerFicha(tipo("diagPos12"), "negro", 0, verificar2(tipo("diagPos12"), "negro", 0));
+                    comerFicha(tipo("diagNeg11"), "negro", 4, verificar2(tipo("diagNeg11"), "negro", 4));
+                }
+                else
+                {
+                    comerFicha(tipo("colE"), "blanco", 7, verificar2(tipo("colE"), "blanco", 7));
+                    comerFicha(tipo("fila8"), "blanco", 4, verificar2(tipo("fila8"), "blanco", 4));
+                    comerFicha(tipo("diagPos12"), "blanco", 0, verificar2(tipo("diagPos12"), "blanco", 0));
+                    comerFicha(tipo("diagNeg11"), "blanco", 4, verificar2(tipo("diagNeg11"), "blanco", 4));
+                }
+                Get_Score(e8);
+                Get_Move(e8);
             }
-            else
-            {
-                comerFicha(tipo("colE"), "blanco", 7, verificar(tipo("colE"), "blanco"));
-                comerFicha(tipo("fila8"), "blanco", 4, verificar(tipo("fila8"), "blanco"));
-                comerFicha(tipo("diagPos12"), "blanco", 0, verificar(tipo("diagPos12"), "blanco"));
-                comerFicha(tipo("diagNeg11"), "blanco", 4, verificar(tipo("diagNeg11"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void f8_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (f8.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colF"), "negro", 7, verificar(tipo("colF"), "negro"));
-                comerFicha(tipo("fila8"), "negro", 5, verificar(tipo("fila8"), "negro"));
-                comerFicha(tipo("diagPos13"), "negro", 0, verificar(tipo("diagPos13"), "negro"));
-                comerFicha(tipo("diagNeg10"), "negro", 5, verificar(tipo("diagNeg10"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colF"), "negro", 7, verificar2(tipo("colF"), "negro", 7));
+                    comerFicha(tipo("fila8"), "negro", 5, verificar2(tipo("fila8"), "negro", 5));
+                    comerFicha(tipo("diagPos13"), "negro", 0, verificar2(tipo("diagPos13"), "negro", 0));
+                    comerFicha(tipo("diagNeg10"), "negro", 5, verificar2(tipo("diagNeg10"), "negro", 5));
+                }
+                else
+                {
+                    comerFicha(tipo("colF"), "blanco", 7, verificar2(tipo("colF"), "blanco", 7));
+                    comerFicha(tipo("fila8"), "blanco", 5, verificar2(tipo("fila8"), "blanco", 5));
+                    comerFicha(tipo("diagPos13"), "blanco", 0, verificar2(tipo("diagPos13"), "blanco", 0));
+                    comerFicha(tipo("diagNeg10"), "blanco", 5, verificar2(tipo("diagNeg10"), "blanco", 5));
+                }
+                Get_Score(f8);
+                Get_Move(f8);
             }
-            else
-            {
-                comerFicha(tipo("colF"), "blanco", 7, verificar(tipo("colF"), "blanco"));
-                comerFicha(tipo("fila8"), "blanco", 5, verificar(tipo("fila8"), "blanco"));
-                comerFicha(tipo("diagPos13"), "blanco", 0, verificar(tipo("diagPos13"), "blanco"));
-                comerFicha(tipo("diagNeg10"), "blanco", 5, verificar(tipo("diagNeg10"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void g8_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (g8.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colG"), "negro", 7, verificar(tipo("colG"), "negro"));
-                comerFicha(tipo("fila8"), "negro", 6, verificar(tipo("fila8"), "negro"));
-                comerFicha(tipo("diagPos14"), "negro", 0, verificar(tipo("diagPos14"), "negro"));
-                comerFicha(tipo("diagNeg9"), "negro", 6, verificar(tipo("diagNeg9"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colG"), "negro", 7, verificar2(tipo("colG"), "negro", 7));
+                    comerFicha(tipo("fila8"), "negro", 6, verificar2(tipo("fila8"), "negro", 6));
+                    comerFicha(tipo("diagPos14"), "negro", 0, verificar2(tipo("diagPos14"), "negro", 0));
+                    comerFicha(tipo("diagNeg9"), "negro", 6, verificar2(tipo("diagNeg9"), "negro", 6));
+                }
+                else
+                {
+                    comerFicha(tipo("colG"), "blanco", 7, verificar2(tipo("colG"), "blanco", 7));
+                    comerFicha(tipo("fila8"), "blanco", 6, verificar2(tipo("fila8"), "blanco", 6));
+                    comerFicha(tipo("diagPos14"), "blanco", 0, verificar2(tipo("diagPos14"), "blanco", 0));
+                    comerFicha(tipo("diagNeg9"), "blanco", 6, verificar2(tipo("diagNeg9"), "blanco", 6));
+                }
+                Get_Score(g8);
+                Get_Move(g8);
             }
-            else
-            {
-                comerFicha(tipo("colG"), "blanco", 7, verificar(tipo("colG"), "blanco"));
-                comerFicha(tipo("fila8"), "blanco", 6, verificar(tipo("fila8"), "blanco"));
-                comerFicha(tipo("diagPos14"), "blanco", 0, verificar(tipo("diagPos14"), "blanco"));
-                comerFicha(tipo("diagNeg9"), "blanco", 6, verificar(tipo("diagNeg9"), "blanco"));
-            }
-            Get_Score();
         }
 
         protected void h8_Click(object sender, EventArgs e)
         {
-            if (turno.Text == "Negro")
+            if (h8.CssClass == "btn btn-success btn-lg border-dark rounded-0")
             {
-                comerFicha(tipo("colH"), "negro", 7, verificar(tipo("colH"), "negro"));
-                comerFicha(tipo("fila8"), "negro", 7, verificar(tipo("fila8"), "negro"));
-                comerFicha(tipo("diagPos15"), "negro", 0, verificar(tipo("diagPos15"), "negro"));
-                comerFicha(tipo("diagNeg8"), "negro", 7, verificar(tipo("diagNeg8"), "negro"));
+                if (turno.Text == "Negro")
+                {
+                    comerFicha(tipo("colH"), "negro", 7, verificar2(tipo("colH"), "negro", 7));
+                    comerFicha(tipo("fila8"), "negro", 7, verificar2(tipo("fila8"), "negro", 7));
+                    comerFicha(tipo("diagPos15"), "negro", 0, verificar2(tipo("diagPos15"), "negro", 0));
+                    comerFicha(tipo("diagNeg8"), "negro", 7, verificar2(tipo("diagNeg8"), "negro", 7));
+                }
+                else
+                {
+                    comerFicha(tipo("colH"), "blanco", 7, verificar2(tipo("colH"), "blanco", 7));
+                    comerFicha(tipo("fila8"), "blanco", 7, verificar2(tipo("fila8"), "blanco", 7));
+                    comerFicha(tipo("diagPos15"), "blanco", 0, verificar2(tipo("diagPos15"), "blanco", 0));
+                    comerFicha(tipo("diagNeg8"), "blanco", 7, verificar2(tipo("diagNeg8"), "blanco", 7));
+                }
+                Get_Score(h8);
+                Get_Move(h8);
             }
-            else
-            {
-                comerFicha(tipo("colH"), "blanco", 7, verificar(tipo("colH"), "blanco"));
-                comerFicha(tipo("fila8"), "blanco", 7, verificar(tipo("fila8"), "blanco"));
-                comerFicha(tipo("diagPos15"), "blanco", 0, verificar(tipo("diagPos15"), "blanco"));
-                comerFicha(tipo("diagNeg8"), "blanco", 7, verificar(tipo("diagNeg8"), "blanco"));
-            }
-            Get_Score();
         }
     }
 }

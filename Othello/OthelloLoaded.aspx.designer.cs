@@ -24,6 +24,15 @@ namespace Othello
         protected global::System.Web.UI.HtmlControls.HtmlForm tablero;
 
         /// <summary>
+        /// Control ceder_turno.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ceder_turno;
+
+        /// <summary>
         /// Control iniciar.
         /// </summary>
         /// <remarks>
@@ -76,6 +85,15 @@ namespace Othello
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel resultados;
+
+        /// <summary>
+        /// Control gameover.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label gameover;
 
         /// <summary>
         /// Control ganador.

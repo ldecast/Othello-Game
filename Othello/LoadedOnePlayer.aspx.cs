@@ -23,6 +23,8 @@ namespace Othello
                     if (parametro.Contains("Blanco")) color_cpu.Text = "Color CPU: Negro";
                     else if (parametro.Contains("Negro")) color_cpu.Text = "Color CPU: Blanco";
                 }
+                guardar.Enabled = false;
+                ceder_turno.Enabled = false;
             }
             Get_Score(null);
         }
@@ -221,6 +223,8 @@ namespace Othello
                 }
 
                 iniciar.Visible = false;
+                guardar.Enabled = true;
+                ceder_turno.Enabled = true;
                 Get_Score(null);
             }
 

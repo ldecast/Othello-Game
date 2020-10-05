@@ -15,204 +15,200 @@ namespace Othello
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //if (!tableroVacio())
-            //{
-            //    if (tableroLleno())
-            //    {
-            //        Get_Score();
-            //        gameOver();
-            //    }
-            //}
+            Get_Score(null);
+            if (!IsPostBack)
+            {
+                guardar.Enabled = false;
+                ceder_turno.Enabled = false;
+            }
         }
 
         public void Leer_xml(object sender, EventArgs e)
         {
-            string ruta = "";
             if (Session["archivo"] != null)
             {
-                ruta = Convert.ToString(Session["archivo"]);
-                //Response.Write("Partida desde: "+ruta);
+                string ruta = Convert.ToString(Session["archivo"]);
+                XmlDocument reader = new XmlDocument();
+                reader.Load(ruta);
+                WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8, };
+
+                XmlNodeList fichas = reader.GetElementsByTagName("ficha");
+                for (int i = 0; i < fichas.Count; i++)
+                {
+                    if (fichas[i].InnerText.Contains("blanco"))
+                    {
+                        if (fichas[i].InnerText.Contains("A1")) { botones[0].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B1")) { botones[1].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C1")) { botones[2].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D1")) { botones[3].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E1")) { botones[4].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F1")) { botones[5].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G1")) { botones[6].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H1")) { botones[7].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A2")) { botones[8].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B2")) { botones[9].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C2")) { botones[10].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D2")) { botones[11].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E2")) { botones[12].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F2")) { botones[13].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G2")) { botones[14].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H2")) { botones[15].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A3")) { botones[16].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B3")) { botones[17].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C3")) { botones[18].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D3")) { botones[19].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E3")) { botones[20].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F3")) { botones[21].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G3")) { botones[22].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H3")) { botones[23].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A4")) { botones[24].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B4")) { botones[25].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C4")) { botones[26].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D4")) { botones[27].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E4")) { botones[28].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F4")) { botones[29].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G4")) { botones[30].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H4")) { botones[31].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A5")) { botones[32].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B5")) { botones[33].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C5")) { botones[34].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D5")) { botones[35].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E5")) { botones[36].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F5")) { botones[37].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G5")) { botones[38].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H5")) { botones[39].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A6")) { botones[40].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B6")) { botones[41].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C6")) { botones[42].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D6")) { botones[43].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E6")) { botones[44].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F6")) { botones[45].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G6")) { botones[46].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H6")) { botones[47].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A7")) { botones[48].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B7")) { botones[49].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C7")) { botones[50].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D7")) { botones[51].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E7")) { botones[52].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F7")) { botones[53].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G7")) { botones[54].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H7")) { botones[55].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A8")) { botones[56].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B8")) { botones[57].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C8")) { botones[58].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D8")) { botones[59].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E8")) { botones[60].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F8")) { botones[61].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G8")) { botones[62].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H8")) { botones[63].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
+                    }
+                    if (fichas[i].InnerText.Contains("negro"))
+                    {
+                        if (fichas[i].InnerText.Contains("A1")) { botones[0].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B1")) { botones[1].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C1")) { botones[2].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D1")) { botones[3].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E1")) { botones[4].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F1")) { botones[5].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G1")) { botones[6].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H1")) { botones[7].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A2")) { botones[8].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B2")) { botones[9].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C2")) { botones[10].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D2")) { botones[11].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E2")) { botones[12].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F2")) { botones[13].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G2")) { botones[14].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H2")) { botones[15].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A3")) { botones[16].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B3")) { botones[17].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C3")) { botones[18].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D3")) { botones[19].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E3")) { botones[20].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F3")) { botones[21].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G3")) { botones[22].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H3")) { botones[23].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A4")) { botones[24].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B4")) { botones[25].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C4")) { botones[26].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D4")) { botones[27].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E4")) { botones[28].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F4")) { botones[29].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G4")) { botones[30].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H4")) { botones[31].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A5")) { botones[32].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B5")) { botones[33].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C5")) { botones[34].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D5")) { botones[35].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E5")) { botones[36].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F5")) { botones[37].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G5")) { botones[38].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H5")) { botones[39].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A6")) { botones[40].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B6")) { botones[41].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C6")) { botones[42].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D6")) { botones[43].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E6")) { botones[44].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F6")) { botones[45].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G6")) { botones[46].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H6")) { botones[47].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A7")) { botones[48].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B7")) { botones[49].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C7")) { botones[50].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D7")) { botones[51].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E7")) { botones[52].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F7")) { botones[53].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G7")) { botones[54].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H7")) { botones[55].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("A8")) { botones[56].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("B8")) { botones[57].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("C8")) { botones[58].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("D8")) { botones[59].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("E8")) { botones[60].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("F8")) { botones[61].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("G8")) { botones[62].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                        if (fichas[i].InnerText.Contains("H8")) { botones[63].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
+                    }
+                }
+
+                XmlNodeList tiro = reader.GetElementsByTagName("siguienteTiro");
+                for (int i = 0; i < tiro.Count; i++)
+                {
+                    if (tiro[i].InnerText.Contains("blanco"))
+                    {
+                        turno.Text = "Blanco";
+                        turno.ForeColor = Color.White;
+                        movimiento_negro.Visible = false;
+                        movimiento_blanco.Visible = true;
+                    }
+                    if (tiro[i].InnerText.Contains("negro"))
+                    {
+                        turno.Text = "Negro";
+                        turno.ForeColor = Color.Black;
+                        movimiento_blanco.Visible = false;
+                        movimiento_negro.Visible = true;
+                    }
+                }
+
+                XmlNodeList movimientos = reader.GetElementsByTagName("movimientos");
+                if (movimientos.Count > 0)
+                {
+                    XmlNodeList white_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("blanco");
+                    foreach (XmlElement Wmoves in white_moves)
+                    {
+                        movimiento_blanco.Text = Wmoves.InnerText;
+                    }
+                    XmlNodeList black_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("negro");
+                    foreach (XmlElement Bmoves in black_moves)
+                    {
+                        movimiento_negro.Text = Bmoves.InnerText;
+                    }
+                }
+                iniciar.Visible = false;
+                guardar.Enabled = true;
+                ceder_turno.Enabled = true;
+                Get_Score(null);
             }
-
-            XmlDocument reader = new XmlDocument();
-            reader.Load(ruta);
-            WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8, };
-
-            XmlNodeList fichas = reader.GetElementsByTagName("ficha");
-            for (int i = 0; i < fichas.Count; i++)
-            {
-                if (fichas[i].InnerText.Contains("blanco"))
-                {
-                    if (fichas[i].InnerText.Contains("A1")){botones[0].CssClass = "btn btn-light btn-lg border-dark rounded-0";}
-                    if (fichas[i].InnerText.Contains("B1")){botones[1].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C1")){botones[2].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D1")){botones[3].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E1")){botones[4].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F1")){botones[5].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G1")){botones[6].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H1")){botones[7].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A2")){botones[8].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B2")){botones[9].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C2")){botones[10].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D2")){botones[11].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E2")){botones[12].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F2")){botones[13].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G2")){botones[14].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H2")){botones[15].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A3")){botones[16].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B3")){botones[17].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C3")){botones[18].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D3")){botones[19].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E3")){botones[20].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F3")){botones[21].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G3")){botones[22].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H3")){botones[23].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A4")){botones[24].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B4")){botones[25].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C4")){botones[26].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D4")){botones[27].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E4")){botones[28].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F4")){botones[29].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G4")){botones[30].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H4")){botones[31].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A5")){botones[32].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B5")){botones[33].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C5")){botones[34].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D5")){botones[35].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E5")){botones[36].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F5")){botones[37].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G5")){botones[38].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H5")){botones[39].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A6")) { botones[40].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B6")) { botones[41].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C6")) { botones[42].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D6")) { botones[43].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E6")) { botones[44].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F6")) { botones[45].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G6")) { botones[46].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H6")) { botones[47].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A7")) { botones[48].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B7")) { botones[49].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C7")) { botones[50].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D7")) { botones[51].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E7")) { botones[52].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F7")) { botones[53].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G7")) { botones[54].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H7")) { botones[55].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A8")) { botones[56].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B8")) { botones[57].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C8")) { botones[58].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D8")) { botones[59].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E8")) { botones[60].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F8")) { botones[61].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G8")) { botones[62].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H8")) { botones[63].CssClass = "btn btn-light btn-lg border-dark rounded-0"; }
-                }
-                if (fichas[i].InnerText.Contains("negro"))
-                {
-                    if (fichas[i].InnerText.Contains("A1")) { botones[0].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B1")) { botones[1].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C1")) { botones[2].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D1")) { botones[3].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E1")) { botones[4].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F1")) { botones[5].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G1")) { botones[6].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H1")) { botones[7].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A2")) { botones[8].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B2")) { botones[9].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C2")) { botones[10].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D2")) { botones[11].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E2")) { botones[12].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F2")) { botones[13].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G2")) { botones[14].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H2")) { botones[15].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A3")) { botones[16].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B3")) { botones[17].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C3")) { botones[18].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D3")) { botones[19].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E3")) { botones[20].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F3")) { botones[21].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G3")) { botones[22].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H3")) { botones[23].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A4")) { botones[24].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B4")) { botones[25].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C4")) { botones[26].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D4")) { botones[27].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E4")) { botones[28].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F4")) { botones[29].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G4")) { botones[30].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H4")) { botones[31].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A5")) { botones[32].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B5")) { botones[33].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C5")) { botones[34].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D5")) { botones[35].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E5")) { botones[36].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F5")) { botones[37].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G5")) { botones[38].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H5")) { botones[39].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A6")) { botones[40].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B6")) { botones[41].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C6")) { botones[42].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D6")) { botones[43].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E6")) { botones[44].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F6")) { botones[45].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G6")) { botones[46].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H6")) { botones[47].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A7")) { botones[48].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B7")) { botones[49].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C7")) { botones[50].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D7")) { botones[51].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E7")) { botones[52].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F7")) { botones[53].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G7")) { botones[54].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H7")) { botones[55].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("A8")) { botones[56].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("B8")) { botones[57].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("C8")) { botones[58].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("D8")) { botones[59].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("E8")) { botones[60].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("F8")) { botones[61].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("G8")) { botones[62].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                    if (fichas[i].InnerText.Contains("H8")) { botones[63].CssClass = "btn btn-dark btn-lg border-dark rounded-0"; }
-                }
-            }
-
-            XmlNodeList tiro = reader.GetElementsByTagName("siguienteTiro");
-            for (int i = 0; i < tiro.Count; i++)
-            {
-                if (tiro[i].InnerText.Contains("blanco"))
-                {
-                    turno.Text = "Blanco";
-                    turno.ForeColor = Color.White;
-                    movimiento_negro.Visible = false;
-                    movimiento_blanco.Visible = true;
-                }
-                if (tiro[i].InnerText.Contains("negro"))
-                {
-                    turno.Text = "Negro";
-                    turno.ForeColor = Color.Black;
-                    movimiento_blanco.Visible = false;
-                    movimiento_negro.Visible = true;
-                }
-            }
-
-            XmlNodeList movimientos = reader.GetElementsByTagName("movimientos");
-            if (movimientos.Count > 0)
-            {
-                XmlNodeList white_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("blanco");
-                foreach (XmlElement Wmoves in white_moves)
-                {
-                    movimiento_blanco.Text = Wmoves.InnerText;
-                }
-                XmlNodeList black_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("negro");
-                foreach (XmlElement Bmoves in black_moves)
-                {
-                    movimiento_negro.Text = Bmoves.InnerText;
-                }
-            }
-
-            iniciar.Visible = false;
-            Get_Score();
         }
 
         protected string Ver_ficha(int boton)
@@ -467,11 +463,27 @@ namespace Othello
             else return null;
         }
 
-        public void Get_Score()
+        public void Ceder_turno(object sender, EventArgs e)
+        {
+            if (turno.Text == "Blanco")
+            {
+                turno.Text = "Negro";
+                turno.ForeColor = Color.Black;
+            }
+            else if (turno.Text == "Negro")
+            {
+                turno.Text = "Blanco";
+                turno.ForeColor = Color.White;
+            }
+        }
+
+        public void Get_Score(WebControl boton)
         {
             WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8 };
             int score_white = 0;
             int score_black = 0;
+            int aux_white = int.Parse(score1.Text);
+            int aux_black = int.Parse(score2.Text);
             for (int i = 0; i < botones.Length; i++)
             {
                 switch (botones[i].CssClass.ToString())
@@ -484,12 +496,12 @@ namespace Othello
                         break;
                 }
             }
+
+            if (score_white == aux_white + 1 && score_white + score_black != 64) { boton.CssClass = "btn btn-success btn-lg border-dark rounded-0"; score_white--; turno.Text = "Blanco"; turno.ForeColor = Color.White; }
+            if (score_black == aux_black + 1 && score_white + score_black != 64) { boton.CssClass = "btn btn-success btn-lg border-dark rounded-0"; score_black--; turno.Text = "Negro"; turno.ForeColor = Color.Black; }
+
             score1.Text = score_white.ToString();
             score2.Text = score_black.ToString();
-
-            if (score_white == 0 && score_black > 0) gameOver();
-            if (score_black == 0 && score_white > 0) gameOver();
-            if (score_white + score_black == 64) gameOver();
         }
 
         public void Get_Move(WebControl boton)
@@ -513,6 +525,11 @@ namespace Othello
                     movimiento_negro.Visible = true;
                 }
             }
+            int score_white = int.Parse(score1.Text);
+            int score_black = int.Parse(score2.Text);
+            if (score_white == 0 && score_black > 0) gameOver();
+            if (score_black == 0 && score_white > 0) gameOver();
+            if (score_white + score_black == 64) gameOver();
         }
 
         protected void generarXml(object sender, EventArgs e)
@@ -524,28 +541,20 @@ namespace Othello
             string[] col = { "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H" };
             string[] fila = { "1", "1", "1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3", "3", "3", "3", "3", "4", "4", "4", "4", "4", "4", "4", "4", "5", "5", "5", "5", "5", "5", "5", "5", "6", "6", "6", "6", "6", "6", "6", "6", "7", "7", "7", "7", "7", "7", "7", "7", "8", "8", "8", "8", "8", "8", "8", "8" };
 
-            //DateTime dateTime = DateTime.UtcNow.Date;
-            //string date = dateTime.ToString("dd-MM-yyyy");
-            //string hms = DateTime.Now.ToString("HH-mm");
-
             string persona = "";
             if (Request.Params["Parametro"] != null)
             {
                 persona = Request.Params["Parametro"] + " ";
             }
 
-            //string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
-
-            //string ruta = mdoc + "Partida nueva " + persona + date + " " + hms + ".xml";
-
             string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
             int id = 1;
-            string ruta = mdoc + "Partida solitario " + persona + "(" + id + ").xml";
+            string ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
 
             while (File.Exists(ruta))
             {
                 id++;
-                ruta = mdoc + "Partida solitario " + persona + "(" + id + ").xml";
+                ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
             }
 
             XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
@@ -608,11 +617,11 @@ namespace Othello
 
             xmlWriter.WriteStartElement("movimientos");
             xmlWriter.WriteStartElement("negro");
-                xmlWriter.WriteString(movimiento_negro.Text);
+            xmlWriter.WriteString(movimiento_negro.Text);
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("blanco");
-                xmlWriter.WriteString(movimiento_blanco.Text);
+            xmlWriter.WriteString(movimiento_blanco.Text);
             xmlWriter.WriteEndElement();
             xmlWriter.WriteEndElement();
 
@@ -625,11 +634,9 @@ namespace Othello
 
         public bool fichaAlApar(WebControl[] casilla, string color, int clic)
         {
-            
-                bool permitido = true;
-                //Response.Write(casilla.Length);
-                if (clic + 1 < casilla.Length && clic !=0)
-                {
+            bool permitido = true;
+            if (clic + 1 < casilla.Length && clic != 0)
+            {
                 if (color == "negro")
                 {
                     if (casilla[clic].CssClass != "btn btn-light btn-lg border-dark rounded-0")
@@ -650,84 +657,34 @@ namespace Othello
                     else
                         permitido = false;
                 }
-                }
-                if (clic - 1 == -1)
-                {
-                    if (color == "negro" && casilla.Length > 1)
-                    {
-                    //if (casilla[clic].CssClass != "btn btn-light btn-lg border-dark rounded-0")
-                    //{
-                        if (casilla[clic + 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0")// || casilla[clic].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
-                            permitido = false;
-                    //}
-                    //else
-                    //    permitido = false;
-                }
-                    if (color == "blanco" && casilla.Length > 1)
-                    {
-                    //if (casilla[clic].CssClass != "btn btn-dark btn-lg border-dark rounded-0")
-                    //{
-                        if (casilla[clic + 1].CssClass == "btn btn-light btn-lg border-dark rounded-0")// || casilla[clic].CssClass == "btn btn-light btn-lg border-dark rounded-0")
-                            permitido = false;
-                    //}
-                    //else
-                    //    permitido = false;
-                }
-                }
-                if (clic + 1 >= casilla.Length)
-                {
-                    if (color == "negro" && casilla.Length > 1)
-                    {
-                    //if (casilla[clic].CssClass != "btn btn-light btn-lg border-dark rounded-0")
-                    //{
-                        if (casilla[clic - 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0")// || casilla[clic].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
-                            permitido = false;
-                    //}
-                    //else
-                    //    permitido = false;
-                }
-                    if (color == "blanco"&& casilla.Length > 1)
-                    {
-                    //if (casilla[clic].CssClass != "btn btn-dark btn-lg border-dark rounded-0")
-                    //{
-                        if (casilla[clic - 1].CssClass == "btn btn-light btn-lg border-dark rounded-0") //|| casilla[clic].CssClass == "btn btn-light btn-lg border-dark rounded-0")
-                            permitido = false;
-                    //}
-                    //else
-                    //    permitido = false;
-                }
-                }
-                //Response.Write(permitido);
-                return permitido;
-        }
-
-        public bool tableroLleno()
-        {
-            WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8, };
-            bool lleno = false;
-            int colocado = 1;
-            for (int i = 0; i < botones.Length; i++)
-            {
-                if (botones[i].CssClass != "btn btn-success btn-lg border-dark rounded-0")
-                    colocado++;
             }
-            if (colocado >= 64)
-                lleno = true;
-
-            return lleno;
-        }
-
-        public bool tableroVacio()
-        {
-            WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8, };
-            int a = 0;
-            for (int i = 0; i < botones.Length; i++)
+            if (clic - 1 == -1)
             {
-                if (botones[i].CssClass != "btn btn-success btn-lg border-dark rounded-0")
-                    a++;
+                if (color == "negro" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                        permitido = false;
+                }
+                if (color == "blanco" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                        permitido = false;
+                }
             }
-            if (a == 0) return true;
-            else return false;
+            if (clic + 1 >= casilla.Length)
+            {
+                if (color == "negro" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
+                        permitido = false;
+                }
+                if (color == "blanco" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == "btn btn-light btn-lg border-dark rounded-0")
+                        permitido = false;
+                }
+            }
+            return permitido;
         }
 
         public void gameOver()
@@ -735,23 +692,37 @@ namespace Othello
             gameBoard.Visible = false;
             if (int.Parse(score1.Text) > int.Parse(score2.Text))
             {
-                ganador.Text = "GAME OVER\nBlanco gana!";
+                ganador.Text = "Blanco gana!";
                 ganador.CssClass = "display-2 text-white";
+                gameover.CssClass = "display-2 text-white";
+                turno.Text = "";
+                movimiento_negro.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                movimiento_blanco.ForeColor = ColorTranslator.FromHtml("#2e86c1");
                 registrar("blanco");
             }
             if (int.Parse(score1.Text) < int.Parse(score2.Text))
             {
-                ganador.Text = "GAME OVER\nNegro gana!";
+                ganador.Text = "Negro gana!";
                 ganador.CssClass = "display-2 text-dark";
+                gameover.CssClass = "display-2 text-dark";
+                turno.Text = "";
+                movimiento_negro.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                movimiento_blanco.ForeColor = ColorTranslator.FromHtml("#2e86c1");
                 registrar("negro");
             }
-            if (int.Parse(score1.Text) == int.Parse(score2.Text) && int.Parse(score1.Text)>0)
+            if (int.Parse(score1.Text) == int.Parse(score2.Text) && int.Parse(score1.Text) > 0)
             {
-                ganador.Text = "GAME OVER\n¡Empate!";
+                ganador.Text = "¡Empate!";
                 ganador.CssClass = "display-2 text-warning font-weight-bold";
+                gameover.CssClass = "display-2 text-warning font-weight-bold";
+                turno.Text = "";
+                movimiento_negro.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                movimiento_blanco.ForeColor = ColorTranslator.FromHtml("#2e86c1");
                 registrar("empate");
             }
             resultados.Visible = true;
+            guardar.Enabled = false;
+            ceder_turno.Enabled = false;
         }
 
         public void registrar(string ganador)
@@ -759,7 +730,7 @@ namespace Othello
             if (Request.Params["Parametro"] != null && ganador != "empate")
             {
                 string parametro = Request.Params["Parametro"];
-                string color_host = parametro.Substring(parametro.IndexOf("-")+1);
+                string color_host = parametro.Substring(parametro.IndexOf("-") + 1);
                 string jugador_host = parametro.Substring(0, parametro.IndexOf("-"));
                 string winner = "";
                 string loser = "";
@@ -846,7 +817,6 @@ namespace Othello
                     ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo guardar el resultado en la base de datos.\")", true);
                 }
             }
-
         }
 
         public void Salir(object sender, EventArgs e)
@@ -860,57 +830,10 @@ namespace Othello
             else Response.Redirect("Login.aspx");
         }
 
-        public int verificar(WebControl[] casilla, string color)
-        {
-            //bool permitido = false;
-            //int indice = -1;
-            //if (color == "negro")
-            //{
-            //    if (clic != casilla.Length-1 && fichaAlApar(casilla, color, clic))
-            //    {
-            //        for (int i = 0; i < clic; i++)
-            //        {
-            //            if (casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
-            //            {
-            //                permitido = true;
-            //                indice = i;
-            //                //break;
-            //            }
-            //        }
-            //        for (int i = clic; i < casilla.Length; i++)
-            //        {
-            //            if (casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
-            //            {
-            //                permitido = true;
-            //                indice = i;
-            //                break;
-            //            }
-            //        }
-            //    }
-            //}
-            //if (color == "blanco")
-            //{
-            //    for (int i = 0; i < casilla.Length; i++)
-            //    {
-            //        if (casilla[i].CssClass == "btn btn-light btn-lg border-dark rounded-0")
-            //        {
-            //            permitido = true;
-            //            indice = i;
-            //            break;
-            //        }
-            //    }
-            //}
-            //if (permitido == true)
-            //    return indice;
-            //else
-            return -1;
-        }
-
         public int verificar2(WebControl[] casilla, string color, int clic)
         {
             bool permitido = false;
             bool permitido2 = false;
-            int indice = -1;
             int aux = 0;
             int aux2 = 0;
             if (color == "negro")
@@ -924,23 +847,18 @@ namespace Othello
                             if (casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
                             {
                                 permitido = true;
-                                indice = i;
                                 aux = i;
-                                //break;
                             }
                         }
-                    }   
-                    if (true)//permitido == false || verVacio(casilla, clic, indice) == true)//permitido == false || verVacio(casilla, clic, indice) == false) 
-                    { 
-                        for (int i = clic+1; i < casilla.Length; i++)
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
                         {
                             if (casilla[i].CssClass == "btn btn-dark btn-lg border-dark rounded-0")
                             {
-                                //permitido = true;
                                 permitido2 = true;
-                                indice = i;
                                 aux2 = i;
-                                //Response.Write(indice+"indice");
                                 break;
                             }
                         }
@@ -951,7 +869,7 @@ namespace Othello
             {
                 if (clic < casilla.Length && casilla.Length != 1)
                 {
-                    if (permitido == false)// && clic != 1)
+                    if (permitido == false)
                     {
                         for (int i = 0; i < clic; i++)
                         {
@@ -959,20 +877,17 @@ namespace Othello
                             {
                                 permitido = true;
                                 aux = i;
-                                //break;
                             }
                         }
                     }
-                    if (true)//permitido == false || verVacio(casilla, clic, indice) == false)
+                    if (true)
                     {
-                        for (int i = clic+1; i < casilla.Length; i++)
+                        for (int i = clic + 1; i < casilla.Length; i++)
                         {
                             if (casilla[i].CssClass == "btn btn-light btn-lg border-dark rounded-0")
                             {
-                                //permitido = true;
                                 permitido2 = true;
                                 aux2 = i;
-                                //Response.Write(indice+"indice");
                                 break;
                             }
                         }
@@ -981,10 +896,8 @@ namespace Othello
             }
             if (permitido != permitido2)
             {
-//                Response.Write(aux2 + "indice de verif2");
                 if (permitido2) return aux2;
                 else return aux;
-                //return indice;
             }
             if (permitido && permitido2)
             {
@@ -998,18 +911,11 @@ namespace Othello
 
         public void comerFicha(WebControl[] casilla, string color, int clic, int index)
         {
-//            Response.Write(index);
-            if (index == -1)
-            {
-                //turno.BackColor = System.Drawing.Color.Red;
-            }
-            //Response.Write(fichaAlApar(casilla, color, index));
-            //Response.Write(clic);
             if (fichaAlApar(casilla, color, clic))
             {
                 if (index != -1)
                 {
-                    if (verVacio(casilla, clic, index) == true ) //|| verVacio(casilla, clic, index) == true)
+                    if (verVacio(casilla, clic, index) == true)
                     {
                         try
                         {
@@ -1044,10 +950,8 @@ namespace Othello
                                 }
                                 if (index > clic)
                                 {
-                                    //Response.Write(clic + "hasta" + index+"en"+casilla);
                                     for (int i = clic; i <= index; i++)
                                     {
-//                                        Response.Write(i + "hasta" +casilla[i]);
                                         casilla[i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
                                     }
                                 }
@@ -1064,80 +968,10 @@ namespace Othello
             }
         }
 
-        public void comerFicha2(WebControl[] columna, string colorCol, int clicCol, int indexCol, WebControl[] fila, string colorFil, int clicFil, int indexFil, WebControl[] diagPos, string colorDiagPos, int clicDiagPos, int indexDiagPos, WebControl[] diagNeg, string colorDiagNeg, int clicDiagNeg, int indexDiagNeg)
-        {
-            WebControl[][] recta = { columna, fila, diagPos, diagNeg };
-            String[] colores = { colorCol, colorFil, colorDiagPos, colorDiagNeg };
-            int[] clics = { clicCol, clicFil, clicDiagPos, clicDiagNeg };
-            int[] indeces = { indexCol, indexFil, indexDiagPos, indexDiagNeg };
-            for (int a = 0; a < recta.Length; a++)
-            {
-                for (int j = 0; j < recta[a].Length; j++)
-                {
-                    if (fichaAlApar(recta[a], colores[a], clics[a]))
-                    {
-                        if (indeces[a] != -1)
-                        {
-                            if (verVacio(recta[a], clics[a] + 1, indeces[a]) == true || verVacio(recta[a], clics[a] - 1, indeces[a]) == true)
-                            {
-                                try
-                                {
-
-                                    if (colores[a] == "negro" && recta[a][clics[a]].CssClass != "btn btn-dark btn-lg border-dark rounded-0")
-                                    {
-                                        if (indeces[a] < clics[a])
-                                        {
-                                            for (int i = indeces[a]; i <= clics[a]; i++)
-                                            {
-                                                recta[a][i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
-                                            }
-                                        }
-                                        if (indeces[a] > clics[a])
-                                        {
-                                            for (int i = clics[a]; i <= indeces[a]; i++)
-                                            {
-                                                recta[a][i].CssClass = "btn btn-dark btn-lg border-dark rounded-0";
-                                            }
-                                        }
-                                        turno.Text = "Blanco";
-                                        turno.ForeColor = Color.White;
-                                    }
-                                    if (colores[a] == "blanco" && recta[a][clics[a]].CssClass != "btn btn-light btn-lg border-dark rounded-0")
-                                    {
-
-                                        if (indeces[a] < clics[a])
-                                        {
-                                            for (int i = indeces[a]; i <= clics[a]; i++)
-                                            {
-                                                recta[a][i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
-                                            }
-                                        }
-                                        if (indeces[a] > clics[a])
-                                        {
-                                            for (int i = clics[a]; i <= indeces[a]; i++)
-                                            {
-                                                recta[a][i].CssClass = "btn btn-light btn-lg border-dark rounded-0";
-                                            }
-                                        }
-                                        turno.Text = "Negro";
-                                        turno.ForeColor = Color.Black;
-                                    }
-                                }
-                                catch (IndexOutOfRangeException)
-                                {
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         public bool verVacio(WebControl[] casilla, int clic, int index)
         {
             bool permitido = true;
-            if (index != -1 && clic != 0 && clic <casilla.Length)
+            if (index != -1 && clic != 0 && clic < casilla.Length)
             {
                 try
                 {
@@ -1150,8 +984,7 @@ namespace Othello
                     }
                     if (index > clic)
                     {
- //                       Response.Write(index + "index");
-                        for (int i = clic+1; i <= index; i++)
+                        for (int i = clic + 1; i <= index; i++)
                         {
                             if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0") { permitido = false; break; }
                         }
@@ -1162,22 +995,20 @@ namespace Othello
                     permitido = false;
                 }
             }
-            if (clic == 0 && casilla.Length>1 && index != -1)
+            if (clic == 0 && casilla.Length > 1 && index != -1)
             {
-//                Response.Write("hola"+index);
-                for (int i = clic+1; i <= index; i++)
+                for (int i = clic + 1; i <= index; i++)
                 {
                     if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0") { permitido = false; break; }
                 }
             }
-            if (clic +1 >= casilla.Length && casilla.Length > 1 && index != -1)//mmm
+            if (clic + 1 >= casilla.Length && casilla.Length > 1 && index != -1)
             {
                 for (int i = index; i < clic; i++)
                 {
                     if (casilla[i].CssClass == "btn btn-success btn-lg border-dark rounded-0") { permitido = false; break; }
                 }
             }
-//            Response.Write(permitido + "permitido por espacio verde");
             return permitido;
         }
 
@@ -1199,7 +1030,7 @@ namespace Othello
                     comerFicha(tipo("diagPos1"), "blanco", 0, verificar2(tipo("diagPos1"), "blanco", 0));
                     comerFicha(tipo("diagNeg8"), "blanco", 0, verificar2(tipo("diagNeg8"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(a1);
                 Get_Move(a1);
             }
         }
@@ -1222,7 +1053,7 @@ namespace Othello
                     comerFicha(tipo("diagPos2"), "blanco", 1, verificar2(tipo("diagPos2"), "blanco", 1));
                     comerFicha(tipo("diagNeg7"), "blanco", 0, verificar2(tipo("diagNeg7"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(b1);
                 Get_Move(b1);
             }
         }
@@ -1245,7 +1076,7 @@ namespace Othello
                     comerFicha(tipo("diagPos3"), "blanco", 2, verificar2(tipo("diagPos3"), "blanco", 2));
                     comerFicha(tipo("diagNeg6"), "blanco", 0, verificar2(tipo("diagNeg6"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(c1);
                 Get_Move(c1);
             }
         }
@@ -1268,7 +1099,7 @@ namespace Othello
                     comerFicha(tipo("diagPos4"), "blanco", 3, verificar2(tipo("diagPos4"), "blanco", 3));
                     comerFicha(tipo("diagNeg5"), "blanco", 0, verificar2(tipo("diagNeg5"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(d1);
                 Get_Move(d1);
             }
         }
@@ -1291,7 +1122,7 @@ namespace Othello
                     comerFicha(tipo("diagPos5"), "blanco", 4, verificar2(tipo("diagPos5"), "blanco", 4));
                     comerFicha(tipo("diagNeg4"), "blanco", 0, verificar2(tipo("diagNeg4"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(e1);
                 Get_Move(e1);
             }
         }
@@ -1314,7 +1145,7 @@ namespace Othello
                     comerFicha(tipo("diagPos6"), "blanco", 5, verificar2(tipo("diagPos6"), "blanco", 5));
                     comerFicha(tipo("diagNeg3"), "blanco", 0, verificar2(tipo("diagNeg3"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(f1);
                 Get_Move(f1);
             }
         }
@@ -1337,7 +1168,7 @@ namespace Othello
                     comerFicha(tipo("diagPos7"), "blanco", 6, verificar2(tipo("diagPos7"), "blanco", 6));
                     comerFicha(tipo("diagNeg2"), "blanco", 0, verificar2(tipo("diagNeg2"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(g1);
                 Get_Move(g1);
             }
         }
@@ -1360,7 +1191,7 @@ namespace Othello
                     comerFicha(tipo("diagPos8"), "blanco", 7, verificar2(tipo("diagPos8"), "blanco", 7));
                     comerFicha(tipo("diagNeg1"), "blanco", 0, verificar2(tipo("diagNeg1"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(h1);
                 Get_Move(h1);
             }
         }
@@ -1383,7 +1214,7 @@ namespace Othello
                     comerFicha(tipo("diagPos2"), "blanco", 0, verificar2(tipo("diagPos2"), "blanco", 0));
                     comerFicha(tipo("diagNeg9"), "blanco", 0, verificar2(tipo("diagNeg9"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(a2);
                 Get_Move(a2);
             }
         }
@@ -1406,7 +1237,7 @@ namespace Othello
                     comerFicha(tipo("diagPos3"), "blanco", 1, verificar2(tipo("diagPos3"), "blanco", 1));
                     comerFicha(tipo("diagNeg8"), "blanco", 1, verificar2(tipo("diagNeg8"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(b2);
                 Get_Move(b2);
             }
         }
@@ -1429,7 +1260,7 @@ namespace Othello
                     comerFicha(tipo("diagPos4"), "blanco", 2, verificar2(tipo("diagPos4"), "blanco", 2));
                     comerFicha(tipo("diagNeg7"), "blanco", 1, verificar2(tipo("diagNeg7"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(c2);
                 Get_Move(c2);
             }
         }
@@ -1452,7 +1283,7 @@ namespace Othello
                     comerFicha(tipo("diagPos5"), "blanco", 3, verificar2(tipo("diagPos5"), "blanco", 3));
                     comerFicha(tipo("diagNeg6"), "blanco", 1, verificar2(tipo("diagNeg6"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(d2);
                 Get_Move(d2);
             }
         }
@@ -1475,7 +1306,7 @@ namespace Othello
                     comerFicha(tipo("diagPos6"), "blanco", 4, verificar2(tipo("diagPos6"), "blanco", 4));
                     comerFicha(tipo("diagNeg5"), "blanco", 1, verificar2(tipo("diagNeg5"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(e2);
                 Get_Move(e2);
             }
         }
@@ -1498,7 +1329,7 @@ namespace Othello
                     comerFicha(tipo("diagPos7"), "blanco", 5, verificar2(tipo("diagPos7"), "blanco", 5));
                     comerFicha(tipo("diagNeg4"), "blanco", 1, verificar2(tipo("diagNeg4"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(f2);
                 Get_Move(f2);
             }
         }
@@ -1521,7 +1352,7 @@ namespace Othello
                     comerFicha(tipo("diagPos8"), "blanco", 6, verificar2(tipo("diagPos8"), "blanco", 6));
                     comerFicha(tipo("diagNeg3"), "blanco", 1, verificar2(tipo("diagNeg3"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(g2);
                 Get_Move(g2);
             }
         }
@@ -1544,7 +1375,7 @@ namespace Othello
                     comerFicha(tipo("diagPos9"), "blanco", 6, verificar2(tipo("diagPos9"), "blanco", 6));
                     comerFicha(tipo("diagNeg2"), "blanco", 1, verificar2(tipo("diagNeg2"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(h2);
                 Get_Move(h2);
             }
         }
@@ -1567,7 +1398,7 @@ namespace Othello
                     comerFicha(tipo("diagPos3"), "blanco", 0, verificar2(tipo("diagPos3"), "blanco", 0));
                     comerFicha(tipo("diagNeg10"), "blanco", 0, verificar2(tipo("diagNeg10"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(a3);
                 Get_Move(a3);
             }
         }
@@ -1590,7 +1421,7 @@ namespace Othello
                     comerFicha(tipo("diagPos4"), "blanco", 1, verificar2(tipo("diagPos4"), "blanco", 1));
                     comerFicha(tipo("diagNeg9"), "blanco", 1, verificar2(tipo("diagNeg9"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(b3);
                 Get_Move(b3);
             }
         }
@@ -1613,7 +1444,7 @@ namespace Othello
                     comerFicha(tipo("diagPos5"), "blanco", 2, verificar2(tipo("diagPos5"), "blanco", 2));
                     comerFicha(tipo("diagNeg8"), "blanco", 2, verificar2(tipo("diagNeg8"), "blanco", 2));
                 }
-                Get_Score();
+                Get_Score(c3);
                 Get_Move(c3);
             }
         }
@@ -1636,7 +1467,7 @@ namespace Othello
                     comerFicha(tipo("diagPos6"), "blanco", 3, verificar2(tipo("diagPos6"), "blanco", 3));
                     comerFicha(tipo("diagNeg7"), "blanco", 2, verificar2(tipo("diagNeg7"), "blanco", 2));
                 }
-                Get_Score();
+                Get_Score(d3);
                 Get_Move(d3);
             }
         }
@@ -1659,7 +1490,7 @@ namespace Othello
                     comerFicha(tipo("diagPos7"), "blanco", 4, verificar2(tipo("diagPos7"), "blanco", 4));
                     comerFicha(tipo("diagNeg6"), "blanco", 2, verificar2(tipo("diagNeg6"), "blanco", 2));
                 }
-                Get_Score();
+                Get_Score(e3);
                 Get_Move(e3);
             }
         }
@@ -1682,7 +1513,7 @@ namespace Othello
                     comerFicha(tipo("diagPos8"), "blanco", 5, verificar2(tipo("diagPos8"), "blanco", 5));
                     comerFicha(tipo("diagNeg5"), "blanco", 2, verificar2(tipo("diagNeg5"), "blanco", 2));
                 }
-                Get_Score();
+                Get_Score(f3);
                 Get_Move(f3);
             }
         }
@@ -1705,7 +1536,7 @@ namespace Othello
                     comerFicha(tipo("diagPos9"), "blanco", 5, verificar2(tipo("diagPos9"), "blanco", 5));
                     comerFicha(tipo("diagNeg4"), "blanco", 2, verificar2(tipo("diagNeg4"), "blanco", 2));
                 }
-                Get_Score();
+                Get_Score(g3);
                 Get_Move(g3);
             }
         }
@@ -1728,7 +1559,7 @@ namespace Othello
                     comerFicha(tipo("diagPos10"), "blanco", 5, verificar2(tipo("diagPos10"), "blanco", 5));
                     comerFicha(tipo("diagNeg3"), "blanco", 2, verificar2(tipo("diagNeg3"), "blanco", 2));
                 }
-                Get_Score();
+                Get_Score(h3);
                 Get_Move(h3);
             }
         }
@@ -1751,7 +1582,7 @@ namespace Othello
                     comerFicha(tipo("diagPos4"), "blanco", 0, verificar2(tipo("diagPos4"), "blanco", 0));
                     comerFicha(tipo("diagNeg11"), "blanco", 0, verificar2(tipo("diagNeg11"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(a4);
                 Get_Move(a4);
             }
         }
@@ -1773,7 +1604,7 @@ namespace Othello
                     comerFicha(tipo("diagPos5"), "blanco", 1, verificar2(tipo("diagPos5"), "blanco", 1));
                     comerFicha(tipo("diagNeg10"), "blanco", 1, verificar2(tipo("diagNeg10"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(b4);
                 Get_Move(b4);
             }
         }
@@ -1796,7 +1627,7 @@ namespace Othello
                     comerFicha(tipo("diagPos6"), "blanco", 2, verificar2(tipo("diagPos6"), "blanco", 2));
                     comerFicha(tipo("diagNeg9"), "blanco", 2, verificar2(tipo("diagNeg9"), "blanco", 2));
                 }
-                Get_Score();
+                Get_Score(c4);
                 Get_Move(c4);
             }
         }
@@ -1819,7 +1650,7 @@ namespace Othello
                     comerFicha(tipo("diagPos7"), "blanco", 3, verificar2(tipo("diagPos7"), "blanco", 3));
                     comerFicha(tipo("diagNeg8"), "blanco", 3, verificar2(tipo("diagNeg8"), "blanco", 3));
                 }
-                Get_Score();
+                Get_Score(d4);
                 Get_Move(d4);
             }
         }
@@ -1842,7 +1673,7 @@ namespace Othello
                     comerFicha(tipo("diagPos8"), "blanco", 4, verificar2(tipo("diagPos8"), "blanco", 4));
                     comerFicha(tipo("diagNeg7"), "blanco", 3, verificar2(tipo("diagNeg7"), "blanco", 3));
                 }
-                Get_Score();
+                Get_Score(e4);
                 Get_Move(e4);
             }
         }
@@ -1865,7 +1696,7 @@ namespace Othello
                     comerFicha(tipo("diagPos9"), "blanco", 4, verificar2(tipo("diagPos9"), "blanco", 4));
                     comerFicha(tipo("diagNeg6"), "blanco", 3, verificar2(tipo("diagNeg6"), "blanco", 3));
                 }
-                Get_Score();
+                Get_Score(f4);
                 Get_Move(f4);
             }
         }
@@ -1888,7 +1719,7 @@ namespace Othello
                     comerFicha(tipo("diagPos10"), "blanco", 4, verificar2(tipo("diagPos10"), "blanco", 4));
                     comerFicha(tipo("diagNeg5"), "blanco", 3, verificar2(tipo("diagNeg5"), "blanco", 3));
                 }
-                Get_Score();
+                Get_Score(g4);
                 Get_Move(g4);
             }
         }
@@ -1911,7 +1742,7 @@ namespace Othello
                     comerFicha(tipo("diagPos11"), "blanco", 4, verificar2(tipo("diagPos11"), "blanco", 4));
                     comerFicha(tipo("diagNeg4"), "blanco", 3, verificar2(tipo("diagNeg4"), "blanco", 3));
                 }
-                Get_Score();
+                Get_Score(h4);
                 Get_Move(h4);
             }
         }
@@ -1934,7 +1765,7 @@ namespace Othello
                     comerFicha(tipo("diagPos5"), "blanco", 0, verificar2(tipo("diagPos5"), "blanco", 0));
                     comerFicha(tipo("diagNeg12"), "blanco", 0, verificar2(tipo("diagNeg12"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(a5);
                 Get_Move(a5);
             }
         }
@@ -1957,7 +1788,7 @@ namespace Othello
                     comerFicha(tipo("diagPos6"), "blanco", 1, verificar2(tipo("diagPos6"), "blanco", 1));
                     comerFicha(tipo("diagNeg11"), "blanco", 1, verificar2(tipo("diagNeg11"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(b5);
                 Get_Move(b5);
             }
         }
@@ -1980,7 +1811,7 @@ namespace Othello
                     comerFicha(tipo("diagPos7"), "blanco", 2, verificar2(tipo("diagPos7"), "blanco", 2));
                     comerFicha(tipo("diagNeg10"), "blanco", 2, verificar2(tipo("diagNeg10"), "blanco", 2));
                 }
-                Get_Score();
+                Get_Score(c5);
                 Get_Move(c5);
             }
         }
@@ -2003,7 +1834,7 @@ namespace Othello
                     comerFicha(tipo("diagPos8"), "blanco", 3, verificar2(tipo("diagPos8"), "blanco", 3));
                     comerFicha(tipo("diagNeg9"), "blanco", 3, verificar2(tipo("diagNeg9"), "blanco", 3));
                 }
-                Get_Score();
+                Get_Score(d5);
                 Get_Move(d5);
             }
         }
@@ -2026,7 +1857,7 @@ namespace Othello
                     comerFicha(tipo("diagPos9"), "blanco", 3, verificar2(tipo("diagPos9"), "blanco", 3));
                     comerFicha(tipo("diagNeg8"), "blanco", 4, verificar2(tipo("diagNeg8"), "blanco", 4));
                 }
-                Get_Score();
+                Get_Score(e5);
                 Get_Move(e5);
             }
         }
@@ -2049,7 +1880,7 @@ namespace Othello
                     comerFicha(tipo("diagPos10"), "blanco", 3, verificar2(tipo("diagPos10"), "blanco", 3));
                     comerFicha(tipo("diagNeg7"), "blanco", 4, verificar2(tipo("diagNeg7"), "blanco", 4));
                 }
-                Get_Score();
+                Get_Score(f5);
                 Get_Move(f5);
             }
         }
@@ -2072,7 +1903,7 @@ namespace Othello
                     comerFicha(tipo("diagPos11"), "blanco", 3, verificar2(tipo("diagPos11"), "blanco", 3));
                     comerFicha(tipo("diagNeg6"), "blanco", 4, verificar2(tipo("diagNeg6"), "blanco", 4));
                 }
-                Get_Score();
+                Get_Score(g5);
                 Get_Move(g5);
             }
         }
@@ -2095,7 +1926,7 @@ namespace Othello
                     comerFicha(tipo("diagPos12"), "blanco", 3, verificar2(tipo("diagPos12"), "blanco", 3));
                     comerFicha(tipo("diagNeg5"), "blanco", 4, verificar2(tipo("diagNeg5"), "blanco", 4));
                 }
-                Get_Score();
+                Get_Score(h5);
                 Get_Move(h5);
             }
         }
@@ -2118,7 +1949,7 @@ namespace Othello
                     comerFicha(tipo("diagPos6"), "blanco", 0, verificar2(tipo("diagPos6"), "blanco", 0));
                     comerFicha(tipo("diagNeg13"), "blanco", 0, verificar2(tipo("diagNeg13"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(a6);
                 Get_Move(a6);
             }
         }
@@ -2141,7 +1972,7 @@ namespace Othello
                     comerFicha(tipo("diagPos7"), "blanco", 1, verificar2(tipo("diagPos7"), "blanco", 1));
                     comerFicha(tipo("diagNeg12"), "blanco", 1, verificar2(tipo("diagNeg12"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(b6);
                 Get_Move(b6);
             }
         }
@@ -2164,7 +1995,7 @@ namespace Othello
                     comerFicha(tipo("diagPos8"), "blanco", 2, verificar2(tipo("diagPos8"), "blanco", 2));
                     comerFicha(tipo("diagNeg11"), "blanco", 2, verificar2(tipo("diagNeg11"), "blanco", 2));
                 }
-                Get_Score();
+                Get_Score(c6);
                 Get_Move(c6);
             }
         }
@@ -2187,7 +2018,7 @@ namespace Othello
                     comerFicha(tipo("diagPos9"), "blanco", 2, verificar2(tipo("diagPos9"), "blanco", 2));
                     comerFicha(tipo("diagNeg10"), "blanco", 3, verificar2(tipo("diagNeg10"), "blanco", 3));
                 }
-                Get_Score();
+                Get_Score(d6);
                 Get_Move(d6);
             }
         }
@@ -2210,7 +2041,7 @@ namespace Othello
                     comerFicha(tipo("diagPos10"), "blanco", 2, verificar2(tipo("diagPos10"), "blanco", 2));
                     comerFicha(tipo("diagNeg9"), "blanco", 4, verificar2(tipo("diagNeg9"), "blanco", 4));
                 }
-                Get_Score();
+                Get_Score(e6);
                 Get_Move(e6);
             }
         }
@@ -2233,7 +2064,7 @@ namespace Othello
                     comerFicha(tipo("diagPos11"), "blanco", 2, verificar2(tipo("diagPos11"), "blanco", 2));
                     comerFicha(tipo("diagNeg8"), "blanco", 5, verificar2(tipo("diagNeg8"), "blanco", 5));
                 }
-                Get_Score();
+                Get_Score(f6);
                 Get_Move(f6);
             }
         }
@@ -2256,7 +2087,7 @@ namespace Othello
                     comerFicha(tipo("diagPos12"), "blanco", 2, verificar2(tipo("diagPos12"), "blanco", 2));
                     comerFicha(tipo("diagNeg7"), "blanco", 5, verificar2(tipo("diagNeg7"), "blanco", 5));
                 }
-                Get_Score();
+                Get_Score(g6);
                 Get_Move(g6);
             }
         }
@@ -2279,7 +2110,7 @@ namespace Othello
                     comerFicha(tipo("diagPos13"), "blanco", 2, verificar2(tipo("diagPos13"), "blanco", 2));
                     comerFicha(tipo("diagNeg6"), "blanco", 5, verificar2(tipo("diagNeg6"), "blanco", 5));
                 }
-                Get_Score();
+                Get_Score(h6);
                 Get_Move(h6);
             }
         }
@@ -2302,7 +2133,7 @@ namespace Othello
                     comerFicha(tipo("diagPos7"), "blanco", 0, verificar2(tipo("diagPos7"), "blanco", 0));
                     comerFicha(tipo("diagNeg14"), "blanco", 0, verificar2(tipo("diagNeg14"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(a7);
                 Get_Move(a7);
             }
         }
@@ -2325,7 +2156,7 @@ namespace Othello
                     comerFicha(tipo("diagPos8"), "blanco", 1, verificar2(tipo("diagPos8"), "blanco", 1));
                     comerFicha(tipo("diagNeg13"), "blanco", 1, verificar2(tipo("diagNeg13"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(b7);
                 Get_Move(b7);
             }
         }
@@ -2348,7 +2179,7 @@ namespace Othello
                     comerFicha(tipo("diagPos9"), "blanco", 1, verificar2(tipo("diagPos9"), "blanco", 1));
                     comerFicha(tipo("diagNeg12"), "blanco", 2, verificar2(tipo("diagNeg12"), "blanco", 2));
                 }
-                Get_Score();
+                Get_Score(c7);
                 Get_Move(c7);
             }
         }
@@ -2371,7 +2202,7 @@ namespace Othello
                     comerFicha(tipo("diagPos10"), "blanco", 1, verificar2(tipo("diagPos10"), "blanco", 1));
                     comerFicha(tipo("diagNeg11"), "blanco", 3, verificar2(tipo("diagNeg11"), "blanco", 3));
                 }
-                Get_Score();
+                Get_Score(d7);
                 Get_Move(d7);
             }
         }
@@ -2394,7 +2225,7 @@ namespace Othello
                     comerFicha(tipo("diagPos11"), "blanco", 1, verificar2(tipo("diagPos11"), "blanco", 1));
                     comerFicha(tipo("diagNeg10"), "blanco", 4, verificar2(tipo("diagNeg10"), "blanco", 4));
                 }
-                Get_Score();
+                Get_Score(e7);
                 Get_Move(e7);
             }
         }
@@ -2417,7 +2248,7 @@ namespace Othello
                     comerFicha(tipo("diagPos12"), "blanco", 1, verificar2(tipo("diagPos12"), "blanco", 1));
                     comerFicha(tipo("diagNeg9"), "blanco", 5, verificar2(tipo("diagNeg9"), "blanco", 5));
                 }
-                Get_Score();
+                Get_Score(f7);
                 Get_Move(f7);
             }
         }
@@ -2440,7 +2271,7 @@ namespace Othello
                     comerFicha(tipo("diagPos13"), "blanco", 1, verificar2(tipo("diagPos13"), "blanco", 1));
                     comerFicha(tipo("diagNeg8"), "blanco", 6, verificar2(tipo("diagNeg8"), "blanco", 6));
                 }
-                Get_Score();
+                Get_Score(g7);
                 Get_Move(g7);
             }
         }
@@ -2463,7 +2294,7 @@ namespace Othello
                     comerFicha(tipo("diagPos14"), "blanco", 1, verificar2(tipo("diagPos14"), "blanco", 1));
                     comerFicha(tipo("diagNeg7"), "blanco", 6, verificar2(tipo("diagNeg7"), "blanco", 6));
                 }
-                Get_Score();
+                Get_Score(h7);
                 Get_Move(h7);
             }
         }
@@ -2486,7 +2317,7 @@ namespace Othello
                     comerFicha(tipo("diagPos8"), "blanco", 0, verificar2(tipo("diagPos8"), "blanco", 0));
                     comerFicha(tipo("diagNeg15"), "blanco", 0, verificar2(tipo("diagNeg15"), "blanco", 0));
                 }
-                Get_Score();
+                Get_Score(a8);
                 Get_Move(a8);
             }
         }
@@ -2509,7 +2340,7 @@ namespace Othello
                     comerFicha(tipo("diagPos9"), "blanco", 0, verificar2(tipo("diagPos9"), "blanco", 0));
                     comerFicha(tipo("diagNeg14"), "blanco", 1, verificar2(tipo("diagNeg14"), "blanco", 1));
                 }
-                Get_Score();
+                Get_Score(b8);
                 Get_Move(b8);
             }
         }
@@ -2532,7 +2363,7 @@ namespace Othello
                     comerFicha(tipo("diagPos10"), "blanco", 0, verificar2(tipo("diagPos10"), "blanco", 0));
                     comerFicha(tipo("diagNeg13"), "blanco", 2, verificar2(tipo("diagNeg13"), "blanco", 2));
                 }
-                Get_Score();
+                Get_Score(c8);
                 Get_Move(c8);
             }
         }
@@ -2555,7 +2386,7 @@ namespace Othello
                     comerFicha(tipo("diagPos11"), "blanco", 0, verificar2(tipo("diagPos11"), "blanco", 0));
                     comerFicha(tipo("diagNeg12"), "blanco", 3, verificar2(tipo("diagNeg12"), "blanco", 3));
                 }
-                Get_Score();
+                Get_Score(d8);
                 Get_Move(d8);
             }
         }
@@ -2578,7 +2409,7 @@ namespace Othello
                     comerFicha(tipo("diagPos12"), "blanco", 0, verificar2(tipo("diagPos12"), "blanco", 0));
                     comerFicha(tipo("diagNeg11"), "blanco", 4, verificar2(tipo("diagNeg11"), "blanco", 4));
                 }
-                Get_Score();
+                Get_Score(e8);
                 Get_Move(e8);
             }
         }
@@ -2601,7 +2432,7 @@ namespace Othello
                     comerFicha(tipo("diagPos13"), "blanco", 0, verificar2(tipo("diagPos13"), "blanco", 0));
                     comerFicha(tipo("diagNeg10"), "blanco", 5, verificar2(tipo("diagNeg10"), "blanco", 5));
                 }
-                Get_Score();
+                Get_Score(f8);
                 Get_Move(f8);
             }
         }
@@ -2624,7 +2455,7 @@ namespace Othello
                     comerFicha(tipo("diagPos14"), "blanco", 0, verificar2(tipo("diagPos14"), "blanco", 0));
                     comerFicha(tipo("diagNeg9"), "blanco", 6, verificar2(tipo("diagNeg9"), "blanco", 6));
                 }
-                Get_Score();
+                Get_Score(g8);
                 Get_Move(g8);
             }
         }
@@ -2647,7 +2478,7 @@ namespace Othello
                     comerFicha(tipo("diagPos15"), "blanco", 0, verificar2(tipo("diagPos15"), "blanco", 0));
                     comerFicha(tipo("diagNeg8"), "blanco", 7, verificar2(tipo("diagNeg8"), "blanco", 7));
                 }
-                Get_Score();
+                Get_Score(h8);
                 Get_Move(h8);
             }
         }

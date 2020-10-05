@@ -39,7 +39,6 @@
                 <div class="col-sm-12 col-lg-2 text-right border-left border-dark">
                     <h3>Turno de:</h3><hr>
                     <asp:Label runat="server" id="turno" CssClass="display-4" text="" /><br /><br /><br /><br />
-                    <%--<a href="#" id="turno" class="letra btn btn-lg disabled">Blanco</a>--%>
                     <h3>Movimientos:</h3><hr>
                     <asp:Label runat="server" id="movimiento_negro" CssClass="display-4 text" text="0" />
                     <asp:Label runat="server" id="movimiento_blanco" CssClass="display-4 text-white" text="0" Visible="false"  />
@@ -50,7 +49,6 @@
                     <asp:Label runat="server" id="ganador"/>
                 </asp:Panel>
                 <asp:Panel runat="server" id="gameBoard" Cssclass="col-sm-12 col-lg-8 text-center">
-                    <%--<form id="tablero" runat="server">--%>
                     <a href="#" class="numero btn btn-lg disabled"></a>
                     <a href="#" class="letra btn btn-lg disabled">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A</a>
                     <a href="#" class="letra btn btn-lg disabled">B</a>
@@ -149,7 +147,6 @@
                         <asp:Button runat="server" type="button" id="g8" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="g8_Click"/>
                         <asp:Button runat="server" type="button" id="h8" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="h8_Click"/>
                     </div>
-                   <%--</form>--%> 
                 </asp:Panel>
                 
                 <div class="col-sm-12 col-lg-2 text-left border-right border-dark">

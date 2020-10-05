@@ -55,7 +55,7 @@ namespace Othello
                 upload.SaveAs(Server.MapPath(".") + "\\XML\\" + upload.FileName);
                 string ruta = Server.MapPath(".") + "\\XML\\" + upload.FileName;
                 Session["archivo"] = ruta;
-                Response.Redirect("OthelloLoadedOnePlayer.aspx?Parametro=" + usuario.Text + "-Blanco");
+                Response.Redirect("LoadedOnePlayer.aspx?Parametro=" + usuario.Text + "-Blanco");
             }
             else
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error: por favor seleccione un archivo\")", true);
@@ -68,7 +68,7 @@ namespace Othello
                 upload.SaveAs(Server.MapPath(".") + "\\XML\\" + upload.FileName);
                 string ruta = Server.MapPath(".") + "\\XML\\" + upload.FileName;
                 Session["archivo"] = ruta;
-                Response.Redirect("OthelloLoadedOnePlayer.aspx?Parametro=" + usuario.Text + "-Negro");
+                Response.Redirect("LoadedOnePlayer.aspx?Parametro=" + usuario.Text + "-Negro");
             }
             else
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error: por favor seleccione un archivo\")", true);

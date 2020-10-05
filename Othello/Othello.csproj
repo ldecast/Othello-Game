@@ -88,6 +88,7 @@
     <Content Include="css\StyleSheet2.css" />
     <Content Include="GameBoard.aspx" />
     <Content Include="GameOnePlayer.aspx" />
+    <Content Include="LoadedOnePlayer.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Menu.aspx" />
     <Content Include="OthelloLoaded.aspx" />
@@ -107,6 +108,13 @@
     </Compile>
     <Compile Include="GameOnePlayer.aspx.designer.cs">
       <DependentUpon>GameOnePlayer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LoadedOnePlayer.aspx.cs">
+      <DependentUpon>LoadedOnePlayer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LoadedOnePlayer.aspx.designer.cs">
+      <DependentUpon>LoadedOnePlayer.aspx</DependentUpon>
     </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>

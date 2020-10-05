@@ -16,7 +16,6 @@
   <body>
     <form id="menu" runat="server">
     <div class="container">
-        <%--<h1 class="display-1 text-center my-4 text-white">Hola</h1>--%>
         <div class="container-fluid text-center mt-4 mb-3">
         <asp:Label runat="server" id="Label1" class="display-1 text-white titulo" Text="Hola "/>
         <asp:Label runat="server" id="usuario" class="display-1 text-white titulo" Text="Usuario"/>

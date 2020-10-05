@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="GameOnePlayer.aspx.cs" Inherits="Othello.GameOnePlayer" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LoadedOnePlayer.aspx.cs" Inherits="Othello.LoadedOnePlayer" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -10,13 +10,13 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 <title>Othello game</title>
   
-  <style>body{background-color: #2e86c1;} #guardar{margin-top: 52px; height:50px;} #salir{margin-top: 44px; width:120px; height:50px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #color_cpu{position:absolute; top:65px; left:40px;} #ceder_turno{position:absolute; top:59px; right:60px;}</style>
+  <style>body{background-color: #2e86c1;} #guardar{margin-top: 52px; height:50px;} #salir{margin-top: 44px; width:120px; height:50px;}  #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #color_cpu{position:absolute; top:65px; left:40px;} #ceder_turno{position:absolute; top:59px; right:60px;}</style>
   <script type="text/javascript">
       function movimiento_Cpu() {
           var color_cpu = document.getElementById("color_cpu").innerHTML;
           var turno = document.getElementById("turno").innerHTML;
           if (color_cpu.includes("Blanco")) {
-              if (turno == "Blanco") { __doPostBack("cpu", "");}
+              if (turno == "Blanco") { __doPostBack("cpu", ""); }
           }
           if (color_cpu.includes("Negro")) {
               if (turno == "Negro") { __doPostBack("cpu", ""); }
@@ -34,10 +34,11 @@
         <br>
     </div>
         <div class="container">
+            <asp:Button runat="server" id="iniciar" CssClass="text-center btn btn-warning btn-lg" Text="INICIAR" OnClick="Leer_xml"/>
             <div class="row mb-5">
                 <div class="col-sm-12 col-lg-2 text-right border-left border-dark">
                     <h3>Turno de:</h3><hr>
-                    <asp:Label runat="server" id="turno" CssClass="display-4" text="Negro" /><br /><br /><br /><br />
+                    <asp:Label runat="server" id="turno" CssClass="display-4" text="" /><br /><br /><br /><br />
                     <%--<a href="#" id="turno" class="letra btn btn-lg disabled">Blanco</a>--%>
                     <h3>Movimientos:</h3><hr>
                     <asp:Label runat="server" id="movimiento_negro" CssClass="display-4 text" text="0" />
@@ -98,8 +99,8 @@
                         <asp:Button runat="server" type="button" id="a4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="a4_Click"/>
                         <asp:Button runat="server" type="button" id="b4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="b4_Click"/>
                         <asp:Button runat="server" type="button" id="c4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="c4_Click"/>
-                        <asp:Button runat="server" type="button" id="d4" CssClass="btn btn-light btn-lg border-dark rounded-0" text="     " OnClick="d4_Click"/>
-                        <asp:Button runat="server" type="button" id="e4" CssClass="btn btn-dark btn-lg border-dark rounded-0" text="     " OnClick="e4_Click"/>
+                        <asp:Button runat="server" type="button" id="d4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="d4_Click"/>
+                        <asp:Button runat="server" type="button" id="e4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="e4_Click"/>
                         <asp:Button runat="server" type="button" id="f4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="f4_Click"/>
                         <asp:Button runat="server" type="button" id="g4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="g4_Click"/>
                         <asp:Button runat="server" type="button" id="h4" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="h4_Click"/>
@@ -109,8 +110,8 @@
                         <asp:Button runat="server" type="button" id="a5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="a5_Click"/>
                         <asp:Button runat="server" type="button" id="b5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="b5_Click"/>
                         <asp:Button runat="server" type="button" id="c5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="c5_Click"/>
-                        <asp:Button runat="server" type="button" id="d5" CssClass="btn btn-dark btn-lg border-dark rounded-0" text="     " OnClick="d5_Click"/>
-                        <asp:Button runat="server" type="button" id="e5" CssClass="btn btn-light btn-lg border-dark rounded-0" text="     " OnClick="e5_Click"/>
+                        <asp:Button runat="server" type="button" id="d5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="d5_Click"/>
+                        <asp:Button runat="server" type="button" id="e5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="e5_Click"/>
                         <asp:Button runat="server" type="button" id="f5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="f5_Click"/>
                         <asp:Button runat="server" type="button" id="g5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="g5_Click"/>
                         <asp:Button runat="server" type="button" id="h5" CssClass="btn btn-success btn-lg border-dark rounded-0" text="     " OnClick="h5_Click"/>

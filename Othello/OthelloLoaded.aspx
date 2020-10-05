@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 <title>Othello game</title>
   
-  <style>body{background-color: #2e86c1;} #guardar{margin-top: 260px;}#iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;}</style>
+  <style>body{background-color: #2e86c1;} #guardar{margin-top: 52px; height:50px;} #salir{margin-top: 44px; width:120px; height:50px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;}</style>
   </head>
   <body>
       <form id="tablero" runat="server">
@@ -23,12 +23,15 @@
             <div class="row mb-5">
                 <div class="col-sm-12 col-lg-2 text-right border-left border-dark">
                     <h3>Turno de:</h3><hr>
-                    <asp:Label runat="server" id="turno" CssClass="display-4" text="Negro" />
+                    <asp:Label runat="server" id="turno" CssClass="display-4" text="Negro" /><br /><br /><br /><br />
                     <%--<a href="#" id="turno" class="letra btn btn-lg disabled">Blanco</a>--%>
+                    <h3>Movimientos:</h3><hr>
+                    <asp:Label runat="server" id="movimiento_negro" CssClass="display-4 text" text="0" />
+                    <asp:Label runat="server" id="movimiento_blanco" CssClass="display-4 text-white" text="0" Visible="false"  />
                     <asp:Button runat="server" type="button" id="guardar" CssClass="btn btn-outline-dark btn-lg" text="Guardar partida" OnClick="generarXml"/>
                 </div>
                 <asp:Panel runat="server" id="resultados" Cssclass="col-sm-12 col-lg-8 text-center" Visible="false">
-                    <asp:Label runat="server" id="ganador" CssClass="display-2"/>
+                    <asp:Label runat="server" id="ganador"/>
                 </asp:Panel>
                 <asp:Panel runat="server" id="gameBoard" Cssclass="col-sm-12 col-lg-8 text-center">
                     <%--<form id="tablero" runat="server">--%>
@@ -140,6 +143,8 @@
                     <br><br>
                     <h4>Negro</h4>
                     <asp:Label runat="server" id="score2" CssClass="display-4" text="0" />
+                    <br><br>
+                    <asp:Button runat="server" type="button" id="salir" CssClass="btn btn-outline-dark btn-lg" text="Salir" OnClick="Salir"/>
                 </div>
 
             </div>

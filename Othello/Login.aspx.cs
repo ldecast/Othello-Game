@@ -33,7 +33,7 @@ namespace Othello
             else
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "invalid()", true);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error: valide que no registre un usuario ya existente.\")", true);
             }

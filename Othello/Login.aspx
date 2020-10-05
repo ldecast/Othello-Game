@@ -23,11 +23,13 @@
     <div class="container-fluid bg-success py-3 titulo text-center">
       <h1 class="display-2"><b>¡Welcome to Othello!</b></h1>
     </div>
+
     <div class="container px-5 pt-5 mb-5 fondo">
+
       <div class="row">
+        <form id="registro">
         <div class="col-sm-12 col-md-12 col-lg-6">
           <h2 class="mb-4 text-center rounded">Regístrate</h2>
-          <form class="registro" id="registro">
 
           <label for="fname" class="mb-1">Nombres:</label><br>
           <asp:TextBox runat="server" class="cajon" id="fname"/><br/>
@@ -53,6 +55,7 @@
           <asp:Button runat="server" id="enviar" CssClass="btn btn-outline-light" Text="Registrarse" OnClick="Registrar"/>
           <%--</form>--%>
         </div>
+
         <div class="col-sm-12 col-md-12 col-lg-6 border-left border-secondary paddo">
           <h2 class="text-center mb-4 rounded">Inicia sesión</h2>
           <%--<form class="login" id="login">--%>
@@ -66,7 +69,6 @@
           </form>
         </div>
       </div>
-    </div>
     </form>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

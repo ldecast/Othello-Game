@@ -553,7 +553,7 @@ namespace Othello
 
         public void Movimiento_cpu()
         {
-            System.Threading.Thread.Sleep(1100);
+            System.Threading.Thread.Sleep(1500);
             int score_white = 0;
             int score_black = 0;
             int aux_white = int.Parse(score1.Text);
@@ -971,8 +971,8 @@ namespace Othello
                 ganador.CssClass = "display-2 text-white";
                 gameover.CssClass = "display-2 text-white";
                 turno.Text = "";
-                movimiento_negro.ForeColor = ColorTranslator.FromHtml("#2e86c1");
                 movimiento_blanco.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                movimiento_negro.ForeColor = ColorTranslator.FromHtml("#2e86c1");
                 registrar("blanco");
             }
             if (int.Parse(score1.Text) < int.Parse(score2.Text))

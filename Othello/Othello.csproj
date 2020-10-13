@@ -91,6 +91,7 @@
     <Content Include="LoadedOnePlayer.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Menu.aspx" />
+    <Content Include="OthelloDinamico.aspx" />
     <Content Include="OthelloLoaded.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -129,6 +130,13 @@
     </Compile>
     <Compile Include="Menu.aspx.designer.cs">
       <DependentUpon>Menu.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="OthelloDinamico.aspx.cs">
+      <DependentUpon>OthelloDinamico.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="OthelloDinamico.aspx.designer.cs">
+      <DependentUpon>OthelloDinamico.aspx</DependentUpon>
     </Compile>
     <Compile Include="OthelloLoaded.aspx.cs">
       <DependentUpon>OthelloLoaded.aspx</DependentUpon>

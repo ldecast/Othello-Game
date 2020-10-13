@@ -11,7 +11,7 @@ namespace Othello
 {
 
 
-    public partial class OthelloLoaded
+    public partial class OthelloDinamico
     {
 
         /// <summary>
@@ -103,15 +103,6 @@ namespace Othello
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label ganador;
-
-        /// <summary>
-        /// Control salir.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button salir;
 
         /// <summary>
         /// Control gameBoard.
@@ -717,12 +708,12 @@ namespace Othello
         protected global::System.Web.UI.WebControls.Label score2;
 
         /// <summary>
-        /// Control end.
+        /// Control salir.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button end;
+        protected global::System.Web.UI.WebControls.Button salir;
     }
 }

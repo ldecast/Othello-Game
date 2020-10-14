@@ -366,6 +366,108 @@ namespace Othello
             else return "error";
         }
 
+        protected void GenerarXml(object sender, EventArgs e)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                Indent = true,
+                IndentChars = "\t"
+            };
+
+            string[] col = { "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H" };
+            string[] fila = { "1", "1", "1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3", "3", "3", "3", "3", "4", "4", "4", "4", "4", "4", "4", "4", "5", "5", "5", "5", "5", "5", "5", "5", "6", "6", "6", "6", "6", "6", "6", "6", "7", "7", "7", "7", "7", "7", "7", "7", "8", "8", "8", "8", "8", "8", "8", "8" };
+
+            string persona = "";
+            if (Request.Params["Parametro"] != null)
+            {
+                persona = Request.Params["Parametro"] + " ";
+            }
+
+            string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
+            int id = 1;
+            string ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
+
+            while (File.Exists(ruta))
+            {
+                id++;
+                ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
+            }
+
+            XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
+
+            xmlWriter.WriteStartDocument();
+
+            xmlWriter.WriteStartElement("tablero");
+
+            for (int i = 0; i < 64; i++)
+            {
+                string color = Ver_ficha(i + 1);
+                if (color == "blanco")
+                {
+                    xmlWriter.WriteStartElement("ficha");
+
+                    xmlWriter.WriteStartElement("color");
+                    xmlWriter.WriteString(color);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("columna");
+                    xmlWriter.WriteString(col[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("fila");
+                    xmlWriter.WriteString(fila[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteEndElement();
+                }
+                if (color == "negro")
+                {
+                    xmlWriter.WriteStartElement("ficha");
+
+                    xmlWriter.WriteStartElement("color");
+                    xmlWriter.WriteString(color);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("columna");
+                    xmlWriter.WriteString(col[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("fila");
+                    xmlWriter.WriteString(fila[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteEndElement();
+                }
+                else
+                    continue;
+            }
+
+            xmlWriter.WriteStartElement("siguienteTiro");
+            xmlWriter.WriteStartElement("color");
+            if (turno.Text == "Blanco")
+                xmlWriter.WriteString("blanco");
+            else
+                xmlWriter.WriteString("negro");
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("movimientos");
+            xmlWriter.WriteStartElement("negro");
+            xmlWriter.WriteString(movimiento_negro.Text);
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("blanco");
+            xmlWriter.WriteString(movimiento_blanco.Text);
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndDocument();
+            xmlWriter.Close();
+            Response.Write("Partida guardada en: " + ruta);
+        }
+
         public WebControl[] Tipo(string a)
         {
             WebControl[] fila1 = { a1, b1, c1, d1, e1, f1, g1, h1 };
@@ -510,7 +612,7 @@ namespace Othello
             }
 
             if (score_white == aux_white + 1 && score_white + score_black != 64) { boton.CssClass = verde; score_white--; turno.Text = "Blanco"; turno.ForeColor = Color.White; }
-            if (score_black == aux_black + 1 && score_white + score_black != 64) { boton.CssClass = verde; score_black--; turno.Text = "Negro"; turno.ForeColor = Color.Black; }
+            else if (score_black == aux_black + 1 && score_white + score_black != 64) { boton.CssClass = verde; score_black--; turno.Text = "Negro"; turno.ForeColor = Color.Black; }
 
             score1.Text = score_white.ToString();
             score2.Text = score_black.ToString();
@@ -540,110 +642,8 @@ namespace Othello
             int score_white = int.Parse(score1.Text);
             int score_black = int.Parse(score2.Text);
             if (score_white == 0 && score_black > 0) GameOver();
-            if (score_black == 0 && score_white > 0) GameOver();
+            else if (score_black == 0 && score_white > 0) GameOver();
             if (score_white + score_black == 64) GameOver();
-        }
-
-        protected void GenerarXml(object sender, EventArgs e)
-        {
-            XmlWriterSettings settings = new XmlWriterSettings
-            {
-                Indent = true,
-                IndentChars = "\t"
-            };
-
-            string[] col = { "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H" };
-            string[] fila = { "1", "1", "1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3", "3", "3", "3", "3", "4", "4", "4", "4", "4", "4", "4", "4", "5", "5", "5", "5", "5", "5", "5", "5", "6", "6", "6", "6", "6", "6", "6", "6", "7", "7", "7", "7", "7", "7", "7", "7", "8", "8", "8", "8", "8", "8", "8", "8" };
-
-            string persona = "";
-            if (Request.Params["Parametro"] != null)
-            {
-                persona = Request.Params["Parametro"] + " ";
-            }
-
-            string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
-            int id = 1;
-            string ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
-
-            while (File.Exists(ruta))
-            {
-                id++;
-                ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
-            }
-
-            XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
-
-            xmlWriter.WriteStartDocument();
-
-            xmlWriter.WriteStartElement("tablero");
-
-            for (int i = 0; i < 64; i++)
-            {
-                string color = Ver_ficha(i + 1);
-                if (color == "blanco")
-                {
-                    xmlWriter.WriteStartElement("ficha");
-
-                    xmlWriter.WriteStartElement("color");
-                    xmlWriter.WriteString(color);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteStartElement("columna");
-                    xmlWriter.WriteString(col[i]);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteStartElement("fila");
-                    xmlWriter.WriteString(fila[i]);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteEndElement();
-                }
-                if (color == "negro")
-                {
-                    xmlWriter.WriteStartElement("ficha");
-
-                    xmlWriter.WriteStartElement("color");
-                    xmlWriter.WriteString(color);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteStartElement("columna");
-                    xmlWriter.WriteString(col[i]);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteStartElement("fila");
-                    xmlWriter.WriteString(fila[i]);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteEndElement();
-                }
-                else
-                    continue;
-            }
-
-            xmlWriter.WriteStartElement("siguienteTiro");
-            xmlWriter.WriteStartElement("color");
-            if (turno.Text == "Blanco")
-                xmlWriter.WriteString("blanco");
-            else
-                xmlWriter.WriteString("negro");
-            xmlWriter.WriteEndElement();
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteStartElement("movimientos");
-            xmlWriter.WriteStartElement("negro");
-            xmlWriter.WriteString(movimiento_negro.Text);
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteStartElement("blanco");
-            xmlWriter.WriteString(movimiento_blanco.Text);
-            xmlWriter.WriteEndElement();
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteEndDocument();
-            xmlWriter.Close();
-            Response.Write("Partida guardada en: " + ruta);
         }
 
         public void Terminar_Juego(object sender, EventArgs e)

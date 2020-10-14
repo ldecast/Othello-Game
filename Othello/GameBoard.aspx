@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 <title>Othello game</title>
   
-  <style>body{background-color: #2e86c1;} #guardar{margin-top: 52px; height:50px;} #salir{margin-top: 44px; width:120px; height:50px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;}</style>
+  <style>body{background-color: #2e86c1;} #guardar{margin-top: 47px; height:50px; margin-bottom:12px;} #salir{margin-top: 60px; height:50px; margin-bottom:90px; width:120px;} #end{margin-top: 39px; height:50px; padding-left:10px; padding-right:10px; margin-bottom:5px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;}</style>
   </head>
   <body>
       <form id="tablero" runat="server">
@@ -31,7 +31,8 @@
                 </div>
                 <asp:Panel runat="server" id="resultados" Cssclass="col-sm-12 col-lg-8 text-center" Visible="false">
                     <asp:Label runat="server" id ="gameover" Text="GAME OVER"/><br />
-                    <asp:Label runat="server" id="ganador"/>
+                    <asp:Label runat="server" id="ganador"/><br /><br />
+                    <asp:Button runat="server" type="button" id="salir" CssClass="btn btn-warning btn-lg" text="SALIR" OnClick="Salir"/>
                 </asp:Panel>
                 <asp:Panel runat="server" id="gameBoard" Cssclass="col-sm-12 col-lg-8 text-center">
                     <a href="#" class="numero btn btn-lg disabled"></a>
@@ -142,7 +143,7 @@
                     <h4>Negro</h4>
                     <asp:Label runat="server" id="score2" CssClass="display-4" text="0" />
                     <br><br>
-                    <asp:Button runat="server" type="button" id="salir" CssClass="btn btn-outline-dark btn-lg" text="Salir" OnClick="Salir"/>
+                    <asp:Button runat="server" type="button" id="end" CssClass="btn btn-outline-dark btn-lg" text="Terminar juego" OnClick="Terminar_Juego"/>
                 </div>
             </div>
         </div>

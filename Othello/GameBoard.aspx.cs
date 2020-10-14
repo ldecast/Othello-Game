@@ -20,10 +20,7 @@ namespace Othello
         protected void Page_Load(object sender, EventArgs e)
         {
             Get_Score(null);
-            if (IsPostBack && TiroImposible())
-            {
-                Ceder_turno(null, null);
-            }
+           
 
         }
 
@@ -32,7 +29,6 @@ namespace Othello
         private readonly string blanco = "btn btn-light btn-lg border-dark rounded-0";
         private string move_negro = "";
         private string move_blanco = "";
-        private int imposible;
 
         protected string Ver_ficha(int boton)
         {
@@ -181,6 +177,108 @@ namespace Othello
             else return "error";
         }
 
+        protected void GenerarXml(object sender, EventArgs e)
+        {
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                Indent = true,
+                IndentChars = "\t"
+            };
+
+            string[] col = { "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H" };
+            string[] fila = { "1", "1", "1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3", "3", "3", "3", "3", "4", "4", "4", "4", "4", "4", "4", "4", "5", "5", "5", "5", "5", "5", "5", "5", "6", "6", "6", "6", "6", "6", "6", "6", "7", "7", "7", "7", "7", "7", "7", "7", "8", "8", "8", "8", "8", "8", "8", "8" };
+
+            string persona = "";
+            if (Request.Params["Parametro"] != null)
+            {
+                persona = Request.Params["Parametro"] + " ";
+            }
+
+            string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
+            int id = 1;
+            string ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
+
+            while (File.Exists(ruta))
+            {
+                id++;
+                ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
+            }
+
+            XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
+
+            xmlWriter.WriteStartDocument();
+
+            xmlWriter.WriteStartElement("tablero");
+
+            for (int i = 0; i < 64; i++)
+            {
+                string color = Ver_ficha(i + 1);
+                if (color == "blanco")
+                {
+                    xmlWriter.WriteStartElement("ficha");
+
+                    xmlWriter.WriteStartElement("color");
+                    xmlWriter.WriteString(color);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("columna");
+                    xmlWriter.WriteString(col[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("fila");
+                    xmlWriter.WriteString(fila[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteEndElement();
+                }
+                if (color == "negro")
+                {
+                    xmlWriter.WriteStartElement("ficha");
+
+                    xmlWriter.WriteStartElement("color");
+                    xmlWriter.WriteString(color);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("columna");
+                    xmlWriter.WriteString(col[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("fila");
+                    xmlWriter.WriteString(fila[i]);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteEndElement();
+                }
+                else
+                    continue;
+            }
+
+            xmlWriter.WriteStartElement("siguienteTiro");
+            xmlWriter.WriteStartElement("color");
+            if (turno.Text == "Blanco")
+                xmlWriter.WriteString("blanco");
+            else
+                xmlWriter.WriteString("negro");
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("movimientos");
+            xmlWriter.WriteStartElement("negro");
+            xmlWriter.WriteString(movimiento_negro.Text);
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("blanco");
+            xmlWriter.WriteString(movimiento_blanco.Text);
+            xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteEndDocument();
+            xmlWriter.Close();
+            Response.Write("Partida guardada en: " + ruta);
+        }
+
         public WebControl[] Tipo(string a)
         {
             WebControl[] fila1 = { a1, b1, c1, d1, e1, f1, g1, h1 };
@@ -292,11 +390,15 @@ namespace Othello
             {
                 turno.Text = "Negro";
                 turno.ForeColor = Color.Black;
+                movimiento_blanco.Visible = false;
+                movimiento_negro.Visible = true;
             }
             else if (turno.Text == "Negro")
             {
                 turno.Text = "Blanco";
                 turno.ForeColor = Color.White;
+                movimiento_negro.Visible = false;
+                movimiento_blanco.Visible = true;
             }
         }
 
@@ -355,161 +457,19 @@ namespace Othello
             if (score_white + score_black == 64) GameOver();
         }
 
-        protected void GenerarXml(object sender, EventArgs e)
+        public void Terminar_Juego(object sender, EventArgs e)
         {
-            XmlWriterSettings settings = new XmlWriterSettings
+            if (int.Parse(score1.Text) > int.Parse(score2.Text))
             {
-                Indent = true,
-                IndentChars = "\t"
-            };
-
-            string[] col = { "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H" };
-            string[] fila = { "1", "1", "1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3", "3", "3", "3", "3", "4", "4", "4", "4", "4", "4", "4", "4", "5", "5", "5", "5", "5", "5", "5", "5", "6", "6", "6", "6", "6", "6", "6", "6", "7", "7", "7", "7", "7", "7", "7", "7", "8", "8", "8", "8", "8", "8", "8", "8" };
-
-            string persona = "";
-            if (Request.Params["Parametro"] != null)
-            {
-                persona = Request.Params["Parametro"] + " ";
+                score1.Text = (64 - int.Parse(score2.Text)).ToString();
+                GameOver();
             }
-
-            string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
-            int id = 1;
-            string ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
-
-            while (File.Exists(ruta))
+            else if (int.Parse(score1.Text) < int.Parse(score2.Text))
             {
-                id++;
-                ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
+                score2.Text = (64 - int.Parse(score1.Text)).ToString();
+                GameOver();
             }
-
-            XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
-
-            xmlWriter.WriteStartDocument();
-
-            xmlWriter.WriteStartElement("tablero");
-
-            for (int i = 0; i < 64; i++)
-            {
-                string color = Ver_ficha(i + 1);
-                if (color == "blanco")
-                {
-                    xmlWriter.WriteStartElement("ficha");
-
-                    xmlWriter.WriteStartElement("color");
-                    xmlWriter.WriteString(color);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteStartElement("columna");
-                    xmlWriter.WriteString(col[i]);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteStartElement("fila");
-                    xmlWriter.WriteString(fila[i]);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteEndElement();
-                }
-                if (color == "negro")
-                {
-                    xmlWriter.WriteStartElement("ficha");
-
-                    xmlWriter.WriteStartElement("color");
-                    xmlWriter.WriteString(color);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteStartElement("columna");
-                    xmlWriter.WriteString(col[i]);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteStartElement("fila");
-                    xmlWriter.WriteString(fila[i]);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteEndElement();
-                }
-                else
-                    continue;
-            }
-
-            xmlWriter.WriteStartElement("siguienteTiro");
-            xmlWriter.WriteStartElement("color");
-            if (turno.Text == "Blanco")
-                xmlWriter.WriteString("blanco");
-            else
-                xmlWriter.WriteString("negro");
-            xmlWriter.WriteEndElement();
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteStartElement("movimientos");
-            xmlWriter.WriteStartElement("negro");
-            xmlWriter.WriteString(movimiento_negro.Text);
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteStartElement("blanco");
-            xmlWriter.WriteString(movimiento_blanco.Text);
-            xmlWriter.WriteEndElement();
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteEndDocument();
-            xmlWriter.Close();
-            Response.Write("Partida guardada en: " + ruta);
-        }
-
-        public bool FichaAlApar(WebControl[] casilla, string color, int clic)
-        {
-            bool permitido = true;
-            if (clic + 1 < casilla.Length && clic != 0)
-            {
-                if (color == "Negro")
-                {
-                    if (casilla[clic].CssClass != blanco)
-                    {
-                        if (casilla[clic + 1].CssClass == negro && casilla[clic - 1].CssClass == negro && casilla[clic].CssClass == negro)
-                            permitido = false;
-                    }
-                    else
-                        permitido = false;
-                }
-                if (color == "Blanco")
-                {
-                    if (casilla[clic].CssClass != negro)
-                    {
-                        if (casilla[clic + 1].CssClass == blanco && casilla[clic - 1].CssClass == blanco && casilla[clic].CssClass == blanco)
-                            permitido = false;
-                    }
-                    else
-                        permitido = false;
-                }
-            }
-            if (clic - 1 == -1)
-            {
-                if (color == "Negro" && casilla.Length > 1)
-                {
-                    if (casilla[clic + 1].CssClass == negro)
-                        permitido = false;
-                }
-                if (color == "Blanco" && casilla.Length > 1)
-                {
-                    if (casilla[clic + 1].CssClass == blanco)
-                        permitido = false;
-                }
-            }
-            if (clic + 1 >= casilla.Length)
-            {
-                if (color == "Negro" && casilla.Length > 1)
-                {
-                    if (casilla[clic - 1].CssClass == negro)
-                        permitido = false;
-                }
-                if (color == "Blanco" && casilla.Length > 1)
-                {
-                    if (casilla[clic - 1].CssClass == blanco)
-                        permitido = false;
-                }
-            }
-            return permitido;
+            if (int.Parse(score1.Text) == int.Parse(score2.Text)) GameOver();
         }
 
         public void GameOver()
@@ -554,6 +514,8 @@ namespace Othello
             resultados.Visible = true;
             guardar.Visible = false;
             ceder_turno.Visible = false;
+            end.Visible = false;
+            salir.Visible = true;
         }
 
         public void Registrar(string ganador)
@@ -659,6 +621,61 @@ namespace Othello
                 Response.Redirect("Menu.aspx?Parametro=" + jugador_host);
             }
             else Response.Redirect("Login.aspx");
+        }
+
+        public bool FichaAlApar(WebControl[] casilla, string color, int clic)
+        {
+            bool permitido = true;
+            if (clic + 1 < casilla.Length && clic != 0)
+            {
+                if (color == "Negro")
+                {
+                    if (casilla[clic].CssClass != blanco)
+                    {
+                        if (casilla[clic + 1].CssClass == negro && casilla[clic - 1].CssClass == negro && casilla[clic].CssClass == negro)
+                            permitido = false;
+                    }
+                    else
+                        permitido = false;
+                }
+                if (color == "Blanco")
+                {
+                    if (casilla[clic].CssClass != negro)
+                    {
+                        if (casilla[clic + 1].CssClass == blanco && casilla[clic - 1].CssClass == blanco && casilla[clic].CssClass == blanco)
+                            permitido = false;
+                    }
+                    else
+                        permitido = false;
+                }
+            }
+            if (clic - 1 == -1)
+            {
+                if (color == "Negro" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == negro)
+                        permitido = false;
+                }
+                if (color == "Blanco" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == blanco)
+                        permitido = false;
+                }
+            }
+            if (clic + 1 >= casilla.Length)
+            {
+                if (color == "Negro" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == negro)
+                        permitido = false;
+                }
+                if (color == "Blanco" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == blanco)
+                        permitido = false;
+                }
+            }
+            return permitido;
         }
 
         public int Verificar(WebControl[] casilla, string color, int clic)
@@ -799,15 +816,6 @@ namespace Othello
             }
         }
 
-        public void Validar(WebControl[] casilla, string color, int clic, int index)
-        {
-            if (FichaAlApar(casilla, color, clic) && index != -1 && VerVacio(casilla, clic, index))
-                imposible = 0;
-            else
-                imposible++;
-
-        }
-
         public bool VerVacio(WebControl[] casilla, int clic, int index)
         {
             bool permitido = true;
@@ -852,84 +860,6 @@ namespace Othello
             return permitido;
         }
 
-        public int Verificar2(WebControl[] casilla, string color, int clic)
-        {
-            bool permitido = false;
-            bool permitido2 = false;
-            int aux = 0;
-            int aux2 = 0;
-            if (color == "Negro")
-            {
-                if (clic < casilla.Length && casilla.Length != 1)
-                {
-                    if (permitido == false)
-                    {
-                        for (int i = 0; i < clic; i++)
-                        {
-                            if (casilla[i].CssClass == negro)
-                            {
-                                permitido = true;
-                                aux = i;
-                            }
-                        }
-                    }
-                    if (true)
-                    {
-                        for (int i = clic + 1; i < casilla.Length; i++)
-                        {
-                            if (casilla[i].CssClass == negro)
-                            {
-                                permitido2 = true;
-                                aux2 = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (color == "Blanco")
-            {
-                if (clic < casilla.Length && casilla.Length != 1)
-                {
-                    if (permitido == false)
-                    {
-                        for (int i = 0; i < clic; i++)
-                        {
-                            if (casilla[i].CssClass == blanco)
-                            {
-                                permitido = true;
-                                aux = i;
-                            }
-                        }
-                    }
-                    if (true)
-                    {
-                        for (int i = clic + 1; i < casilla.Length; i++)
-                        {
-                            if (casilla[i].CssClass == blanco)
-                            {
-                                permitido2 = true;
-                                aux2 = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (permitido != permitido2)
-            {
-                if (permitido2) return aux2;
-                else return aux;
-            }
-            if (permitido && permitido2)
-            {
-                Validar(casilla, color, clic, aux);
-                Validar(casilla, color, clic, aux2);
-                return -1;
-            }
-            else
-                return -1;
-        }
 
         public void A1_Click(object sender, EventArgs e)
         {
@@ -1887,845 +1817,6 @@ namespace Othello
          
                 Get_Score(h8);
                 Get_Move(h8);
-            }
-        }
-
-
-        public bool TiroImposible()
-        {
-            A1validacion();
-            A2validacion();
-            A3validacion();
-            A4validacion();
-            A5validacion();
-            A6validacion();
-            A7validacion();
-            A8validacion();
-            B1validacion();
-            B2validacion();
-            B3validacion();
-            B4validacion();
-            B5validacion();
-            B6validacion();
-            B8validacion();
-            C1validacion();
-            C2validacion();
-            C3validacion();
-            C4validacion();
-            C5validacion();
-            C6validacion();
-            C7validacion();
-            C8validacion();
-            D1validacion();
-            D2validacion();
-            D3validacion();
-            D4validacion();
-            D5validacion();
-            D6validacion();
-            D7validacion();
-            D8validacion();
-            E1validacion();
-            E2validacion();
-            E3validacion();
-            E4validacion();
-            E5validacion();
-            E6validacion();
-            E7validacion();
-            E8validacion();
-            F1validacion();
-            F2validacion();
-            F3validacion();
-            F4validacion();
-            F5validacion();
-            F6validacion();
-            F7validacion();
-            F8validacion();
-            G1validacion();
-            G2validacion();
-            G3validacion();
-            G4validacion();
-            G5validacion();
-            G6validacion();
-            G7validacion();
-            G8validacion();
-            H1validacion();
-            H2validacion();
-            H3validacion();
-            H4validacion();
-            H5validacion();
-            H6validacion();
-            H7validacion();
-            H8validacion();
-
-            if (imposible > 255) { Response.Write("Turno imposible"); return true; }
-            else return false;
-        }
-
-
-        public void A1validacion()
-        {
-            string color = turno.Text;
-            if (a1.CssClass == verde)
-            {
-                Validar(Tipo("colA"), color, 0, Verificar2(Tipo("colA"), color, 0));
-                Validar(Tipo("fila1"), color, 0, Verificar2(Tipo("fila1"), color, 0));
-                Validar(Tipo("diagPos1"), color, 0, Verificar2(Tipo("diagPos1"), color, 0));
-                Validar(Tipo("diagNeg8"), color, 0, Verificar2(Tipo("diagNeg8"), color, 0));
-            }
-        }
-
-        public void B1validacion()
-        {
-            string color = turno.Text;
-            if (b1.CssClass == verde)
-            {
-                Validar(Tipo("colB"), color, 0, Verificar2(Tipo("colB"), color, 0));
-                Validar(Tipo("fila1"), color, 1, Verificar2(Tipo("fila1"), color, 1));
-                Validar(Tipo("diagPos2"), color, 1, Verificar2(Tipo("diagPos2"), color, 1));
-                Validar(Tipo("diagNeg7"), color, 0, Verificar2(Tipo("diagNeg7"), color, 0));
-            }
-        }
-
-        protected void C1validacion()
-        {
-            string color = turno.Text;
-            if (c1.CssClass == verde)
-            {
-                Validar(Tipo("colC"), color, 0, Verificar2(Tipo("colC"), color, 0));
-                Validar(Tipo("fila1"), color, 2, Verificar2(Tipo("fila1"), color, 2));
-                Validar(Tipo("diagPos3"), color, 2, Verificar2(Tipo("diagPos3"), color, 2));
-                Validar(Tipo("diagNeg6"), color, 0, Verificar2(Tipo("diagNeg6"), color, 0));
-            }
-        }
-
-        protected void D1validacion()
-        {
-            string color = turno.Text;
-            if (d1.CssClass == verde)
-            {
-                Validar(Tipo("colD"), color, 0, Verificar2(Tipo("colD"), color, 0));
-                Validar(Tipo("fila1"), color, 3, Verificar2(Tipo("fila1"), color, 3));
-                Validar(Tipo("diagPos4"), color, 3, Verificar2(Tipo("diagPos4"), color, 3));
-                Validar(Tipo("diagNeg5"), color, 0, Verificar2(Tipo("diagNeg5"), color, 0));
-            }
-        }
-
-        protected void E1validacion()
-        {
-            string color = turno.Text;
-            if (e1.CssClass == verde)
-            {
-                Validar(Tipo("colE"), color, 0, Verificar2(Tipo("colE"), color, 0));
-                Validar(Tipo("fila1"), color, 4, Verificar2(Tipo("fila1"), color, 4));
-                Validar(Tipo("diagPos5"), color, 4, Verificar2(Tipo("diagPos5"), color, 4));
-                Validar(Tipo("diagNeg4"), color, 0, Verificar2(Tipo("diagNeg4"), color, 0));
-            }
-        }
-
-        protected void F1validacion()
-        {
-            string color = turno.Text;
-            if (f1.CssClass == verde)
-            {
-                Validar(Tipo("colF"), color, 0, Verificar2(Tipo("colF"), color, 0));
-                Validar(Tipo("fila1"), color, 5, Verificar2(Tipo("fila1"), color, 5));
-                Validar(Tipo("diagPos6"), color, 5, Verificar2(Tipo("diagPos6"), color, 5));
-                Validar(Tipo("diagNeg3"), color, 0, Verificar2(Tipo("diagNeg3"), color, 0));
-            }
-        }
-
-        protected void G1validacion()
-        {
-            string color = turno.Text;
-            if (g1.CssClass == verde)
-            {
-                Validar(Tipo("colG"), color, 0, Verificar2(Tipo("colG"), color, 0));
-                Validar(Tipo("fila1"), color, 6, Verificar2(Tipo("fila1"), color, 6));
-                Validar(Tipo("diagPos7"), color, 6, Verificar2(Tipo("diagPos7"), color, 6));
-                Validar(Tipo("diagNeg2"), color, 0, Verificar2(Tipo("diagNeg2"), color, 0));
-            }
-        }
-
-        protected void H1validacion()
-        {
-            string color = turno.Text;
-            if (h1.CssClass == verde)
-            {
-                Validar(Tipo("colH"), color, 0, Verificar2(Tipo("colH"), color, 0));
-                Validar(Tipo("fila1"), color, 7, Verificar2(Tipo("fila1"), color, 7));
-                Validar(Tipo("diagPos8"), color, 7, Verificar2(Tipo("diagPos8"), color, 7));
-                Validar(Tipo("diagNeg1"), color, 0, Verificar2(Tipo("diagNeg1"), color, 0));
-            }
-        }
-
-        protected void A2validacion()
-        {
-            string color = turno.Text;
-            if (a2.CssClass == verde)
-            {
-                Validar(Tipo("colA"), color, 1, Verificar2(Tipo("colA"), color, 1));
-                Validar(Tipo("fila2"), color, 0, Verificar2(Tipo("fila2"), color, 0));
-                Validar(Tipo("diagPos2"), color, 0, Verificar2(Tipo("diagPos2"), color, 0));
-                Validar(Tipo("diagNeg9"), color, 0, Verificar2(Tipo("diagNeg9"), color, 0));
-            }
-        }
-
-        protected void B2validacion()
-        {
-            string color = turno.Text;
-            if (b2.CssClass == verde)
-            {
-                Validar(Tipo("colB"), color, 1, Verificar2(Tipo("colB"), color, 1));
-                Validar(Tipo("fila2"), color, 1, Verificar2(Tipo("fila2"), color, 1));
-                Validar(Tipo("diagPos3"), color, 1, Verificar2(Tipo("diagPos3"), color, 1));
-                Validar(Tipo("diagNeg8"), color, 1, Verificar2(Tipo("diagNeg8"), color, 1));
-            }
-        }
-
-        protected void C2validacion()
-        {
-            string color = turno.Text;
-            if (c2.CssClass == verde)
-            {
-                Validar(Tipo("colC"), color, 1, Verificar2(Tipo("colC"), color, 1));
-                Validar(Tipo("fila2"), color, 2, Verificar2(Tipo("fila2"), color, 2));
-                Validar(Tipo("diagPos4"), color, 2, Verificar2(Tipo("diagPos4"), color, 2));
-                Validar(Tipo("diagNeg7"), color, 1, Verificar2(Tipo("diagNeg7"), color, 1));
-            }
-        }
-
-        protected void D2validacion()
-        {
-            string color = turno.Text;
-            if (d2.CssClass == verde)
-            {
-                Validar(Tipo("colD"), color, 1, Verificar2(Tipo("colD"), color, 1));
-                Validar(Tipo("fila2"), color, 3, Verificar2(Tipo("fila2"), color, 3));
-                Validar(Tipo("diagPos5"), color, 3, Verificar2(Tipo("diagPos5"), color, 3));
-                Validar(Tipo("diagNeg6"), color, 1, Verificar2(Tipo("diagNeg6"), color, 1));
-            }
-        }
-
-        protected void E2validacion()
-        {
-            string color = turno.Text;
-            if (e2.CssClass == verde)
-            {
-                Validar(Tipo("colE"), color, 1, Verificar2(Tipo("colE"), color, 1));
-                Validar(Tipo("fila2"), color, 4, Verificar2(Tipo("fila2"), color, 4));
-                Validar(Tipo("diagPos6"), color, 4, Verificar2(Tipo("diagPos6"), color, 4));
-                Validar(Tipo("diagNeg5"), color, 1, Verificar2(Tipo("diagNeg5"), color, 1));
-            }
-        }
-
-        protected void F2validacion()
-        {
-            string color = turno.Text;
-            if (f2.CssClass == verde)
-            {
-                Validar(Tipo("colF"), color, 1, Verificar2(Tipo("colF"), color, 1));
-                Validar(Tipo("fila2"), color, 5, Verificar2(Tipo("fila2"), color, 5));
-                Validar(Tipo("diagPos7"), color, 5, Verificar2(Tipo("diagPos7"), color, 5));
-                Validar(Tipo("diagNeg4"), color, 1, Verificar2(Tipo("diagNeg4"), color, 1));
-            }
-        }
-
-        protected void G2validacion()
-        {
-            string color = turno.Text;
-            if (g2.CssClass == verde)
-            {
-                Validar(Tipo("colG"), color, 1, Verificar2(Tipo("colG"), color, 1));
-                Validar(Tipo("fila2"), color, 6, Verificar2(Tipo("fila2"), color, 6));
-                Validar(Tipo("diagPos8"), color, 6, Verificar2(Tipo("diagPos8"), color, 6));
-                Validar(Tipo("diagNeg3"), color, 1, Verificar2(Tipo("diagNeg3"), color, 1));
-            }
-        }
-
-        protected void H2validacion()
-        {
-            string color = turno.Text;
-            if (h2.CssClass == verde)
-            {
-                Validar(Tipo("colH"), color, 1, Verificar2(Tipo("colH"), color, 1));
-                Validar(Tipo("fila2"), color, 7, Verificar2(Tipo("fila2"), color, 7));
-                Validar(Tipo("diagPos9"), color, 6, Verificar2(Tipo("diagPos9"), color, 6));
-                Validar(Tipo("diagNeg2"), color, 1, Verificar2(Tipo("diagNeg2"), color, 1));
-            }
-        }
-
-        protected void A3validacion()
-        {
-            string color = turno.Text;
-            if (a3.CssClass == verde)
-            {
-                Validar(Tipo("colA"), color, 2, Verificar2(Tipo("colA"), color, 2));
-                Validar(Tipo("fila3"), color, 0, Verificar2(Tipo("fila3"), color, 0));
-                Validar(Tipo("diagPos3"), color, 0, Verificar2(Tipo("diagPos3"), color, 0));
-                Validar(Tipo("diagNeg10"), color, 0, Verificar2(Tipo("diagNeg10"), color, 0));
-            }
-        }
-
-        protected void B3validacion()
-        {
-            string color = turno.Text;
-            if (b3.CssClass == verde)
-            {
-                Validar(Tipo("colB"), color, 2, Verificar2(Tipo("colB"), color, 2));
-                Validar(Tipo("fila3"), color, 1, Verificar2(Tipo("fila3"), color, 1));
-                Validar(Tipo("diagPos4"), color, 1, Verificar2(Tipo("diagPos4"), color, 1));
-                Validar(Tipo("diagNeg9"), color, 1, Verificar2(Tipo("diagNeg9"), color, 1));
-            }
-        }
-
-        protected void C3validacion()
-        {
-            string color = turno.Text;
-            if (c3.CssClass == verde)
-            {
-                Validar(Tipo("colC"), color, 2, Verificar2(Tipo("colC"), color, 2));
-                Validar(Tipo("fila3"), color, 2, Verificar2(Tipo("fila3"), color, 2));
-                Validar(Tipo("diagPos5"), color, 2, Verificar2(Tipo("diagPos5"), color, 2));
-                Validar(Tipo("diagNeg8"), color, 2, Verificar2(Tipo("diagNeg8"), color, 2));
-            }
-        }
-
-        protected void D3validacion()
-        {
-            string color = turno.Text;
-            if (d3.CssClass == verde)
-            {
-                Validar(Tipo("colD"), color, 2, Verificar2(Tipo("colD"), color, 2));
-                Validar(Tipo("fila3"), color, 3, Verificar2(Tipo("fila3"), color, 3));
-                Validar(Tipo("diagPos6"), color, 3, Verificar2(Tipo("diagPos6"), color, 3));
-                Validar(Tipo("diagNeg7"), color, 2, Verificar2(Tipo("diagNeg7"), color, 2));
-            }
-        }
-
-        protected void E3validacion()
-        {
-            string color = turno.Text;
-            if (e3.CssClass == verde)
-            {
-                Validar(Tipo("colE"), color, 2, Verificar2(Tipo("colE"), color, 2));
-                Validar(Tipo("fila3"), color, 4, Verificar2(Tipo("fila3"), color, 4));
-                Validar(Tipo("diagPos7"), color, 4, Verificar2(Tipo("diagPos7"), color, 4));
-                Validar(Tipo("diagNeg6"), color, 2, Verificar2(Tipo("diagNeg6"), color, 2));
-            }
-        }
-
-        protected void F3validacion()
-        {
-            string color = turno.Text;
-            if (f3.CssClass == verde)
-            {
-                Validar(Tipo("colF"), color, 2, Verificar2(Tipo("colF"), color, 2));
-                Validar(Tipo("fila3"), color, 5, Verificar2(Tipo("fila3"), color, 5));
-                Validar(Tipo("diagPos8"), color, 5, Verificar2(Tipo("diagPos8"), color, 5));
-                Validar(Tipo("diagNeg5"), color, 2, Verificar2(Tipo("diagNeg5"), color, 2));
-            }
-        }
-
-        protected void G3validacion()
-        {
-            string color = turno.Text;
-            if (g3.CssClass == verde)
-            {
-                Validar(Tipo("colG"), color, 2, Verificar2(Tipo("colG"), color, 2));
-                Validar(Tipo("fila3"), color, 6, Verificar2(Tipo("fila3"), color, 6));
-                Validar(Tipo("diagPos9"), color, 5, Verificar2(Tipo("diagPos9"), color, 5));
-                Validar(Tipo("diagNeg4"), color, 2, Verificar2(Tipo("diagNeg4"), color, 2));
-            }
-        }
-
-        protected void H3validacion()
-        {
-            string color = turno.Text;
-            if (h3.CssClass == verde)
-            {
-                Validar(Tipo("colH"), color, 2, Verificar2(Tipo("colH"), color, 2));
-                Validar(Tipo("fila3"), color, 7, Verificar2(Tipo("fila3"), color, 7));
-                Validar(Tipo("diagPos10"), color, 5, Verificar2(Tipo("diagPos10"), color, 5));
-                Validar(Tipo("diagNeg3"), color, 2, Verificar2(Tipo("diagNeg3"), color, 2));
-            }
-        }
-
-        protected void A4validacion()
-        {
-            string color = turno.Text;
-            if (a4.CssClass == verde)
-            {
-                Validar(Tipo("colA"), color, 3, Verificar2(Tipo("colA"), color, 3));
-                Validar(Tipo("fila4"), color, 0, Verificar2(Tipo("fila4"), color, 0));
-                Validar(Tipo("diagPos4"), color, 0, Verificar2(Tipo("diagPos4"), color, 0));
-                Validar(Tipo("diagNeg11"), color, 0, Verificar2(Tipo("diagNeg11"), color, 0));
-            }
-        }
-        protected void B4validacion()
-        {
-            string color = turno.Text;
-            if (b4.CssClass == verde)
-            {
-                Validar(Tipo("colB"), color, 3, Verificar2(Tipo("colB"), color, 3));
-                Validar(Tipo("fila4"), color, 1, Verificar2(Tipo("fila4"), color, 1));
-                Validar(Tipo("diagPos5"), color, 1, Verificar2(Tipo("diagPos5"), color, 1));
-                Validar(Tipo("diagNeg10"), color, 1, Verificar2(Tipo("diagNeg10"), color, 1));
-            }
-        }
-
-        protected void C4validacion()
-        {
-            string color = turno.Text;
-            if (c4.CssClass == verde)
-            {
-                Validar(Tipo("colC"), color, 3, Verificar2(Tipo("colC"), color, 3));
-                Validar(Tipo("fila4"), color, 2, Verificar2(Tipo("fila4"), color, 2));
-                Validar(Tipo("diagPos6"), color, 2, Verificar2(Tipo("diagPos6"), color, 2));
-                Validar(Tipo("diagNeg9"), color, 2, Verificar2(Tipo("diagNeg9"), color, 2));
-            }
-        }
-
-        protected void D4validacion()
-        {
-            string color = turno.Text;
-            if (d4.CssClass == verde)
-            {
-                Validar(Tipo("colD"), color, 3, Verificar2(Tipo("colD"), color, 3));
-                Validar(Tipo("fila4"), color, 3, Verificar2(Tipo("fila4"), color, 3));
-                Validar(Tipo("diagPos7"), color, 3, Verificar2(Tipo("diagPos7"), color, 3));
-                Validar(Tipo("diagNeg8"), color, 3, Verificar2(Tipo("diagNeg8"), color, 3));
-            }
-        }
-
-        protected void E4validacion()
-        {
-            string color = turno.Text;
-            if (e4.CssClass == verde)
-            {
-                Validar(Tipo("colE"), color, 3, Verificar2(Tipo("colE"), color, 3));
-                Validar(Tipo("fila4"), color, 4, Verificar2(Tipo("fila4"), color, 4));
-                Validar(Tipo("diagPos8"), color, 4, Verificar2(Tipo("diagPos8"), color, 4));
-                Validar(Tipo("diagNeg7"), color, 3, Verificar2(Tipo("diagNeg7"), color, 3));
-            }
-        }
-
-        protected void F4validacion()
-        {
-            string color = turno.Text;
-            if (f4.CssClass == verde)
-            {
-                Validar(Tipo("colF"), color, 3, Verificar2(Tipo("colF"), color, 3));
-                Validar(Tipo("fila4"), color, 5, Verificar2(Tipo("fila4"), color, 5));
-                Validar(Tipo("diagPos9"), color, 4, Verificar2(Tipo("diagPos9"), color, 4));
-                Validar(Tipo("diagNeg6"), color, 3, Verificar2(Tipo("diagNeg6"), color, 3));
-            }
-        }
-
-        protected void G4validacion()
-        {
-            string color = turno.Text;
-            if (g4.CssClass == verde)
-            {
-                Validar(Tipo("colG"), color, 3, Verificar2(Tipo("colG"), color, 3));
-                Validar(Tipo("fila4"), color, 6, Verificar2(Tipo("fila4"), color, 6));
-                Validar(Tipo("diagPos10"), color, 4, Verificar2(Tipo("diagPos10"), color, 4));
-                Validar(Tipo("diagNeg5"), color, 3, Verificar2(Tipo("diagNeg5"), color, 3));
-            }
-        }
-
-        protected void H4validacion()
-        {
-            string color = turno.Text;
-            if (h4.CssClass == verde)
-            {
-                Validar(Tipo("colH"), color, 3, Verificar2(Tipo("colH"), color, 3));
-                Validar(Tipo("fila4"), color, 7, Verificar2(Tipo("fila4"), color, 7));
-                Validar(Tipo("diagPos11"), color, 4, Verificar2(Tipo("diagPos11"), color, 4));
-                Validar(Tipo("diagNeg4"), color, 3, Verificar2(Tipo("diagNeg4"), color, 3));
-            }
-        }
-
-        protected void A5validacion()
-        {
-            string color = turno.Text;
-            if (a5.CssClass == verde)
-            {
-                Validar(Tipo("colA"), color, 4, Verificar2(Tipo("colA"), color, 4));
-                Validar(Tipo("fila5"), color, 0, Verificar2(Tipo("fila5"), color, 0));
-                Validar(Tipo("diagPos5"), color, 0, Verificar2(Tipo("diagPos5"), color, 0));
-                Validar(Tipo("diagNeg12"), color, 0, Verificar2(Tipo("diagNeg12"), color, 0));
-            }
-        }
-
-        protected void B5validacion()
-        {
-            string color = turno.Text;
-            if (b5.CssClass == verde)
-            {
-                Validar(Tipo("colB"), color, 4, Verificar2(Tipo("colB"), color, 4));
-                Validar(Tipo("fila5"), color, 1, Verificar2(Tipo("fila5"), color, 1));
-                Validar(Tipo("diagPos6"), color, 1, Verificar2(Tipo("diagPos6"), color, 1));
-                Validar(Tipo("diagNeg11"), color, 1, Verificar2(Tipo("diagNeg11"), color, 1));
-            }
-        }
-
-        protected void C5validacion()
-        {
-            string color = turno.Text;
-            if (c5.CssClass == verde)
-            {
-                Validar(Tipo("colC"), color, 4, Verificar2(Tipo("colC"), color, 4));
-                Validar(Tipo("fila5"), color, 2, Verificar2(Tipo("fila5"), color, 2));
-                Validar(Tipo("diagPos7"), color, 2, Verificar2(Tipo("diagPos7"), color, 2));
-                Validar(Tipo("diagNeg10"), color, 2, Verificar2(Tipo("diagNeg10"), color, 2));
-            }
-        }
-
-        protected void D5validacion()
-        {
-            string color = turno.Text;
-            if (d5.CssClass == verde)
-            {
-                Validar(Tipo("colD"), color, 4, Verificar2(Tipo("colD"), color, 4));
-                Validar(Tipo("fila5"), color, 3, Verificar2(Tipo("fila5"), color, 3));
-                Validar(Tipo("diagPos8"), color, 3, Verificar2(Tipo("diagPos8"), color, 3));
-                Validar(Tipo("diagNeg9"), color, 3, Verificar2(Tipo("diagNeg9"), color, 3));
-            }
-        }
-
-        protected void E5validacion()
-        {
-            string color = turno.Text;
-            if (e5.CssClass == verde)
-            {
-                Validar(Tipo("colE"), color, 4, Verificar2(Tipo("colE"), color, 4));
-                Validar(Tipo("fila5"), color, 4, Verificar2(Tipo("fila5"), color, 4));
-                Validar(Tipo("diagPos9"), color, 3, Verificar2(Tipo("diagPos9"), color, 3));
-                Validar(Tipo("diagNeg8"), color, 4, Verificar2(Tipo("diagNeg8"), color, 4));
-            }
-        }
-
-        protected void F5validacion()
-        {
-            string color = turno.Text;
-            if (f5.CssClass == verde)
-            {
-                Validar(Tipo("colF"), color, 4, Verificar2(Tipo("colF"), color, 4));
-                Validar(Tipo("fila5"), color, 5, Verificar2(Tipo("fila5"), color, 5));
-                Validar(Tipo("diagPos10"), color, 3, Verificar2(Tipo("diagPos10"), color, 3));
-                Validar(Tipo("diagNeg7"), color, 4, Verificar2(Tipo("diagNeg7"), color, 4));
-            }
-        }
-
-        protected void G5validacion()
-        {
-            string color = turno.Text;
-            if (g5.CssClass == verde)
-            {
-                Validar(Tipo("colG"), color, 4, Verificar2(Tipo("colG"), color, 4));
-                Validar(Tipo("fila5"), color, 6, Verificar2(Tipo("fila5"), color, 6));
-                Validar(Tipo("diagPos11"), color, 3, Verificar2(Tipo("diagPos11"), color, 3));
-                Validar(Tipo("diagNeg6"), color, 4, Verificar2(Tipo("diagNeg6"), color, 4));
-            }
-        }
-
-        protected void H5validacion()
-        {
-            string color = turno.Text;
-            if (h5.CssClass == verde)
-            {
-                Validar(Tipo("colH"), color, 4, Verificar2(Tipo("colH"), color, 4));
-                Validar(Tipo("fila5"), color, 7, Verificar2(Tipo("fila5"), color, 7));
-                Validar(Tipo("diagPos12"), color, 3, Verificar2(Tipo("diagPos12"), color, 3));
-                Validar(Tipo("diagNeg5"), color, 4, Verificar2(Tipo("diagNeg5"), color, 4));
-            }
-        }
-
-        protected void A6validacion()
-        {
-            string color = turno.Text;
-            if (a6.CssClass == verde)
-            {
-                Validar(Tipo("colA"), color, 5, Verificar2(Tipo("colA"), color, 5));
-                Validar(Tipo("fila6"), color, 0, Verificar2(Tipo("fila6"), color, 0));
-                Validar(Tipo("diagPos6"), color, 0, Verificar2(Tipo("diagPos6"), color, 0));
-                Validar(Tipo("diagNeg13"), color, 0, Verificar2(Tipo("diagNeg13"), color, 0));
-            }
-        }
-
-        protected void B6validacion()
-        {
-            string color = turno.Text;
-            if (b6.CssClass == verde)
-            {
-                Validar(Tipo("colB"), color, 5, Verificar2(Tipo("colB"), color, 5));
-                Validar(Tipo("fila6"), color, 1, Verificar2(Tipo("fila6"), color, 1));
-                Validar(Tipo("diagPos7"), color, 1, Verificar2(Tipo("diagPos7"), color, 1));
-                Validar(Tipo("diagNeg12"), color, 1, Verificar2(Tipo("diagNeg12"), color, 1));
-            }
-        }
-
-        protected void C6validacion()
-        {
-            string color = turno.Text;
-            if (c6.CssClass == verde)
-            {
-                Validar(Tipo("colC"), color, 5, Verificar2(Tipo("colC"), color, 5));
-                Validar(Tipo("fila6"), color, 2, Verificar2(Tipo("fila6"), color, 2));
-                Validar(Tipo("diagPos8"), color, 2, Verificar2(Tipo("diagPos8"), color, 2));
-                Validar(Tipo("diagNeg11"), color, 2, Verificar2(Tipo("diagNeg11"), color, 2));
-            }
-        }
-
-        protected void D6validacion()
-        {
-            string color = turno.Text;
-            if (d6.CssClass == verde)
-            {
-                Validar(Tipo("colD"), color, 5, Verificar2(Tipo("colD"), color, 5));
-                Validar(Tipo("fila6"), color, 3, Verificar2(Tipo("fila6"), color, 3));
-                Validar(Tipo("diagPos9"), color, 2, Verificar2(Tipo("diagPos9"), color, 2));
-                Validar(Tipo("diagNeg10"), color, 3, Verificar2(Tipo("diagNeg10"), color, 3));
-            }
-        }
-
-        protected void E6validacion()
-        {
-            string color = turno.Text;
-            if (e6.CssClass == verde)
-            {
-                Validar(Tipo("colE"), color, 5, Verificar2(Tipo("colE"), color, 5));
-                Validar(Tipo("fila6"), color, 4, Verificar2(Tipo("fila6"), color, 4));
-                Validar(Tipo("diagPos10"), color, 2, Verificar2(Tipo("diagPos10"), color, 2));
-                Validar(Tipo("diagNeg9"), color, 4, Verificar2(Tipo("diagNeg9"), color, 4));
-            }
-        }
-
-        protected void F6validacion()
-        {
-            string color = turno.Text;
-            if (f6.CssClass == verde)
-            {
-                Validar(Tipo("colF"), color, 5, Verificar2(Tipo("colF"), color, 5));
-                Validar(Tipo("fila6"), color, 5, Verificar2(Tipo("fila6"), color, 5));
-                Validar(Tipo("diagPos11"), color, 2, Verificar2(Tipo("diagPos11"), color, 2));
-                Validar(Tipo("diagNeg8"), color, 5, Verificar2(Tipo("diagNeg8"), color, 5));
-            }
-        }
-
-        protected void G6validacion()
-        {
-            string color = turno.Text;
-            if (g6.CssClass == verde)
-            {
-                Validar(Tipo("colG"), color, 5, Verificar2(Tipo("colG"), color, 5));
-                Validar(Tipo("fila6"), color, 6, Verificar2(Tipo("fila6"), color, 6));
-                Validar(Tipo("diagPos12"), color, 2, Verificar2(Tipo("diagPos12"), color, 2));
-                Validar(Tipo("diagNeg7"), color, 5, Verificar2(Tipo("diagNeg7"), color, 5));
-            }
-        }
-
-        protected void H6validacion()
-        {
-            string color = turno.Text;
-            if (h6.CssClass == verde)
-            {
-                Validar(Tipo("colH"), color, 5, Verificar2(Tipo("colH"), color, 5));
-                Validar(Tipo("fila6"), color, 7, Verificar2(Tipo("fila6"), color, 7));
-                Validar(Tipo("diagPos13"), color, 2, Verificar2(Tipo("diagPos13"), color, 2));
-                Validar(Tipo("diagNeg6"), color, 5, Verificar2(Tipo("diagNeg6"), color, 5));
-            }
-        }
-
-        protected void A7validacion()
-        {
-            string color = turno.Text;
-            if (a7.CssClass == verde)
-            {
-                Validar(Tipo("colA"), color, 6, Verificar2(Tipo("colA"), color, 6));
-                Validar(Tipo("fila7"), color, 0, Verificar2(Tipo("fila7"), color, 0));
-                Validar(Tipo("diagPos7"), color, 0, Verificar2(Tipo("diagPos7"), color, 0));
-                Validar(Tipo("diagNeg14"), color, 0, Verificar2(Tipo("diagNeg14"), color, 0));
-            }
-        }
-
-        protected void B7validacion()
-        {
-            string color = turno.Text;
-            if (b7.CssClass == verde)
-            {
-                Validar(Tipo("colB"), color, 6, Verificar2(Tipo("colB"), color, 6));
-                Validar(Tipo("fila7"), color, 1, Verificar2(Tipo("fila7"), color, 1));
-                Validar(Tipo("diagPos8"), color, 1, Verificar2(Tipo("diagPos8"), color, 1));
-                Validar(Tipo("diagNeg13"), color, 1, Verificar2(Tipo("diagNeg13"), color, 1));
-            }
-        }
-
-        protected void C7validacion()
-        {
-            string color = turno.Text;
-            if (c7.CssClass == verde)
-            {
-                Validar(Tipo("colC"), color, 6, Verificar2(Tipo("colC"), color, 6));
-                Validar(Tipo("fila7"), color, 2, Verificar2(Tipo("fila7"), color, 2));
-                Validar(Tipo("diagPos9"), color, 1, Verificar2(Tipo("diagPos9"), color, 1));
-                Validar(Tipo("diagNeg12"), color, 2, Verificar2(Tipo("diagNeg12"), color, 2));
-            }
-        }
-
-        protected void D7validacion()
-        {
-            string color = turno.Text;
-            if (d7.CssClass == verde)
-            {
-                Validar(Tipo("colD"), color, 6, Verificar2(Tipo("colD"), color, 6));
-                Validar(Tipo("fila7"), color, 3, Verificar2(Tipo("fila7"), color, 3));
-                Validar(Tipo("diagPos10"), color, 1, Verificar2(Tipo("diagPos10"), color, 1));
-                Validar(Tipo("diagNeg11"), color, 3, Verificar2(Tipo("diagNeg11"), color, 3));
-            }
-        }
-
-        protected void E7validacion()
-        {
-            string color = turno.Text;
-            if (e7.CssClass == verde)
-            {
-                Validar(Tipo("colE"), color, 6, Verificar2(Tipo("colE"), color, 6));
-                Validar(Tipo("fila7"), color, 4, Verificar2(Tipo("fila7"), color, 4));
-                Validar(Tipo("diagPos11"), color, 1, Verificar2(Tipo("diagPos11"), color, 1));
-                Validar(Tipo("diagNeg10"), color, 4, Verificar2(Tipo("diagNeg10"), color, 4));
-            }
-        }
-
-        protected void F7validacion()
-        {
-            string color = turno.Text;
-            if (f7.CssClass == verde)
-            {
-                Validar(Tipo("colF"), color, 6, Verificar2(Tipo("colF"), color, 6));
-                Validar(Tipo("fila7"), color, 5, Verificar2(Tipo("fila7"), color, 5));
-                Validar(Tipo("diagPos12"), color, 1, Verificar2(Tipo("diagPos12"), color, 1));
-                Validar(Tipo("diagNeg9"), color, 5, Verificar2(Tipo("diagNeg9"), color, 5));
-            }
-        }
-
-        protected void G7validacion()
-        {
-            string color = turno.Text;
-            if (g7.CssClass == verde)
-            {
-                Validar(Tipo("colG"), color, 6, Verificar2(Tipo("colG"), color, 6));
-                Validar(Tipo("fila7"), color, 6, Verificar2(Tipo("fila7"), color, 6));
-                Validar(Tipo("diagPos13"), color, 1, Verificar2(Tipo("diagPos13"), color, 1));
-                Validar(Tipo("diagNeg8"), color, 6, Verificar2(Tipo("diagNeg8"), color, 6));
-            }
-        }
-
-        protected void H7validacion()
-        {
-            string color = turno.Text;
-            if (h7.CssClass == verde)
-            {
-                Validar(Tipo("colH"), color, 6, Verificar2(Tipo("colH"), color, 6));
-                Validar(Tipo("fila7"), color, 7, Verificar2(Tipo("fila7"), color, 7));
-                Validar(Tipo("diagPos14"), color, 1, Verificar2(Tipo("diagPos14"), color, 1));
-                Validar(Tipo("diagNeg7"), color, 6, Verificar2(Tipo("diagNeg7"), color, 6));
-            }
-        }
-
-        protected void A8validacion()
-        {
-            string color = turno.Text;
-            if (a8.CssClass == verde)
-            {
-                Validar(Tipo("colA"), color, 7, Verificar2(Tipo("colA"), color, 7));
-                Validar(Tipo("fila8"), color, 0, Verificar2(Tipo("fila8"), color, 0));
-                Validar(Tipo("diagPos8"), color, 0, Verificar2(Tipo("diagPos8"), color, 0));
-                Validar(Tipo("diagNeg15"), color, 0, Verificar2(Tipo("diagNeg15"), color, 0));
-            }
-        }
-
-        protected void B8validacion()
-        {
-            string color = turno.Text;
-            if (b8.CssClass == verde)
-            {
-                Validar(Tipo("colB"), color, 7, Verificar2(Tipo("colB"), color, 7));
-                Validar(Tipo("fila8"), color, 1, Verificar2(Tipo("fila8"), color, 1));
-                Validar(Tipo("diagPos9"), color, 0, Verificar2(Tipo("diagPos9"), color, 0));
-                Validar(Tipo("diagNeg14"), color, 1, Verificar2(Tipo("diagNeg14"), color, 1));
-            }
-        }
-
-        protected void C8validacion()
-        {
-            string color = turno.Text;
-            if (c8.CssClass == verde)
-            {
-                Validar(Tipo("colC"), color, 7, Verificar2(Tipo("colC"), color, 7));
-                Validar(Tipo("fila8"), color, 2, Verificar2(Tipo("fila8"), color, 2));
-                Validar(Tipo("diagPos10"), color, 0, Verificar2(Tipo("diagPos10"), color, 0));
-                Validar(Tipo("diagNeg13"), color, 2, Verificar2(Tipo("diagNeg13"), color, 2));
-            }
-        }
-
-        protected void D8validacion()
-        {
-            string color = turno.Text;
-            if (d8.CssClass == verde)
-            {
-                Validar(Tipo("colD"), color, 7, Verificar2(Tipo("colD"), color, 7));
-                Validar(Tipo("fila8"), color, 3, Verificar2(Tipo("fila8"), color, 3));
-                Validar(Tipo("diagPos11"), color, 0, Verificar2(Tipo("diagPos11"), color, 0));
-                Validar(Tipo("diagNeg12"), color, 3, Verificar2(Tipo("diagNeg12"), color, 3));
-            }
-        }
-
-        protected void E8validacion()
-        {
-            string color = turno.Text;
-            if (e8.CssClass == verde)
-            {
-                Validar(Tipo("colE"), color, 7, Verificar2(Tipo("colE"), color, 7));
-                Validar(Tipo("fila8"), color, 4, Verificar2(Tipo("fila8"), color, 4));
-                Validar(Tipo("diagPos12"), color, 0, Verificar2(Tipo("diagPos12"), color, 0));
-                Validar(Tipo("diagNeg11"), color, 4, Verificar2(Tipo("diagNeg11"), color, 4));
-            }
-        }
-
-        protected void F8validacion()
-        {
-            string color = turno.Text;
-            if (f8.CssClass == verde)
-            {
-                Validar(Tipo("colF"), color, 7, Verificar2(Tipo("colF"), color, 7));
-                Validar(Tipo("fila8"), color, 5, Verificar2(Tipo("fila8"), color, 5));
-                Validar(Tipo("diagPos13"), color, 0, Verificar2(Tipo("diagPos13"), color, 0));
-                Validar(Tipo("diagNeg10"), color, 5, Verificar2(Tipo("diagNeg10"), color, 5));
-            }
-        }
-
-        protected void G8validacion()
-        {
-            string color = turno.Text;
-            if (g8.CssClass == verde)
-            {
-                Validar(Tipo("colG"), color, 7, Verificar2(Tipo("colG"), color, 7));
-                Validar(Tipo("fila8"), color, 6, Verificar2(Tipo("fila8"), color, 6));
-                Validar(Tipo("diagPos14"), color, 0, Verificar2(Tipo("diagPos14"), color, 0));
-                Validar(Tipo("diagNeg9"), color, 6, Verificar2(Tipo("diagNeg9"), color, 6));
-            }
-        }
-
-        protected void H8validacion()
-        {
-            string color = turno.Text;
-            if (h8.CssClass == verde)
-            {
-                Validar(Tipo("colH"), color, 7, Verificar2(Tipo("colH"), color, 7));
-                Validar(Tipo("fila8"), color, 7, Verificar2(Tipo("fila8"), color, 7));
-                Validar(Tipo("diagPos15"), color, 0, Verificar2(Tipo("diagPos15"), color, 0));
-                Validar(Tipo("diagNeg8"), color, 7, Verificar2(Tipo("diagNeg8"), color, 7));
             }
         }
     }

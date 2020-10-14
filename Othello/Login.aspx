@@ -21,7 +21,7 @@
   <body>
     <form runat="server">
     <div class="container-fluid bg-success py-3 titulo text-center">
-      <h1 class="display-2"><b>¡Welcome to Othello!</b></h1>
+      <h1 class="display-2"><b>¡Othello!</b></h1> <h4>by iGameGT &copy;</h4>
     </div>
 
     <div class="container px-5 pt-5 mb-5 fondo">
@@ -29,41 +29,32 @@
       <div class="row">
         <form id="registro">
         <div class="col-sm-12 col-md-12 col-lg-6">
-          <h2 class="mb-4 text-center rounded">Regístrate</h2>
+          <h2 class="mb-3 text-center rounded">Regístrate</h2>
 
-          <label for="fname" class="mb-1">Nombres:</label><br>
-          <asp:TextBox runat="server" class="cajon" id="fname"/><br/>
+          <asp:TextBox runat="server" placeholder="Nombres" AutoCompleteType="Disabled" CssClass="cajon" id="fname"/><br/>
 
-          <label for="sname" class="mb-1">Apellidos:</label><br>
-          <asp:TextBox runat="server" id="sname" class="cajon"/><br/>
+          <asp:TextBox runat="server" id="sname" placeholder="Apellidos" AutoCompleteType="Disabled" CssClass="cajon"/><br/>
 
-          <label for="fnac" class="mb-1">Fecha de nacimiento:</label><br>
-          <asp:TextBox runat="server" id="fnac" class="cajon" TextMode="Date"/><br/>
+          <asp:TextBox runat="server" id="fnac" placeholder="Fecha de nacimiento" onfocus="(this.type='date')" CssClass="cajon"/><br/>
 
-          <label for="pais">País:</label><br>
-          <asp:TextBox runat="server" id="pais" class="cajon"/><br/>
+          <asp:TextBox runat="server" id="pais" placeholder="País" CssClass="cajon"/><br/>
 
-          <label for="correo" class="mb-1">Correo:</label><br>
-          <asp:TextBox runat="server" id="correo" class="cajon" TextMode="Email"/><br/>
+          <asp:TextBox runat="server" id="correo" placeholder="Correo" AutoCompleteType="Disabled" CssClass="cajon" TextMode="Email"/><br/>
 
-          <label for="uname" class="mb-1">Username:</label><br>
-          <asp:TextBox runat="server" id="uname" class="cajon"/><br/>
+          <asp:TextBox runat="server" id="uname" placeholder="Usuario" AutoCompleteType="Disabled" CssClass="cajon"/><br/>
           
-          <label for="password" class="mb-1">Contraseña:</label><br>
-          <asp:TextBox runat="server" id="password" class="cajon" TextMode="Password"/><br/>
+          <asp:TextBox runat="server" id="password" placeholder="Contraseña" CssClass="cajon" TextMode="Password"/>
 
-          <asp:Button runat="server" id="enviar" CssClass="btn btn-outline-light" Text="Registrarse" OnClick="Registrar"/>
-          <%--</form>--%>
+          <asp:Button runat="server" id="enviar" CssClass="btn btn-outline-light mt-5" Text="Registrarse" OnClick="Registrar"/>
         </div>
 
         <div class="col-sm-12 col-md-12 col-lg-6 border-left border-secondary paddo">
-          <h2 class="text-center mb-4 rounded">Inicia sesión</h2>
-          <%--<form class="login" id="login">--%>
+          <h2 class="text-center mb-3 rounded">Inicia sesión</h2><br />
             <label for="loginname" class="mb-1">Username:</label><br>
-            <asp:TextBox runat="server" id="loginname" class="cajon"/><br/>
+            <asp:TextBox runat="server" id="loginname" AutoCompleteType="Disabled" CssClass="logeo"/><br/>
 
             <label for="loginpassword" class="mb-1">Contraseña:</label><br>
-            <asp:TextBox runat="server" id="loginpassword" class="cajon" TextMode="Password"/><br/>
+            <asp:TextBox runat="server" id="loginpassword" CssClass="logeo mb-4" TextMode="Password"/><br/>
 
             <asp:Button runat="server" id="logear" CssClass="btn btn-outline-light" Text="Ingresar" OnClick="Logear"/>
           </form>

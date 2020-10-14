@@ -96,6 +96,15 @@ namespace Othello
         protected global::System.Web.UI.WebControls.Label ganador;
 
         /// <summary>
+        /// Control salir.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button salir;
+
+        /// <summary>
         /// Control gameBoard.
         /// </summary>
         /// <remarks>
@@ -699,12 +708,12 @@ namespace Othello
         protected global::System.Web.UI.WebControls.Label score2;
 
         /// <summary>
-        /// Control salir.
+        /// Control end.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button salir;
+        protected global::System.Web.UI.WebControls.Button end;
     }
 }

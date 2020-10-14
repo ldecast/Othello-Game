@@ -19,10 +19,25 @@ h2 {
     line-height: 44px;
 }
 
+h4 {
+    position: absolute;
+    top: 105px;
+    right: 45px;
+}
+
 .cajon {
+    border-radius: 5px;
+    margin-top: 25px;
+    width: 350px;
+    height: 40px;
+    background-color: #e5e8e8;
+}
+
+.logeo {
+    border-radius: 15px;
     margin-bottom: 15px;
     width: 350px;
-    height: 31px;
+    height: 40px;
     background-color: #e5e8e8;
 }
 

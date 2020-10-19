@@ -1201,15 +1201,51 @@ namespace Othello
             bool permitido2 = false;
             int aux = 0;
             int aux2 = 0;
-            if (color == "Negro")
+
+            if (ColoresUsuario().Contains(color))
             {
+                //if (color == "Negro")
+                //{
+                    if (clic < casilla.Length && casilla.Length != 1)
+                    {
+                        if (permitido == false)
+                        {
+                            for (int i = 0; i < clic; i++)
+                            {
+                                if (ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                {
+                                    permitido = true;
+                                    aux = i;
+                                }
+                            }
+                        }
+                        if (true)
+                        {
+                            for (int i = clic + 1; i < casilla.Length; i++)
+                            {
+                                if (ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                {
+                                    permitido2 = true;
+                                    aux2 = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                //}
+            }
+
+            if (ColoresOponente().Contains(color))
+            {
+                //if (color == "Negro")
+                //{
                 if (clic < casilla.Length && casilla.Length != 1)
                 {
                     if (permitido == false)
                     {
                         for (int i = 0; i < clic; i++)
                         {
-                            if (casilla[i].CssClass == negro)
+                            if (ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
                             {
                                 permitido = true;
                                 aux = i;
@@ -1220,7 +1256,7 @@ namespace Othello
                     {
                         for (int i = clic + 1; i < casilla.Length; i++)
                         {
-                            if (casilla[i].CssClass == negro)
+                            if (ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
                             {
                                 permitido2 = true;
                                 aux2 = i;
@@ -1229,268 +1265,299 @@ namespace Othello
                         }
                     }
                 }
+                //}
             }
-            if (color == "Blanco")
-            {
-                if (clic < casilla.Length && casilla.Length != 1)
-                {
-                    if (permitido == false)
-                    {
-                        for (int i = 0; i < clic; i++)
-                        {
-                            if (casilla[i].CssClass == blanco)
-                            {
-                                permitido = true;
-                                aux = i;
-                            }
-                        }
-                    }
-                    if (true)
-                    {
-                        for (int i = clic + 1; i < casilla.Length; i++)
-                        {
-                            if (casilla[i].CssClass == blanco)
-                            {
-                                permitido2 = true;
-                                aux2 = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (color == "Rojo")
-            {
-                if (clic < casilla.Length && casilla.Length != 1)
-                {
-                    if (permitido == false)
-                    {
-                        for (int i = 0; i < clic; i++)
-                        {
-                            if (casilla[i].CssClass == rojoCss)
-                            {
-                                permitido = true;
-                                aux = i;
-                            }
-                        }
-                    }
-                    if (true)
-                    {
-                        for (int i = clic + 1; i < casilla.Length; i++)
-                        {
-                            if (casilla[i].CssClass == rojoCss)
-                            {
-                                permitido2 = true;
-                                aux2 = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (color == "Amarillo")
-            {
-                if (clic < casilla.Length && casilla.Length != 1)
-                {
-                    if (permitido == false)
-                    {
-                        for (int i = 0; i < clic; i++)
-                        {
-                            if (casilla[i].CssClass == amarilloCss)
-                            {
-                                permitido = true;
-                                aux = i;
-                            }
-                        }
-                    }
-                    if (true)
-                    {
-                        for (int i = clic + 1; i < casilla.Length; i++)
-                        {
-                            if (casilla[i].CssClass == amarilloCss)
-                            {
-                                permitido2 = true;
-                                aux2 = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (color == "Azul")
-            {
-                if (clic < casilla.Length && casilla.Length != 1)
-                {
-                    if (permitido == false)
-                    {
-                        for (int i = 0; i < clic; i++)
-                        {
-                            if (casilla[i].CssClass == azulCss)
-                            {
-                                permitido = true;
-                                aux = i;
-                            }
-                        }
-                    }
-                    if (true)
-                    {
-                        for (int i = clic + 1; i < casilla.Length; i++)
-                        {
-                            if (casilla[i].CssClass == azulCss)
-                            {
-                                permitido2 = true;
-                                aux2 = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (color == "Naranja")
-            {
-                if (clic < casilla.Length && casilla.Length != 1)
-                {
-                    if (permitido == false)
-                    {
-                        for (int i = 0; i < clic; i++)
-                        {
-                            if (casilla[i].CssClass == naranjaCss)
-                            {
-                                permitido = true;
-                                aux = i;
-                            }
-                        }
-                    }
-                    if (true)
-                    {
-                        for (int i = clic + 1; i < casilla.Length; i++)
-                        {
-                            if (casilla[i].CssClass == naranjaCss)
-                            {
-                                permitido2 = true;
-                                aux2 = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (color == "Verde")
-            {
-                if (clic < casilla.Length && casilla.Length != 1)
-                {
-                    if (permitido == false)
-                    {
-                        for (int i = 0; i < clic; i++)
-                        {
-                            if (casilla[i].CssClass == verdeCss)
-                            {
-                                permitido = true;
-                                aux = i;
-                            }
-                        }
-                    }
-                    if (true)
-                    {
-                        for (int i = clic + 1; i < casilla.Length; i++)
-                        {
-                            if (casilla[i].CssClass == verdeCss)
-                            {
-                                permitido2 = true;
-                                aux2 = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (color == "Violeta")
-            {
-                if (clic < casilla.Length && casilla.Length != 1)
-                {
-                    if (permitido == false)
-                    {
-                        for (int i = 0; i < clic; i++)
-                        {
-                            if (casilla[i].CssClass == violetaCss)
-                            {
-                                permitido = true;
-                                aux = i;
-                            }
-                        }
-                    }
-                    if (true)
-                    {
-                        for (int i = clic + 1; i < casilla.Length; i++)
-                        {
-                            if (casilla[i].CssClass == violetaCss)
-                            {
-                                permitido2 = true;
-                                aux2 = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (color == "Celeste")
-            {
-                if (clic < casilla.Length && casilla.Length != 1)
-                {
-                    if (permitido == false)
-                    {
-                        for (int i = 0; i < clic; i++)
-                        {
-                            if (casilla[i].CssClass == celesteCss)
-                            {
-                                permitido = true;
-                                aux = i;
-                            }
-                        }
-                    }
-                    if (true)
-                    {
-                        for (int i = clic + 1; i < casilla.Length; i++)
-                        {
-                            if (casilla[i].CssClass == celesteCss)
-                            {
-                                permitido2 = true;
-                                aux2 = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (color == "Gris")
-            {
-                if (clic < casilla.Length && casilla.Length != 1)
-                {
-                    if (permitido == false)
-                    {
-                        for (int i = 0; i < clic; i++)
-                        {
-                            if (casilla[i].CssClass == grisCss)
-                            {
-                                permitido = true;
-                                aux = i;
-                            }
-                        }
-                    }
-                    if (true)
-                    {
-                        for (int i = clic + 1; i < casilla.Length; i++)
-                        {
-                            if (casilla[i].CssClass == grisCss)
-                            {
-                                permitido2 = true;
-                                aux2 = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+
+            //if (color == "Negro")
+            //{
+            //    if (clic < casilla.Length && casilla.Length != 1)
+            //    {
+            //        if (permitido == false)
+            //        {
+            //            for (int i = 0; i < clic; i++)
+            //            {
+            //                if (casilla[i].CssClass == negro)
+            //                {
+            //                    permitido = true;
+            //                    aux = i;
+            //                }
+            //            }
+            //        }
+            //        if (true)
+            //        {
+            //            for (int i = clic + 1; i < casilla.Length; i++)
+            //            {
+            //                if (casilla[i].CssClass == negro)
+            //                {
+            //                    permitido2 = true;
+            //                    aux2 = i;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //if (color == "Blanco")
+            //{
+            //    if (clic < casilla.Length && casilla.Length != 1)
+            //    {
+            //        if (permitido == false)
+            //        {
+            //            for (int i = 0; i < clic; i++)
+            //            {
+            //                if (casilla[i].CssClass == blanco)
+            //                {
+            //                    permitido = true;
+            //                    aux = i;
+            //                }
+            //            }
+            //        }
+            //        if (true)
+            //        {
+            //            for (int i = clic + 1; i < casilla.Length; i++)
+            //            {
+            //                if (casilla[i].CssClass == blanco)
+            //                {
+            //                    permitido2 = true;
+            //                    aux2 = i;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //if (color == "Rojo")
+            //{
+            //    if (clic < casilla.Length && casilla.Length != 1)
+            //    {
+            //        if (permitido == false)
+            //        {
+            //            for (int i = 0; i < clic; i++)
+            //            {
+            //                if (casilla[i].CssClass == rojoCss)
+            //                {
+            //                    permitido = true;
+            //                    aux = i;
+            //                }
+            //            }
+            //        }
+            //        if (true)
+            //        {
+            //            for (int i = clic + 1; i < casilla.Length; i++)
+            //            {
+            //                if (casilla[i].CssClass == rojoCss)
+            //                {
+            //                    permitido2 = true;
+            //                    aux2 = i;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //if (color == "Amarillo")
+            //{
+            //    if (clic < casilla.Length && casilla.Length != 1)
+            //    {
+            //        if (permitido == false)
+            //        {
+            //            for (int i = 0; i < clic; i++)
+            //            {
+            //                if (casilla[i].CssClass == amarilloCss)
+            //                {
+            //                    permitido = true;
+            //                    aux = i;
+            //                }
+            //            }
+            //        }
+            //        if (true)
+            //        {
+            //            for (int i = clic + 1; i < casilla.Length; i++)
+            //            {
+            //                if (casilla[i].CssClass == amarilloCss)
+            //                {
+            //                    permitido2 = true;
+            //                    aux2 = i;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //if (color == "Azul")
+            //{
+            //    if (clic < casilla.Length && casilla.Length != 1)
+            //    {
+            //        if (permitido == false)
+            //        {
+            //            for (int i = 0; i < clic; i++)
+            //            {
+            //                if (casilla[i].CssClass == azulCss)
+            //                {
+            //                    permitido = true;
+            //                    aux = i;
+            //                }
+            //            }
+            //        }
+            //        if (true)
+            //        {
+            //            for (int i = clic + 1; i < casilla.Length; i++)
+            //            {
+            //                if (casilla[i].CssClass == azulCss)
+            //                {
+            //                    permitido2 = true;
+            //                    aux2 = i;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //if (color == "Naranja")
+            //{
+            //    if (clic < casilla.Length && casilla.Length != 1)
+            //    {
+            //        if (permitido == false)
+            //        {
+            //            for (int i = 0; i < clic; i++)
+            //            {
+            //                if (casilla[i].CssClass == naranjaCss)
+            //                {
+            //                    permitido = true;
+            //                    aux = i;
+            //                }
+            //            }
+            //        }
+            //        if (true)
+            //        {
+            //            for (int i = clic + 1; i < casilla.Length; i++)
+            //            {
+            //                if (casilla[i].CssClass == naranjaCss)
+            //                {
+            //                    permitido2 = true;
+            //                    aux2 = i;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //if (color == "Verde")
+            //{
+            //    if (clic < casilla.Length && casilla.Length != 1)
+            //    {
+            //        if (permitido == false)
+            //        {
+            //            for (int i = 0; i < clic; i++)
+            //            {
+            //                if (casilla[i].CssClass == verdeCss)
+            //                {
+            //                    permitido = true;
+            //                    aux = i;
+            //                }
+            //            }
+            //        }
+            //        if (true)
+            //        {
+            //            for (int i = clic + 1; i < casilla.Length; i++)
+            //            {
+            //                if (casilla[i].CssClass == verdeCss)
+            //                {
+            //                    permitido2 = true;
+            //                    aux2 = i;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //if (color == "Violeta")
+            //{
+            //    if (clic < casilla.Length && casilla.Length != 1)
+            //    {
+            //        if (permitido == false)
+            //        {
+            //            for (int i = 0; i < clic; i++)
+            //            {
+            //                if (casilla[i].CssClass == violetaCss)
+            //                {
+            //                    permitido = true;
+            //                    aux = i;
+            //                }
+            //            }
+            //        }
+            //        if (true)
+            //        {
+            //            for (int i = clic + 1; i < casilla.Length; i++)
+            //            {
+            //                if (casilla[i].CssClass == violetaCss)
+            //                {
+            //                    permitido2 = true;
+            //                    aux2 = i;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //if (color == "Celeste")
+            //{
+            //    if (clic < casilla.Length && casilla.Length != 1)
+            //    {
+            //        if (permitido == false)
+            //        {
+            //            for (int i = 0; i < clic; i++)
+            //            {
+            //                if (casilla[i].CssClass == celesteCss)
+            //                {
+            //                    permitido = true;
+            //                    aux = i;
+            //                }
+            //            }
+            //        }
+            //        if (true)
+            //        {
+            //            for (int i = clic + 1; i < casilla.Length; i++)
+            //            {
+            //                if (casilla[i].CssClass == celesteCss)
+            //                {
+            //                    permitido2 = true;
+            //                    aux2 = i;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //if (color == "Gris")
+            //{
+            //    if (clic < casilla.Length && casilla.Length != 1)
+            //    {
+            //        if (permitido == false)
+            //        {
+            //            for (int i = 0; i < clic; i++)
+            //            {
+            //                if (casilla[i].CssClass == grisCss)
+            //                {
+            //                    permitido = true;
+            //                    aux = i;
+            //                }
+            //            }
+            //        }
+            //        if (true)
+            //        {
+            //            for (int i = clic + 1; i < casilla.Length; i++)
+            //            {
+            //                if (casilla[i].CssClass == grisCss)
+            //                {
+            //                    permitido2 = true;
+            //                    aux2 = i;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
             if (permitido != permitido2)
             {
                 if (permitido2) return aux2;

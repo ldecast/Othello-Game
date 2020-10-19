@@ -226,7 +226,7 @@ namespace Othello
             if (items1.Count() > 5 || items2.Count() > 5)
             {
                 //Response.Write(items1.ToList()[2]);
-                ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"No se pueden seleccionar más de 5 colores.\")", true);
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"No se pueden seleccionar más de 5 colores por jugador.\")", true);
                 return true;
             }
 

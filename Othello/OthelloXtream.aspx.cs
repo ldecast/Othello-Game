@@ -15,33 +15,36 @@ namespace Othello
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //a1.CssClass = "btnA1";
             if (!IsPostBack)
             {
                 if (Request.Params["Parametro"] != null)
                 {
                     string parametro = Request.Params["Parametro"];
+                    scoreLabel1.Text = parametro.Substring(parametro.LastIndexOf('-') + 1);
                     if (parametro.Contains("Loaded")) iniciar.Visible = true;
-                    else iniciar.Visible = false;
+                    else { iniciar.Visible = false; ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); }
                 }
+
+                Get_Score(null);
+                listaColores.Text = Convert.ToString(Session["coloresUsuario"]);
+                listaOponente.Text = Convert.ToString(Session["coloresPlayer2"]);
+                turno.Text = ColoresUsuario().First().ToString();
+
                 //Ver_colores();
                 //coloresUsuario = ColoresUsuario();
                 //coloresOponente = ColoresOponente();
-                listaColores.Text = Convert.ToString(Session["coloresUsuario"]);
-                listaOponente.Text = Convert.ToString(Session["coloresPlayer2"]);
-                coloresUsuario = listaColores.Text.Split(',').ToList();
-                coloresOponente = listaOponente.Text.Split(',').ToList();
-                Get_Score(null);
-                end.Enabled = false;
-                guardar.Enabled = false;
-                ceder_turno.Enabled = false;
-                turno.Text = ColoresUsuario().First().ToString();
+
+                //coloresUsuario = listaColores.Text.Split(',').ToList();
+                //coloresOponente = listaOponente.Text.Split(',').ToList();
+
+                //end.Enabled = false;
+                //guardar.Enabled = false;
+                //ceder_turno.Enabled = false;
             }
 
-            coloresUsuario = ColoresUsuario();
-            coloresOponente = ColoresOponente();
-
-            
+            //coloresUsuario = ColoresUsuario();
+            //coloresOponente = ColoresOponente();
+            Get_Score(null);
 
         }
 
@@ -100,23 +103,31 @@ namespace Othello
                     movimiento_blanco.ForeColor = ColorTranslator.FromHtml(gris);
                     break;
             }
+            /////if (int.Parse(indice1.Text) >= 4*listaColores.Text.Split(',').Length) indice1.Text = "0";
+            /////if (int.Parse(indice2.Text) >= 4*listaOponente.Text.Split(',').Length) indice2.Text = "0";
+            ///
+            if (int.Parse(indice1.Text) >= listaColores.Text.Split(',').Length) indice1.Text = "0";
+            if (int.Parse(indice2.Text) >= listaOponente.Text.Split(',').Length) indice2.Text = "0";
+
+            //if(IsPostBack)
+            //    Get_Score(null);
         }
 
-        public void Ver_colores()
-        {
-            if (Session["coloresUsuario"] != null)
-            {
-                string coloresUsuario = Convert.ToString(Session["coloresUsuario"]);
-                Response.Write(coloresUsuario);
-                
-            }
-            if (Session["coloresPlayer2"] != null)
-            {
-                string coloresPlayer2 = Convert.ToString(Session["coloresPlayer2"]);
-                Response.Write(coloresPlayer2);
+        //public void Ver_colores()
+        //{
+        //    if (Session["coloresUsuario"] != null)
+        //    {
+        //        string coloresUsuario = Convert.ToString(Session["coloresUsuario"]);
+        //        Response.Write(coloresUsuario);
 
-            }
-        }
+        //    }
+        //    if (Session["coloresPlayer2"] != null)
+        //    {
+        //        string coloresPlayer2 = Convert.ToString(Session["coloresPlayer2"]);
+        //        Response.Write(coloresPlayer2);
+
+        //    }
+        //}
 
         public List<string> ColoresUsuario()
         {
@@ -130,16 +141,12 @@ namespace Othello
             return coloresOponente.Split(',').ToList();
         }
 
-        private List<string> coloresUsuario = new List<string>();
-        private List<string> coloresOponente = new List<string>();
-
-        private List<string> auxCU = new List<string>();
-        private List<string> auxCO = new List<string>();
-
+        //private List<string> coloresUsuario = new List<string>();
+        //private List<string> coloresOponente = new List<string>();
 
         private readonly string vacio = "btn btn-success btn-lg border-dark rounded-0";
-        private readonly string negro = "btn btn-dark btn-lg border-dark rounded-0";
-        private readonly string blanco = "btn btn-light btn-lg border-dark rounded-0";
+        private readonly string negro = "btn btn-lg border-dark rounded-0 btn-Negro";
+        private readonly string blanco = "btn btn-lg border-dark rounded-0 btn-Blanco";
         private readonly string rojo = "\"#c72b2b\"";
         private readonly string amarillo = "\"#e0bf07\"";
         private readonly string azul = "\"#203ee9\"";
@@ -148,14 +155,24 @@ namespace Othello
         private readonly string violeta = "\"#951ec8\"";
         private readonly string celeste = "\"#1d90e4\"";
         private readonly string gris = "\"#807e7e\"";
-        private readonly string white = "\"#f6f6f6\"";
-        private readonly string black = "\"#121111\"";
-        private string moveUsuario = "";
-        private string movePlayer = "";
+
+        private readonly string rojoCss = "btn btn-lg border-dark rounded-0 btn-Rojo";
+        private readonly string amarilloCss = "btn btn-lg border-dark rounded-0 btn-Amarillo";
+        private readonly string azulCss = "btn btn-lg border-dark rounded-0 btn-Azul";
+        private readonly string naranjaCss = "btn btn-lg border-dark rounded-0 btn-Naranja";
+        private readonly string verdeCss = "btn btn-lg border-dark rounded-0 btn-Verde";
+        private readonly string violetaCss = "btn btn-lg border-dark rounded-0 btn-Violeta";
+        private readonly string celesteCss = "btn btn-lg border-dark rounded-0 btn-Celeste";
+        private readonly string grisCss = "btn btn-lg border-dark rounded-0 btn-Gris";
+
+        //private readonly string white = "\"#f6f6f6\"";
+        //private readonly string black = "\"#121111\"";
+        //private string moveUsuario = "";
+        //private string movePlayer = "";
 
 
-        int aux1 = 0;
-        int aux2 = 0;
+        //int aux1 = 0;
+        //int aux2 = 0;
 
         public void Leer_xml(object sender, EventArgs e)
         {
@@ -704,21 +721,24 @@ namespace Othello
 
         public void Ceder_turno(object sender, EventArgs e)
         {
-            if (turno.Text == "Blanco")
-            {
-                turno.Text = "Negro";
-                turno.ForeColor = Color.Black;
-                movimiento_blanco.Visible = false;
-                movimiento_negro.Visible = true;
-            }
-            else if (turno.Text == "Negro")
-            {
-                turno.Text = "Blanco";
-                turno.ForeColor = Color.White;
-                movimiento_negro.Visible = false;
-                movimiento_blanco.Visible = true;
-            }
-            ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); //inicia cronometro
+
+            Turno_siguiente(turno.Text);
+
+            //if (turno.Text == "Blanco")
+            //{
+            //    turno.Text = "Negro";
+            //    turno.ForeColor = Color.Black;
+            //    movimiento_blanco.Visible = false;
+            //    movimiento_negro.Visible = true;
+            //}
+            //else if (turno.Text == "Negro")
+            //{
+            //    turno.Text = "Blanco";
+            //    turno.ForeColor = Color.White;
+            //    movimiento_negro.Visible = false;
+            //    movimiento_blanco.Visible = true;
+            //}
+            //ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); //inicia cronometro
         }
 
         public void Get_Score(WebControl boton)
@@ -739,36 +759,36 @@ namespace Othello
             int aux_black = int.Parse(score2.Text);
             for (int i = 0; i < botones.Length; i++)
             {
-                switch (botones[i].BackColor.ToString())
+                switch (botones[i].CssClass.ToString())
                 {
-                    case "#c72b2b":
+                    case "btn btn-lg border-dark rounded-0 btn-Rojo":
                         red++;
                         break;
-                    case "#e0bf07":
+                    case "btn btn-lg border-dark rounded-0 btn-Amarillo":
                         yellow++;
                         break;
-                    case "#203ee9":
+                    case "btn btn-lg border-dark rounded-0 btn-Azul":
                         blue++;
                         break;
-                    case "#f2751c":
+                    case "btn btn-lg border-dark rounded-0 btn-Naranja":
                         orange++;
                         break;
-                    case "#00ff22":
+                    case "btn btn-lg border-dark rounded-0 btn-Verde":
                         green++;
                         break;
-                    case "#951ec8":
+                    case "btn btn-lg border-dark rounded-0 btn-Violeta":
                         purple++;
                         break;
-                    case "#1d90e4":
+                    case "btn btn-lg border-dark rounded-0 btn-Celeste":
                         sky++;
                         break;
-                    case "#807e7e":
+                    case "btn btn-lg border-dark rounded-0 btn-Gris":
                         grey++;
                         break;
-                    case "#f6f6f6":
+                    case "btn btn-lg border-dark rounded-0 btn-Blanco":
                         white++;
                         break;
-                    case "#121111":
+                    case "btn btn-lg border-dark rounded-0 btn-Negro":
                         black++;
                         break;
                 }
@@ -780,34 +800,33 @@ namespace Othello
             List<string> aux_oponent = ColoresOponente();
             List<int> scores_user = new List<int>();
             List<int> scores_oponente = new List<int>();
-            for (int i = 0; i < aux_user.Count() ; i++)
+            for (int i = 0; i < 1 ; i++)
             {
-                if (aux_user[i].Equals("Rojo")) scores_user.Append(red);
-                if (aux_user[i].Equals("Amarillo")) scores_user.Append(yellow);
-                if (aux_user[i].Equals("Azul")) scores_user.Append(blue);
-                if (aux_user[i].Equals("Naranja")) scores_user.Append(orange);
-                if (aux_user[i].Equals("Verde")) scores_user.Append(green);
-                if (aux_user[i].Equals("Violeta")) scores_user.Append(purple);
-                if (aux_user[i].Equals("Blanco")) scores_user.Append(white);
-                if (aux_user[i].Equals("Negro")) scores_user.Append(black);
-                if (aux_user[i].Equals("Celeste")) scores_user.Append(sky);
-                if (aux_user[i].Equals("Gris")) scores_user.Append(grey);
+                if (aux_user.Contains("Rojo")) scores_user.Add(red);
+                if (aux_user.Contains("Amarillo")) scores_user.Add(yellow);
+                if (aux_user.Contains("Azul")) scores_user.Add(blue);
+                if (aux_user.Contains("Naranja")) scores_user.Add(orange);
+                if (aux_user.Contains("Verde")) scores_user.Add(green);
+                if (aux_user.Contains("Violeta")) scores_user.Add(purple);
+                if (aux_user.Contains("Blanco")) scores_user.Add(white);
+                if (aux_user.Contains("Negro")) scores_user.Add(black);
+                if (aux_user.Contains("Celeste")) scores_user.Add(sky);
+                if (aux_user.Contains("Gris")) scores_user.Add(grey);
             }
 
-            for (int i = 0; i < aux_oponent.Count(); i++)
+            for (int i = 0; i < 1; i++)
             {
-                if (aux_oponent[i].Equals("Rojo")) scores_oponente.Append(red);
-                if (aux_oponent[i].Equals("Amarillo")) scores_oponente.Append(yellow);
-                if (aux_oponent[i].Equals("Azul")) scores_oponente.Append(blue);
-                if (aux_oponent[i].Equals("Naranja")) scores_oponente.Append(orange);
-                if (aux_oponent[i].Equals("Verde")) scores_oponente.Append(green);
-                if (aux_oponent[i].Equals("Violeta")) scores_oponente.Append(purple);
-                if (aux_oponent[i].Equals("Blanco")) scores_oponente.Append(white);
-                if (aux_oponent[i].Equals("Negro")) scores_oponente.Append(black);
-                if (aux_oponent[i].Equals("Celeste")) scores_oponente.Append(sky);
-                if (aux_oponent[i].Equals("Gris")) scores_oponente.Append(grey);
+                if (aux_oponent.Contains("Rojo")) scores_oponente.Add(red);
+                if (aux_oponent.Contains("Amarillo")) scores_oponente.Add(yellow);
+                if (aux_oponent.Contains("Azul")) scores_oponente.Add(blue);
+                if (aux_oponent.Contains("Naranja")) scores_oponente.Add(orange);
+                if (aux_oponent.Contains("Verde")) scores_oponente.Add(green);
+                if (aux_oponent.Contains("Violeta")) scores_oponente.Add(purple);
+                if (aux_oponent.Contains("Blanco")) scores_oponente.Add(white);
+                if (aux_oponent.Contains("Negro")) scores_oponente.Add(black);
+                if (aux_oponent.Contains("Celeste")) scores_oponente.Add(sky);
+                if (aux_oponent.Contains("Gris")) scores_oponente.Add(grey);
             }
-
             score1.Text = scores_user.Sum().ToString();
             score2.Text = scores_oponente.Sum().ToString();
         }
@@ -857,51 +876,51 @@ namespace Othello
 
         public void GameOver()
         {
-            gameBoard.Visible = false;
-            if (int.Parse(score1.Text) > int.Parse(score2.Text))
-            {
-                ganador.Text = "Blanco gana!";
-                ganador.CssClass = "display-2 text-white";
-                gameover.CssClass = "display-2 text-white";
-                turno.Text = "";
-                turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
-                movePlayer = movimiento_blanco.Text;
-                moveUsuario = movimiento_negro.Text;
-                movimiento_negro.Text = "";
-                movimiento_blanco.Text = "";
-                Registrar("blanco");
-            }
-            if (int.Parse(score1.Text) < int.Parse(score2.Text))
-            {
-                ganador.Text = "Negro gana!";
-                ganador.CssClass = "display-2 text-dark";
-                gameover.CssClass = "display-2 text-dark";
-                turno.Text = "";
-                turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
-                movePlayer = movimiento_blanco.Text;
-                moveUsuario = movimiento_negro.Text;
-                movimiento_negro.Text = "";
-                movimiento_blanco.Text = "";
-                Registrar("negro");
-            }
-            if (int.Parse(score1.Text) == int.Parse(score2.Text) && int.Parse(score1.Text) > 0)
-            {
-                ganador.Text = "¡Empate!";
-                ganador.CssClass = "display-2 text-warning font-weight-bold";
-                gameover.CssClass = "display-2 text-warning font-weight-bold";
-                turno.Text = "";
-                turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
-                movePlayer = movimiento_blanco.Text;
-                moveUsuario = movimiento_negro.Text;
-                movimiento_negro.Text = "";
-                movimiento_blanco.Text = "";
-                Registrar("empate");
-            }
-            resultados.Visible = true;
-            guardar.Visible = false;
-            ceder_turno.Visible = false;
-            end.Visible = false;
-            salir.Visible = true;
+            //gameBoard.Visible = false;
+            //if (int.Parse(score1.Text) > int.Parse(score2.Text))
+            //{
+            //    ganador.Text = "Blanco gana!";
+            //    ganador.CssClass = "display-2 text-white";
+            //    gameover.CssClass = "display-2 text-white";
+            //    turno.Text = "";
+            //    turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+            //    movePlayer = movimiento_blanco.Text;
+            //    moveUsuario = movimiento_negro.Text;
+            //    movimiento_negro.Text = "";
+            //    movimiento_blanco.Text = "";
+            //    Registrar("blanco");
+            //}
+            //if (int.Parse(score1.Text) < int.Parse(score2.Text))
+            //{
+            //    ganador.Text = "Negro gana!";
+            //    ganador.CssClass = "display-2 text-dark";
+            //    gameover.CssClass = "display-2 text-dark";
+            //    turno.Text = "";
+            //    turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+            //    movePlayer = movimiento_blanco.Text;
+            //    moveUsuario = movimiento_negro.Text;
+            //    movimiento_negro.Text = "";
+            //    movimiento_blanco.Text = "";
+            //    Registrar("negro");
+            //}
+            //if (int.Parse(score1.Text) == int.Parse(score2.Text) && int.Parse(score1.Text) > 0)
+            //{
+            //    ganador.Text = "¡Empate!";
+            //    ganador.CssClass = "display-2 text-warning font-weight-bold";
+            //    gameover.CssClass = "display-2 text-warning font-weight-bold";
+            //    turno.Text = "";
+            //    turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+            //    movePlayer = movimiento_blanco.Text;
+            //    moveUsuario = movimiento_negro.Text;
+            //    movimiento_negro.Text = "";
+            //    movimiento_blanco.Text = "";
+            //    Registrar("empate");
+            //}
+            //resultados.Visible = true;
+            //guardar.Visible = false;
+            //ceder_turno.Visible = false;
+            //end.Visible = false;
+            //salir.Visible = true;
         }
 
         public void Registrar(string ganador)
@@ -1003,7 +1022,7 @@ namespace Othello
             if (Request.Params["Parametro"] != null)
             {
                 string parametro = Request.Params["Parametro"];
-                string jugador_host = parametro.Substring(0, parametro.IndexOf("-"));
+                string jugador_host = parametro.Substring(parametro.LastIndexOf("-"));
                 Response.Redirect("Menu.aspx?Parametro=" + jugador_host);
             }
             else Response.Redirect("Login.aspx");
@@ -1016,24 +1035,55 @@ namespace Othello
             {
                 if (color == "Negro")
                 {
-                    if (casilla[clic].CssClass != blanco)
-                    {
                         if (casilla[clic + 1].CssClass == negro && casilla[clic - 1].CssClass == negro && casilla[clic].CssClass == negro)
                             permitido = false;
-                    }
-                    else
-                        permitido = false;
                 }
                 if (color == "Blanco")
                 {
-                    if (casilla[clic].CssClass != negro)
-                    {
                         if (casilla[clic + 1].CssClass == blanco && casilla[clic - 1].CssClass == blanco && casilla[clic].CssClass == blanco)
                             permitido = false;
-                    }
-                    else
+                }
+                if (color == "Rojo")
+                {
+                        if (casilla[clic + 1].CssClass == rojoCss && casilla[clic - 1].CssClass == rojoCss && casilla[clic].CssClass == rojoCss)
+                            permitido = false;
+                }
+                if (color == "Amarillo")
+                {
+                    if (casilla[clic + 1].CssClass == amarilloCss && casilla[clic - 1].CssClass == amarilloCss && casilla[clic].CssClass == amarilloCss)
                         permitido = false;
                 }
+                if (color == "Azul")
+                {
+                    if (casilla[clic + 1].CssClass == azulCss && casilla[clic - 1].CssClass == azulCss && casilla[clic].CssClass == azulCss)
+                        permitido = false;
+                }
+                if (color == "Naranja")
+                {
+                    if (casilla[clic + 1].CssClass == naranjaCss && casilla[clic - 1].CssClass == naranjaCss && casilla[clic].CssClass == naranjaCss)
+                        permitido = false;
+                }
+                if (color == "Verde")
+                {
+                    if (casilla[clic + 1].CssClass == verdeCss && casilla[clic - 1].CssClass == verdeCss && casilla[clic].CssClass == verdeCss)
+                        permitido = false;
+                }
+                if (color == "Violeta")
+                {
+                    if (casilla[clic + 1].CssClass == violetaCss && casilla[clic - 1].CssClass == violetaCss && casilla[clic].CssClass == violetaCss)
+                        permitido = false;
+                }
+                if (color == "Celeste")
+                {
+                    if (casilla[clic + 1].CssClass == celesteCss && casilla[clic - 1].CssClass == celesteCss && casilla[clic].CssClass == celesteCss)
+                        permitido = false;
+                }
+                if (color == "Gris")
+                {
+                    if (casilla[clic + 1].CssClass == grisCss && casilla[clic - 1].CssClass == grisCss && casilla[clic].CssClass == grisCss)
+                        permitido = false;
+                }
+
             }
             if (clic - 1 == -1)
             {
@@ -1047,7 +1097,48 @@ namespace Othello
                     if (casilla[clic + 1].CssClass == blanco)
                         permitido = false;
                 }
+                if (color == "Rojo" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == rojoCss)
+                        permitido = false;
+                }
+                if (color == "Amarillo" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == amarilloCss)
+                        permitido = false;
+                }
+                if (color == "Azul" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == azulCss)
+                        permitido = false;
+                }
+                if (color == "Naranja" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == naranjaCss)
+                        permitido = false;
+                }
+                if (color == "Verde" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == verdeCss)
+                        permitido = false;
+                }
+                if (color == "Violeta" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == violetaCss)
+                        permitido = false;
+                }
+                if (color == "Celeste" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == celesteCss)
+                        permitido = false;
+                }
+                if (color == "Gris" && casilla.Length > 1)
+                {
+                    if (casilla[clic + 1].CssClass == grisCss)
+                        permitido = false;
+                }
             }
+
             if (clic + 1 >= casilla.Length)
             {
                 if (color == "Negro" && casilla.Length > 1)
@@ -1058,6 +1149,46 @@ namespace Othello
                 if (color == "Blanco" && casilla.Length > 1)
                 {
                     if (casilla[clic - 1].CssClass == blanco)
+                        permitido = false;
+                }
+                if (color == "Rojo" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == rojoCss)
+                        permitido = false;
+                }
+                if (color == "Amarillo" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == amarilloCss)
+                        permitido = false;
+                }
+                if (color == "Azul" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == azulCss)
+                        permitido = false;
+                }
+                if (color == "Naranja" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == naranjaCss)
+                        permitido = false;
+                }
+                if (color == "Verde" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == verdeCss)
+                        permitido = false;
+                }
+                if (color == "Violeta" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == violetaCss)
+                        permitido = false;
+                }
+                if (color == "Celeste" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == celesteCss)
+                        permitido = false;
+                }
+                if (color == "Gris" && casilla.Length > 1)
+                {
+                    if (casilla[clic - 1].CssClass == grisCss)
                         permitido = false;
                 }
             }
@@ -1128,6 +1259,238 @@ namespace Othello
                     }
                 }
             }
+            if (color == "Rojo")
+            {
+                if (clic < casilla.Length && casilla.Length != 1)
+                {
+                    if (permitido == false)
+                    {
+                        for (int i = 0; i < clic; i++)
+                        {
+                            if (casilla[i].CssClass == rojoCss)
+                            {
+                                permitido = true;
+                                aux = i;
+                            }
+                        }
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
+                        {
+                            if (casilla[i].CssClass == rojoCss)
+                            {
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (color == "Amarillo")
+            {
+                if (clic < casilla.Length && casilla.Length != 1)
+                {
+                    if (permitido == false)
+                    {
+                        for (int i = 0; i < clic; i++)
+                        {
+                            if (casilla[i].CssClass == amarilloCss)
+                            {
+                                permitido = true;
+                                aux = i;
+                            }
+                        }
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
+                        {
+                            if (casilla[i].CssClass == amarilloCss)
+                            {
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (color == "Azul")
+            {
+                if (clic < casilla.Length && casilla.Length != 1)
+                {
+                    if (permitido == false)
+                    {
+                        for (int i = 0; i < clic; i++)
+                        {
+                            if (casilla[i].CssClass == azulCss)
+                            {
+                                permitido = true;
+                                aux = i;
+                            }
+                        }
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
+                        {
+                            if (casilla[i].CssClass == azulCss)
+                            {
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (color == "Naranja")
+            {
+                if (clic < casilla.Length && casilla.Length != 1)
+                {
+                    if (permitido == false)
+                    {
+                        for (int i = 0; i < clic; i++)
+                        {
+                            if (casilla[i].CssClass == naranjaCss)
+                            {
+                                permitido = true;
+                                aux = i;
+                            }
+                        }
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
+                        {
+                            if (casilla[i].CssClass == naranjaCss)
+                            {
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (color == "Verde")
+            {
+                if (clic < casilla.Length && casilla.Length != 1)
+                {
+                    if (permitido == false)
+                    {
+                        for (int i = 0; i < clic; i++)
+                        {
+                            if (casilla[i].CssClass == verdeCss)
+                            {
+                                permitido = true;
+                                aux = i;
+                            }
+                        }
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
+                        {
+                            if (casilla[i].CssClass == verdeCss)
+                            {
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (color == "Violeta")
+            {
+                if (clic < casilla.Length && casilla.Length != 1)
+                {
+                    if (permitido == false)
+                    {
+                        for (int i = 0; i < clic; i++)
+                        {
+                            if (casilla[i].CssClass == violetaCss)
+                            {
+                                permitido = true;
+                                aux = i;
+                            }
+                        }
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
+                        {
+                            if (casilla[i].CssClass == violetaCss)
+                            {
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (color == "Celeste")
+            {
+                if (clic < casilla.Length && casilla.Length != 1)
+                {
+                    if (permitido == false)
+                    {
+                        for (int i = 0; i < clic; i++)
+                        {
+                            if (casilla[i].CssClass == celesteCss)
+                            {
+                                permitido = true;
+                                aux = i;
+                            }
+                        }
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
+                        {
+                            if (casilla[i].CssClass == celesteCss)
+                            {
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (color == "Gris")
+            {
+                if (clic < casilla.Length && casilla.Length != 1)
+                {
+                    if (permitido == false)
+                    {
+                        for (int i = 0; i < clic; i++)
+                        {
+                            if (casilla[i].CssClass == grisCss)
+                            {
+                                permitido = true;
+                                aux = i;
+                            }
+                        }
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
+                        {
+                            if (casilla[i].CssClass == grisCss)
+                            {
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
             if (permitido != permitido2)
             {
                 if (permitido2) return aux2;
@@ -1135,8 +1498,8 @@ namespace Othello
             }
             if (permitido && permitido2)
             {
-                //ComerFicha(casilla, color, clic, aux);
-                //ComerFicha(casilla, color, clic, aux2);
+                ComerFicha(casilla, color, clic, aux);
+                ComerFicha(casilla, color, clic, aux2);
                 return -1;
             }
             else
@@ -1145,305 +1508,544 @@ namespace Othello
 
         public void Turno_siguiente(string color)
         {
-            //auxCU = coloresUsuario;
-            if (listaColores.Text.Contains(color))
-            {
-                guardar.Text = color;
-                turno.Text = listaOponente.Text.Split(',').ToList().First();
-                string[] a = listaColores.Text.Split(',');
-                if (listaColores.Text.Contains(","))
-                {
-                    
-                    listaColores.Text = listaColores.Text.Substring(listaColores.Text.IndexOf(',') + 1);
-                }
-                else if (!listaColores.Text.Contains(","))
-                {
-                    listaColores.Text = Convert.ToString(Session["coloresUsuario"]);
-                    guardar.Text = listaColores.Text;
-                }
-            }
+            //if (int.Parse(max.Text) < ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 || int.Parse(max.Text) < 16)
+            //{
+            //    if (listaColores.Text.Contains(color))
+            //    {
+            //        turno.Text = listaOponente.Text.Split(',')[int.Parse(indice2.Text) / 4];
+            //        indice1.Text = (int.Parse(indice1.Text) + 1).ToString();
+            //    }
 
-            else if (listaOponente.Text.Contains(color))
-            {
-                //Response.Write(color);
-                turno.Text = listaColores.Text.Split(',').ToList().First();
-                string [] a = listaOponente.Text.Split(',');
-                if (listaOponente.Text.Contains(","))
+            //    else if (listaOponente.Text.Contains(color))
+            //    {
+            //        turno.Text = listaColores.Text.Split(',')[int.Parse(indice1.Text) / 4];
+            //        indice2.Text = (int.Parse(indice2.Text) + 1).ToString();
+            //    }
+            //}
+
+            //else if (int.Parse(max.Text) >= ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 && int.Parse(max.Text) >= 16)
+            //{
+                if (listaColores.Text.Contains(color))
                 {
-                    listaOponente.Text = listaOponente.Text.Substring(listaOponente.Text.IndexOf(',') + 1);
+                    turno.Text = listaOponente.Text.Split(',')[int.Parse(indice2.Text)];
+                    indice1.Text = (int.Parse(indice1.Text) + 1).ToString();
                 }
-                else if (!listaOponente.Text.Contains(","))
+
+                else if (listaOponente.Text.Contains(color))
                 {
-                    listaOponente.Text = Convert.ToString(Session["coloresPlayer2"]);
-                    //guardar.Text = listaOponente.Text;
+                    turno.Text = listaColores.Text.Split(',')[int.Parse(indice1.Text)];
+                    indice2.Text = (int.Parse(indice2.Text) + 1).ToString();
                 }
-            }
-            ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); //inicia cronometro
+            //}
+
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); //inicia cronometro
         }
 
         public void ComerFicha(WebControl[] casilla, string color, int clic, int index)
         {
-
-            //for (int i = aux1; i < ColoresUsuario().Count() + ColoresOponente().Count(); i++)
-            //{
+            if (int.Parse(max.Text) < ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 || int.Parse(max.Text) < 16)
+            {
                 if (color == "Negro")
                 {
-                    casilla[clic].BackColor = ColorTranslator.FromHtml(black);
-                    Turno_siguiente(color);
-                    aux1++;
+                    casilla[clic].CssClass = negro;
+                    //Turno_siguiente(color);
+                    max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Blanco")
                 {
-                    casilla[clic].BackColor = ColorTranslator.FromHtml(white);
-                    Turno_siguiente(color);
-                    aux1++;
+                    casilla[clic].CssClass = blanco;
+                    //Turno_siguiente(color);
+                    max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Rojo")
                 {
-                    casilla[clic].BackColor = ColorTranslator.FromHtml(rojo);
-                    Turno_siguiente(color);
-                    aux1++;
+                    casilla[clic].CssClass = rojoCss;
+                    //Turno_siguiente(color);
+                    max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Amarillo")
                 {
-                    casilla[clic].BackColor = ColorTranslator.FromHtml(amarillo);
-                    Turno_siguiente(color);
-                    aux1++;
+                    casilla[clic].CssClass = amarilloCss;
+                    //Turno_siguiente(color);
+                    max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Azul")
                 {
-                    casilla[clic].BackColor = ColorTranslator.FromHtml(azul);
-                    Turno_siguiente(color);
-                    aux1++;
+                    casilla[clic].CssClass = azulCss;
+                    //Turno_siguiente(color);
+                    max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Naranja")
                 {
-                    casilla[clic].BackColor = ColorTranslator.FromHtml(naranja);
-                    Turno_siguiente(color);
-                    aux1++;
+                    casilla[clic].CssClass = naranjaCss;
+                    //Turno_siguiente(color);
+                    max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Verde")
                 {
-                    casilla[clic].BackColor = ColorTranslator.FromHtml(verde);
-                    Turno_siguiente(color);
-                    aux1++;
+                    casilla[clic].CssClass = verdeCss;
+                    //Turno_siguiente(color);
+                    max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Violeta")
                 {
-                    casilla[clic].BackColor = ColorTranslator.FromHtml(violeta);
-                    Turno_siguiente(color);
-                    aux1++;
+                    casilla[clic].CssClass = violetaCss;
+                    //Turno_siguiente(color);
+                    max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Celeste")
                 {
-                    casilla[clic].BackColor = ColorTranslator.FromHtml(celeste);
-                    Turno_siguiente(color);
-                    aux1++;
+                    casilla[clic].CssClass = celesteCss;
+                    //Turno_siguiente(color);
+                    max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Gris")
                 {
-                    casilla[clic].BackColor = ColorTranslator.FromHtml(gris);
-                    Turno_siguiente(color);
-                    aux1++;
+                    casilla[clic].CssClass = grisCss;
+                    //Turno_siguiente(color);
+                    max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
-            //}
+            }
 
-            //if (FichaAlApar(casilla, color, clic))
-            //{
-            //    if (index != -1)
-            //    {
-            //        if (VerVacio(casilla, clic, index) == true)
-            //        {
-            //            try
-            //            {
-            //                if (color == "Negro")
-            //                {
-            //                    if (index < clic)
-            //                    {
-            //                        for (int i = index; i <= clic; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(black);
-            //                        }
-            //                    }
-            //                    if (index > clic)
-            //                    {
-            //                        for (int i = clic; i <= index; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(black);
-            //                        }
-            //                    }
-            //                    Turno_siguiente(color);
-            //                }
-            //                if (color == "Blanco")
-            //                {
-            //                    if (index < clic)
-            //                    {
-            //                        for (int i = index; i <= clic; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(white);
-            //                        }
-            //                    }
-            //                    if (index > clic)
-            //                    {
-            //                        for (int i = clic; i <= index; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(white);
-            //                        }
-            //                    }
-            //                    Turno_siguiente(color);
-            //                }
-            //                if (color == "Rojo")
-            //                {
-            //                    if (index < clic)
-            //                    {
-            //                        for (int i = index; i <= clic; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(rojo);
-            //                        }
-            //                    }
-            //                    if (index > clic)
-            //                    {
-            //                        for (int i = clic; i <= index; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(rojo);
-            //                        }
-            //                    }
-            //                    Turno_siguiente(color);
-            //                }
-            //                if (color == "Amarillo")
-            //                {
-            //                    if (index < clic)
-            //                    {
-            //                        for (int i = index; i <= clic; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(amarillo);
-            //                        }
-            //                    }
-            //                    if (index > clic)
-            //                    {
-            //                        for (int i = clic; i <= index; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(amarillo);
-            //                        }
-            //                    }
-            //                    Turno_siguiente(color);
-            //                }
-            //                if (color == "Azul")
-            //                {
-            //                    if (index < clic)
-            //                    {
-            //                        for (int i = index; i <= clic; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(azul);
-            //                        }
-            //                    }
-            //                    if (index > clic)
-            //                    {
-            //                        for (int i = clic; i <= index; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(azul);
-            //                        }
-            //                    }
-            //                    Turno_siguiente(color);
-            //                }
-            //                if (color == "Naranja")
-            //                {
-            //                    if (index < clic)
-            //                    {
-            //                        for (int i = index; i <= clic; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(naranja);
-            //                        }
-            //                    }
-            //                    if (index > clic)
-            //                    {
-            //                        for (int i = clic; i <= index; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(naranja);
-            //                        }
-            //                    }
-            //                    Turno_siguiente(color);
-            //                }
-            //                if (color == "Verde")
-            //                {
-            //                    if (index < clic)
-            //                    {
-            //                        for (int i = index; i <= clic; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(verde);
-            //                        }
-            //                    }
-            //                    if (index > clic)
-            //                    {
-            //                        for (int i = clic; i <= index; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(verde);
-            //                        }
-            //                    }
-            //                    Turno_siguiente(color);
-            //                }
-            //                if (color == "Violeta")
-            //                {
-            //                    if (index < clic)
-            //                    {
-            //                        for (int i = index; i <= clic; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(violeta);
-            //                        }
-            //                    }
-            //                    if (index > clic)
-            //                    {
-            //                        for (int i = clic; i <= index; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(violeta);
-            //                        }
-            //                    }
-            //                    Turno_siguiente(color);
-            //                }
-            //                if (color == "Celeste")
-            //                {
-            //                    if (index < clic)
-            //                    {
-            //                        for (int i = index; i <= clic; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(celeste);
-            //                        }
-            //                    }
-            //                    if (index > clic)
-            //                    {
-            //                        for (int i = clic; i <= index; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(celeste);
-            //                        }
-            //                    }
-            //                    Turno_siguiente(color);
-            //                }
-            //                if (color == "Gris")
-            //                {
-            //                    if (index < clic)
-            //                    {
-            //                        for (int i = index; i <= clic; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(gris);
-            //                        }
-            //                    }
-            //                    if (index > clic)
-            //                    {
-            //                        for (int i = clic; i <= index; i++)
-            //                        {
-            //                            casilla[i].BackColor = ColorTranslator.FromHtml(gris);
-            //                        }
-            //                    }
-            //                    Turno_siguiente(color);
-            //                }
-            //            }
-            //            catch (IndexOutOfRangeException)
-            //            {
+            else if (int.Parse(max.Text) >= ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 && int.Parse(max.Text) >= 16)
+            {
+                if (FichaAlApar(casilla, color, clic))
+                {
+                    if (index != -1)
+                    {
+                        if (VerVacio(casilla, clic, index) == true)
+                        {
+                            try
+                            {
+                                if (color == "Negro")
+                                {
+                                    if (index < clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = negro;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = negro;
+                                            }
+                                        }
+                                    }
+                                    if (index > clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = negro;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = negro;
+                                            }
+                                        }
+                                    }
+                                    //Turno_siguiente(color);}
+                                }
+                                if (color == "Blanco")
+                                {
+                                    if (index < clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = blanco;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = blanco;
+                                            }
+                                        }
+                                    }
+                                    if (index > clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = blanco;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = blanco;
+                                            }
+                                        }
+                                    }
+                                    //Turno_siguiente(color);}
+                                }
+                                if (color == "Rojo")
+                                {
+                                    if (index < clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = rojoCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                casilla[i].CssClass = rojoCss;
+                                            }
+                                        }
+                                    }
+                                    if (index > clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = rojoCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = rojoCss;
+                                            }
+                                        }
+                                    }
+                                    //Turno_siguiente(color);}
+                                }
+                                if (color == "Amarillo")
+                                {
+                                    if (index < clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = amarilloCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = amarilloCss;
+                                            }
+                                        }
+                                    }
+                                    if (index > clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = amarilloCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = amarilloCss;
+                                            }
+                                        }
+                                    }
+                                    //Turno_siguiente(color);}
+                                }
+                                if (color == "Azul")
+                                {
+                                    if (index < clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = azulCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = azulCss;
+                                            }
+                                        }
+                                    }
+                                    if (index > clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = azulCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = azulCss;
+                                            }
+                                        }
+                                    }
+                                    //Turno_siguiente(color);}
+                                }
+                                if (color == "Naranja")
+                                {
+                                    if (index < clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = naranjaCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = naranjaCss;
+                                            }
+                                        }
+                                    }
+                                    if (index > clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = naranjaCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = naranjaCss;
+                                            }
+                                        }
+                                    }
+                                    //Turno_siguiente(color);}
+                                }
+                                if (color == "Verde")
+                                {
+                                    if (index < clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = verdeCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = verdeCss;
+                                            }
+                                        }
+                                    }
+                                    if (index > clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = verdeCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = verdeCss;
+                                            }
+                                        }
+                                    }
+                                    //Turno_siguiente(color);}
+                                }
+                                if (color == "Violeta")
+                                {
+                                    if (index < clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = violetaCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = violetaCss;
+                                            }
+                                        }
+                                    }
+                                    if (index > clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = violetaCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = violetaCss;
+                                            }
+                                        }
+                                    }
+                                    //Turno_siguiente(color);}
+                                }
+                                if (color == "Celeste")
+                                {
+                                    if (index < clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = celesteCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = celesteCss;
+                                            }
+                                        }
+                                    }
+                                    if (index > clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = celesteCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = celesteCss;
+                                            }
+                                        }
+                                    }
+                                    //Turno_siguiente(color);}
+                                }
+                                if (color == "Gris")
+                                {
+                                    if (index < clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = grisCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = index; i <= clic; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = grisCss;
+                                            }
+                                        }
+                                    }
+                                    if (index > clic)
+                                    {
+                                        if (ColoresUsuario().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = grisCss;
+                                            }
+                                        }
+                                        if (ColoresOponente().Contains(color))
+                                        {
+                                            for (int i = clic; i <= index; i++)
+                                            {
+                                                if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                                    casilla[i].CssClass = grisCss;
+                                            }
+                                        }
+                                    }
+                                    //Turno_siguiente(color);
+                                }
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
 
-            //            }
-            //        }
-                //}
-            //}
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public bool VerVacio(WebControl[] casilla, int clic, int index)
@@ -1502,7 +2104,7 @@ namespace Othello
 
                 Get_Score(a1);
                 Get_Move(a1);
-            }
+            Turno_siguiente(color);}
         }
 
         public void B1_Click(object sender, EventArgs e)
@@ -1517,7 +2119,7 @@ namespace Othello
 
                 Get_Score(b1);
                 Get_Move(b1);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void C1_Click(object sender, EventArgs e)
@@ -1532,7 +2134,7 @@ namespace Othello
 
                 Get_Score(c1);
                 Get_Move(c1);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void D1_Click(object sender, EventArgs e)
@@ -1547,8 +2149,8 @@ namespace Othello
 
                 Get_Score(d1);
                 Get_Move(d1);
-            }
-        }
+            Turno_siguiente(color);}
+        Turno_siguiente(color);}
 
         protected void E1_Click(object sender, EventArgs e)
         {
@@ -1563,7 +2165,7 @@ namespace Othello
                 Get_Score(e1);
                 Get_Move(e1);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void F1_Click(object sender, EventArgs e)
         {
@@ -1578,7 +2180,7 @@ namespace Othello
                 Get_Score(f1);
                 Get_Move(f1);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void G1_Click(object sender, EventArgs e)
         {
@@ -1593,7 +2195,7 @@ namespace Othello
                 Get_Score(g1);
                 Get_Move(g1);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void H1_Click(object sender, EventArgs e)
         {
@@ -1608,7 +2210,7 @@ namespace Othello
                 Get_Score(h1);
                 Get_Move(h1);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void A2_Click(object sender, EventArgs e)
         {
@@ -1623,7 +2225,7 @@ namespace Othello
                 Get_Score(a2);
                 Get_Move(a2);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void B2_Click(object sender, EventArgs e)
         {
@@ -1638,7 +2240,7 @@ namespace Othello
                 Get_Score(b2);
                 Get_Move(b2);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void C2_Click(object sender, EventArgs e)
         {
@@ -1653,7 +2255,7 @@ namespace Othello
                 Get_Score(c2);
                 Get_Move(c2);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void D2_Click(object sender, EventArgs e)
         {
@@ -1668,7 +2270,7 @@ namespace Othello
                 Get_Score(d2);
                 Get_Move(d2);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void E2_Click(object sender, EventArgs e)
         {
@@ -1683,7 +2285,7 @@ namespace Othello
                 Get_Score(e2);
                 Get_Move(e2);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void F2_Click(object sender, EventArgs e)
         {
@@ -1698,7 +2300,7 @@ namespace Othello
                 Get_Score(f2);
                 Get_Move(f2);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void G2_Click(object sender, EventArgs e)
         {
@@ -1713,7 +2315,7 @@ namespace Othello
                 Get_Score(g2);
                 Get_Move(g2);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void H2_Click(object sender, EventArgs e)
         {
@@ -1728,7 +2330,7 @@ namespace Othello
                 Get_Score(h2);
                 Get_Move(h2);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void A3_Click(object sender, EventArgs e)
         {
@@ -1743,7 +2345,7 @@ namespace Othello
                 Get_Score(a3);
                 Get_Move(a3);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void B3_Click(object sender, EventArgs e)
         {
@@ -1758,7 +2360,7 @@ namespace Othello
                 Get_Score(b3);
                 Get_Move(b3);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void C3_Click(object sender, EventArgs e)
         {
@@ -1773,7 +2375,7 @@ namespace Othello
                 Get_Score(c3);
                 Get_Move(c3);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void D3_Click(object sender, EventArgs e)
         {
@@ -1788,7 +2390,7 @@ namespace Othello
                 Get_Score(d3);
                 Get_Move(d3);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void E3_Click(object sender, EventArgs e)
         {
@@ -1803,7 +2405,7 @@ namespace Othello
                 Get_Score(e3);
                 Get_Move(e3);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void F3_Click(object sender, EventArgs e)
         {
@@ -1818,7 +2420,7 @@ namespace Othello
                 Get_Score(f3);
                 Get_Move(f3);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void G3_Click(object sender, EventArgs e)
         {
@@ -1833,7 +2435,7 @@ namespace Othello
                 Get_Score(g3);
                 Get_Move(g3);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void H3_Click(object sender, EventArgs e)
         {
@@ -1848,7 +2450,7 @@ namespace Othello
                 Get_Score(h3);
                 Get_Move(h3);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void A4_Click(object sender, EventArgs e)
         {
@@ -1863,7 +2465,7 @@ namespace Othello
                 Get_Score(a4);
                 Get_Move(a4);
             }
-        }
+        Turno_siguiente(color);}
         protected void B4_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
@@ -1877,7 +2479,7 @@ namespace Othello
                 Get_Score(b4);
                 Get_Move(b4);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void C4_Click(object sender, EventArgs e)
         {
@@ -1892,7 +2494,7 @@ namespace Othello
                 Get_Score(c4);
                 Get_Move(c4);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void D4_Click(object sender, EventArgs e)
         {
@@ -1907,7 +2509,7 @@ namespace Othello
                 Get_Score(d4);
                 Get_Move(d4);
             }
-        }
+        Turno_siguiente(color);}
 
         protected void E4_Click(object sender, EventArgs e)
         {
@@ -1921,7 +2523,7 @@ namespace Othello
 
                 Get_Score(e4);
                 Get_Move(e4);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void F4_Click(object sender, EventArgs e)
@@ -1936,7 +2538,7 @@ namespace Othello
 
                 Get_Score(f4);
                 Get_Move(f4);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void G4_Click(object sender, EventArgs e)
@@ -1951,7 +2553,7 @@ namespace Othello
 
                 Get_Score(g4);
                 Get_Move(g4);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void H4_Click(object sender, EventArgs e)
@@ -1966,7 +2568,7 @@ namespace Othello
 
                 Get_Score(h4);
                 Get_Move(h4);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void A5_Click(object sender, EventArgs e)
@@ -1981,7 +2583,7 @@ namespace Othello
 
                 Get_Score(a5);
                 Get_Move(a5);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void B5_Click(object sender, EventArgs e)
@@ -1996,7 +2598,7 @@ namespace Othello
 
                 Get_Score(b5);
                 Get_Move(b5);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void C5_Click(object sender, EventArgs e)
@@ -2011,7 +2613,7 @@ namespace Othello
 
                 Get_Score(c5);
                 Get_Move(c5);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void D5_Click(object sender, EventArgs e)
@@ -2026,7 +2628,7 @@ namespace Othello
 
                 Get_Score(d5);
                 Get_Move(d5);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void E5_Click(object sender, EventArgs e)
@@ -2041,7 +2643,7 @@ namespace Othello
 
                 Get_Score(e5);
                 Get_Move(e5);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void F5_Click(object sender, EventArgs e)
@@ -2056,7 +2658,7 @@ namespace Othello
 
                 Get_Score(f5);
                 Get_Move(f5);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void G5_Click(object sender, EventArgs e)
@@ -2071,7 +2673,7 @@ namespace Othello
 
                 Get_Score(g5);
                 Get_Move(g5);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void H5_Click(object sender, EventArgs e)
@@ -2086,7 +2688,7 @@ namespace Othello
 
                 Get_Score(h5);
                 Get_Move(h5);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void A6_Click(object sender, EventArgs e)
@@ -2101,7 +2703,7 @@ namespace Othello
 
                 Get_Score(a6);
                 Get_Move(a6);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void B6_Click(object sender, EventArgs e)
@@ -2116,7 +2718,7 @@ namespace Othello
 
                 Get_Score(b6);
                 Get_Move(b6);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void C6_Click(object sender, EventArgs e)
@@ -2131,7 +2733,7 @@ namespace Othello
 
                 Get_Score(c6);
                 Get_Move(c6);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void D6_Click(object sender, EventArgs e)
@@ -2146,7 +2748,7 @@ namespace Othello
 
                 Get_Score(d6);
                 Get_Move(d6);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void E6_Click(object sender, EventArgs e)
@@ -2161,7 +2763,7 @@ namespace Othello
 
                 Get_Score(e6);
                 Get_Move(e6);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void F6_Click(object sender, EventArgs e)
@@ -2176,7 +2778,7 @@ namespace Othello
 
                 Get_Score(f6);
                 Get_Move(f6);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void G6_Click(object sender, EventArgs e)
@@ -2191,7 +2793,7 @@ namespace Othello
 
                 Get_Score(g6);
                 Get_Move(g6);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void H6_Click(object sender, EventArgs e)
@@ -2206,7 +2808,7 @@ namespace Othello
 
                 Get_Score(h6);
                 Get_Move(h6);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void A7_Click(object sender, EventArgs e)
@@ -2221,7 +2823,7 @@ namespace Othello
 
                 Get_Score(a7);
                 Get_Move(a7);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void B7_Click(object sender, EventArgs e)
@@ -2236,7 +2838,7 @@ namespace Othello
 
                 Get_Score(b7);
                 Get_Move(b7);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void C7_Click(object sender, EventArgs e)
@@ -2251,7 +2853,7 @@ namespace Othello
 
                 Get_Score(c7);
                 Get_Move(c7);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void D7_Click(object sender, EventArgs e)
@@ -2266,7 +2868,7 @@ namespace Othello
 
                 Get_Score(d7);
                 Get_Move(d7);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void E7_Click(object sender, EventArgs e)
@@ -2281,7 +2883,7 @@ namespace Othello
 
                 Get_Score(e7);
                 Get_Move(e7);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void F7_Click(object sender, EventArgs e)
@@ -2296,7 +2898,7 @@ namespace Othello
 
                 Get_Score(f7);
                 Get_Move(f7);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void G7_Click(object sender, EventArgs e)
@@ -2311,7 +2913,7 @@ namespace Othello
 
                 Get_Score(g7);
                 Get_Move(g7);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void H7_Click(object sender, EventArgs e)
@@ -2326,7 +2928,7 @@ namespace Othello
 
                 Get_Score(h7);
                 Get_Move(h7);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void A8_Click(object sender, EventArgs e)
@@ -2341,7 +2943,7 @@ namespace Othello
 
                 Get_Score(a8);
                 Get_Move(a8);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void B8_Click(object sender, EventArgs e)
@@ -2356,7 +2958,7 @@ namespace Othello
 
                 Get_Score(b8);
                 Get_Move(b8);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void C8_Click(object sender, EventArgs e)
@@ -2371,7 +2973,7 @@ namespace Othello
 
                 Get_Score(c8);
                 Get_Move(c8);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void D8_Click(object sender, EventArgs e)
@@ -2386,7 +2988,7 @@ namespace Othello
 
                 Get_Score(d8);
                 Get_Move(d8);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void E8_Click(object sender, EventArgs e)
@@ -2401,7 +3003,7 @@ namespace Othello
 
                 Get_Score(e8);
                 Get_Move(e8);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void F8_Click(object sender, EventArgs e)
@@ -2416,7 +3018,7 @@ namespace Othello
 
                 Get_Score(f8);
                 Get_Move(f8);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void G8_Click(object sender, EventArgs e)
@@ -2431,7 +3033,7 @@ namespace Othello
 
                 Get_Score(g8);
                 Get_Move(g8);
-            }
+            Turno_siguiente(color);}
         }
 
         protected void H8_Click(object sender, EventArgs e)
@@ -2446,7 +3048,7 @@ namespace Othello
 
                 Get_Score(h8);
                 Get_Move(h8);
-            }
+            Turno_siguiente(color);}
         }
     }
 }

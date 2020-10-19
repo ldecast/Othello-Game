@@ -11,24 +11,151 @@ using System.Data.SqlClient;
 
 namespace Othello
 {
-    public partial class OthelloLoaded : System.Web.UI.Page
+    public partial class OthelloXtream : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Get_Score(null);
+            //a1.CssClass = "btnA1";
             if (!IsPostBack)
             {
+                if (Request.Params["Parametro"] != null)
+                {
+                    string parametro = Request.Params["Parametro"];
+                    if (parametro.Contains("Loaded")) iniciar.Visible = true;
+                    else iniciar.Visible = false;
+                }
+                //Ver_colores();
+                //coloresUsuario = ColoresUsuario();
+                //coloresOponente = ColoresOponente();
+                listaColores.Text = Convert.ToString(Session["coloresUsuario"]);
+                listaOponente.Text = Convert.ToString(Session["coloresPlayer2"]);
+                coloresUsuario = listaColores.Text.Split(',').ToList();
+                coloresOponente = listaOponente.Text.Split(',').ToList();
+                Get_Score(null);
                 end.Enabled = false;
                 guardar.Enabled = false;
                 ceder_turno.Enabled = false;
+                turno.Text = ColoresUsuario().First().ToString();
+            }
+
+            coloresUsuario = ColoresUsuario();
+            coloresOponente = ColoresOponente();
+
+            
+
+        }
+
+        protected void Page_LoadComplete(object sender, EventArgs e)
+        {
+            switch (turno.Text)
+            {
+                case "Rojo":
+                    turno.ForeColor = ColorTranslator.FromHtml(rojo);
+                    movimiento_negro.ForeColor = ColorTranslator.FromHtml(rojo);
+                    movimiento_blanco.ForeColor = ColorTranslator.FromHtml(rojo);
+                    break;
+                case "Amarillo":
+                    turno.ForeColor = ColorTranslator.FromHtml(amarillo);
+                    movimiento_negro.ForeColor = ColorTranslator.FromHtml(amarillo);
+                    movimiento_blanco.ForeColor = ColorTranslator.FromHtml(amarillo);
+                    break;
+                case "Azul":
+                    turno.ForeColor = ColorTranslator.FromHtml(azul);
+                    movimiento_negro.ForeColor = ColorTranslator.FromHtml(azul);
+                    movimiento_blanco.ForeColor = ColorTranslator.FromHtml(azul);
+                    break;
+                case "Naranja":
+                    turno.ForeColor = ColorTranslator.FromHtml(naranja);
+                    movimiento_negro.ForeColor = ColorTranslator.FromHtml(naranja);
+                    movimiento_blanco.ForeColor = ColorTranslator.FromHtml(naranja);
+                    break;
+                case "Verde":
+                    turno.ForeColor = ColorTranslator.FromHtml(verde);
+                    movimiento_negro.ForeColor = ColorTranslator.FromHtml(verde);
+                    movimiento_blanco.ForeColor = ColorTranslator.FromHtml(verde);
+                    break;
+                case "Violeta":
+                    turno.ForeColor = ColorTranslator.FromHtml(violeta);
+                    movimiento_negro.ForeColor = ColorTranslator.FromHtml(violeta);
+                    movimiento_blanco.ForeColor = ColorTranslator.FromHtml(violeta);
+                    break;
+                case "Blanco":
+                    turno.ForeColor = Color.White;
+                    movimiento_negro.ForeColor = Color.White;
+                    movimiento_blanco.ForeColor = Color.White;
+                    break;
+                case "Negro":
+                    turno.ForeColor = Color.Black;
+                    movimiento_negro.ForeColor = Color.Black;
+                    movimiento_blanco.ForeColor = Color.Black;
+                    break;
+                case "Celeste":
+                    turno.ForeColor = ColorTranslator.FromHtml(celeste);
+                    movimiento_negro.ForeColor = ColorTranslator.FromHtml(celeste);
+                    movimiento_blanco.ForeColor = ColorTranslator.FromHtml(celeste);
+                    break;
+                case "Gris":
+                    turno.ForeColor = ColorTranslator.FromHtml(gris);
+                    movimiento_negro.ForeColor = ColorTranslator.FromHtml(gris);
+                    movimiento_blanco.ForeColor = ColorTranslator.FromHtml(gris);
+                    break;
             }
         }
 
-        private readonly string verde = "btn btn-success btn-lg border-dark rounded-0";
+        public void Ver_colores()
+        {
+            if (Session["coloresUsuario"] != null)
+            {
+                string coloresUsuario = Convert.ToString(Session["coloresUsuario"]);
+                Response.Write(coloresUsuario);
+                
+            }
+            if (Session["coloresPlayer2"] != null)
+            {
+                string coloresPlayer2 = Convert.ToString(Session["coloresPlayer2"]);
+                Response.Write(coloresPlayer2);
+
+            }
+        }
+
+        public List<string> ColoresUsuario()
+        {
+            string coloresUsuario = Convert.ToString(Session["coloresUsuario"]);
+            return coloresUsuario.Split(',').ToList();
+        }
+
+        public List<string> ColoresOponente()
+        {
+            string coloresOponente = Convert.ToString(Session["coloresPlayer2"]);
+            return coloresOponente.Split(',').ToList();
+        }
+
+        private List<string> coloresUsuario = new List<string>();
+        private List<string> coloresOponente = new List<string>();
+
+        private List<string> auxCU = new List<string>();
+        private List<string> auxCO = new List<string>();
+
+
+        private readonly string vacio = "btn btn-success btn-lg border-dark rounded-0";
         private readonly string negro = "btn btn-dark btn-lg border-dark rounded-0";
         private readonly string blanco = "btn btn-light btn-lg border-dark rounded-0";
-        private string move_negro = "";
-        private string move_blanco = "";
+        private readonly string rojo = "\"#c72b2b\"";
+        private readonly string amarillo = "\"#e0bf07\"";
+        private readonly string azul = "\"#203ee9\"";
+        private readonly string naranja = "\"#f2751c\"";
+        private readonly string verde = "\"#00ff22\"";
+        private readonly string violeta = "\"#951ec8\"";
+        private readonly string celeste = "\"#1d90e4\"";
+        private readonly string gris = "\"#807e7e\"";
+        private readonly string white = "\"#f6f6f6\"";
+        private readonly string black = "\"#121111\"";
+        private string moveUsuario = "";
+        private string movePlayer = "";
+
+
+        int aux1 = 0;
+        int aux2 = 0;
 
         public void Leer_xml(object sender, EventArgs e)
         {
@@ -597,56 +724,120 @@ namespace Othello
         public void Get_Score(WebControl boton)
         {
             WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8 };
-            int score_white = 0;
-            int score_black = 0;
+            int white = 0;
+            int black = 0;
+            int red = 0;
+            int yellow = 0;
+            int blue = 0;
+            int orange = 0;
+            int green = 0;
+            int purple = 0;
+            int sky = 0;
+            int grey = 0;
+
             int aux_white = int.Parse(score1.Text);
             int aux_black = int.Parse(score2.Text);
             for (int i = 0; i < botones.Length; i++)
             {
-                switch (botones[i].CssClass.ToString())
+                switch (botones[i].BackColor.ToString())
                 {
-                    case "btn btn-light btn-lg border-dark rounded-0":
-                        score_white++;
+                    case "#c72b2b":
+                        red++;
                         break;
-                    case "btn btn-dark btn-lg border-dark rounded-0":
-                        score_black++;
+                    case "#e0bf07":
+                        yellow++;
+                        break;
+                    case "#203ee9":
+                        blue++;
+                        break;
+                    case "#f2751c":
+                        orange++;
+                        break;
+                    case "#00ff22":
+                        green++;
+                        break;
+                    case "#951ec8":
+                        purple++;
+                        break;
+                    case "#1d90e4":
+                        sky++;
+                        break;
+                    case "#807e7e":
+                        grey++;
+                        break;
+                    case "#f6f6f6":
+                        white++;
+                        break;
+                    case "#121111":
+                        black++;
                         break;
                 }
             }
 
-            if (score_white == aux_white + 1 && score_white + score_black != 64) { boton.CssClass = verde; score_white--; turno.Text = "Blanco"; turno.ForeColor = Color.White; }
-            else if (score_black == aux_black + 1 && score_white + score_black != 64) { boton.CssClass = verde; score_black--; turno.Text = "Negro"; turno.ForeColor = Color.Black; }
+            //if (score_white == aux_white + 1 && score_white + score_black != 64) { boton.CssClass = vacio; score_white--; turno.Text = "Blanco"; turno.ForeColor = Color.White; }
+            //else if (score_black == aux_black + 1 && score_white + score_black != 64) { boton.CssClass = vacio; score_black--; turno.Text = "Negro"; turno.ForeColor = Color.Black; }
+            List<string> aux_user = ColoresUsuario();
+            List<string> aux_oponent = ColoresOponente();
+            List<int> scores_user = new List<int>();
+            List<int> scores_oponente = new List<int>();
+            for (int i = 0; i < aux_user.Count() ; i++)
+            {
+                if (aux_user[i].Equals("Rojo")) scores_user.Append(red);
+                if (aux_user[i].Equals("Amarillo")) scores_user.Append(yellow);
+                if (aux_user[i].Equals("Azul")) scores_user.Append(blue);
+                if (aux_user[i].Equals("Naranja")) scores_user.Append(orange);
+                if (aux_user[i].Equals("Verde")) scores_user.Append(green);
+                if (aux_user[i].Equals("Violeta")) scores_user.Append(purple);
+                if (aux_user[i].Equals("Blanco")) scores_user.Append(white);
+                if (aux_user[i].Equals("Negro")) scores_user.Append(black);
+                if (aux_user[i].Equals("Celeste")) scores_user.Append(sky);
+                if (aux_user[i].Equals("Gris")) scores_user.Append(grey);
+            }
 
-            score1.Text = score_white.ToString();
-            score2.Text = score_black.ToString();
+            for (int i = 0; i < aux_oponent.Count(); i++)
+            {
+                if (aux_oponent[i].Equals("Rojo")) scores_oponente.Append(red);
+                if (aux_oponent[i].Equals("Amarillo")) scores_oponente.Append(yellow);
+                if (aux_oponent[i].Equals("Azul")) scores_oponente.Append(blue);
+                if (aux_oponent[i].Equals("Naranja")) scores_oponente.Append(orange);
+                if (aux_oponent[i].Equals("Verde")) scores_oponente.Append(green);
+                if (aux_oponent[i].Equals("Violeta")) scores_oponente.Append(purple);
+                if (aux_oponent[i].Equals("Blanco")) scores_oponente.Append(white);
+                if (aux_oponent[i].Equals("Negro")) scores_oponente.Append(black);
+                if (aux_oponent[i].Equals("Celeste")) scores_oponente.Append(sky);
+                if (aux_oponent[i].Equals("Gris")) scores_oponente.Append(grey);
+            }
+
+            score1.Text = scores_user.Sum().ToString();
+            score2.Text = scores_oponente.Sum().ToString();
         }
 
         public void Get_Move(WebControl boton)
         {
-            int black_move = int.Parse(movimiento_negro.Text);
-            int white_move = int.Parse(movimiento_blanco.Text);
-            if (boton.CssClass != verde)
-            {
-                if (boton.CssClass == negro)
-                {
-                    black_move++;
-                    movimiento_negro.Text = black_move.ToString();
-                    movimiento_negro.Visible = false;
-                    movimiento_blanco.Visible = true;
-                }
-                if (boton.CssClass == blanco)
-                {
-                    white_move++;
-                    movimiento_blanco.Text = white_move.ToString();
-                    movimiento_blanco.Visible = false;
-                    movimiento_negro.Visible = true;
-                }
-            }
-            int score_white = int.Parse(score1.Text);
-            int score_black = int.Parse(score2.Text);
-            if (score_white == 0 && score_black > 0) GameOver();
-            else if (score_black == 0 && score_white > 0) GameOver();
-            if (score_white + score_black == 64) GameOver();
+            //int black_move = int.Parse(movimiento_negro.Text);
+            //int white_move = int.Parse(movimiento_blanco.Text);
+            //if (boton.CssClass != vacio)
+            //{
+            //    if (boton.CssClass == negro)
+            //    {
+            //        black_move++;
+            //        movimiento_negro.Text = black_move.ToString();
+            //        movimiento_negro.Visible = false;
+            //        movimiento_blanco.Visible = true;
+            //    }
+            //    if (boton.CssClass == blanco)
+            //    {
+            //        white_move++;
+            //        movimiento_blanco.Text = white_move.ToString();
+            //        movimiento_blanco.Visible = false;
+            //        movimiento_negro.Visible = true;
+            //    }
+            //}
+            //int score_white = int.Parse(score1.Text);
+            //int score_black = int.Parse(score2.Text);
+            //if (score_white == 0 && score_black > 0) GameOver();
+            //else if (score_black == 0 && score_white > 0) GameOver();
+            //if (score_white + score_black == 64) GameOver();
         }
 
         public void Terminar_Juego(object sender, EventArgs e)
@@ -674,8 +865,8 @@ namespace Othello
                 gameover.CssClass = "display-2 text-white";
                 turno.Text = "";
                 turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
-                move_blanco = movimiento_blanco.Text;
-                move_negro = movimiento_negro.Text;
+                movePlayer = movimiento_blanco.Text;
+                moveUsuario = movimiento_negro.Text;
                 movimiento_negro.Text = "";
                 movimiento_blanco.Text = "";
                 Registrar("blanco");
@@ -687,8 +878,8 @@ namespace Othello
                 gameover.CssClass = "display-2 text-dark";
                 turno.Text = "";
                 turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
-                move_blanco = movimiento_blanco.Text;
-                move_negro = movimiento_negro.Text;
+                movePlayer = movimiento_blanco.Text;
+                moveUsuario = movimiento_negro.Text;
                 movimiento_negro.Text = "";
                 movimiento_blanco.Text = "";
                 Registrar("negro");
@@ -700,8 +891,8 @@ namespace Othello
                 gameover.CssClass = "display-2 text-warning font-weight-bold";
                 turno.Text = "";
                 turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
-                move_blanco = movimiento_blanco.Text;
-                move_negro = movimiento_negro.Text;
+                movePlayer = movimiento_blanco.Text;
+                moveUsuario = movimiento_negro.Text;
                 movimiento_negro.Text = "";
                 movimiento_blanco.Text = "";
                 Registrar("empate");
@@ -715,96 +906,96 @@ namespace Othello
 
         public void Registrar(string ganador)
         {
-            if (Request.Params["Parametro"] != null && ganador != "empate")
-            {
-                string parametro = Request.Params["Parametro"];
-                string color_host = parametro.Substring(parametro.IndexOf("-") + 1);
-                string jugador_host = parametro.Substring(0, parametro.IndexOf("-"));
-                string winner = "";
-                string loser = "";
-                string estado = "";
-                switch (color_host)
-                {
-                    case "Negro":
-                        if (ganador == "blanco") estado = "perdida";
-                        if (ganador == "negro") estado = "ganada";
-                        if (ganador == color_host.ToLower()) { winner = jugador_host; loser = "invitado"; }
-                        if (ganador != color_host.ToLower()) { winner = "invitado"; loser = jugador_host; }
-                        try
-                        {
-                            //codigo de Tutoriales Ya.com
-                            string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
-                            SqlConnection conexion = new SqlConnection(a);
-                            conexion.Open();
-                            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,ganador,perdedor,empate) values('1vs1','" +
-                                    estado + "'," + move_negro + ",'" + jugador_host + "','invitado','" + winner + "','" + loser + "',0)", conexion);
-                            script.ExecuteNonQuery();
-                            conexion.Close();
-                        }
-                        catch (Exception)
-                        {
-                            ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo guardar el resultado en la base de datos.\")", true);
-                        }
-                        break;
-                    case "Blanco":
-                        if (ganador == "blanco") estado = "ganada";
-                        if (ganador == "negro") estado = "perdida";
-                        if (ganador == "empate") { estado = "empate"; winner = ""; loser = ""; }
-                        if (ganador == color_host.ToLower()) { winner = jugador_host; loser = "invitado"; }
-                        if (ganador != color_host.ToLower() && ganador != "empate") { winner = "invitado"; loser = jugador_host; }
-                        try
-                        {
-                            //codigo de Tutoriales Ya.com
-                            string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
-                            SqlConnection conexion = new SqlConnection(a);
-                            conexion.Open();
-                            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,ganador,perdedor,empate) values('1vs1','" +
-                                    estado + "'," + move_blanco + ",'" + jugador_host + "','invitado','" + winner + "','" + loser + "',0)", conexion);
-                            script.ExecuteNonQuery();
-                            conexion.Close();
-                        }
-                        catch (Exception)
-                        {
-                            ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo guardar el resultado en la base de datos.\")", true);
-                        }
-                        break;
-                }
-            }
-            if (Request.Params["Parametro"] != null && ganador == "empate")
-            {
-                string parametro = Request.Params["Parametro"];
-                string color_host = parametro.Substring(parametro.IndexOf("-") + 1);
-                string jugador_host = parametro.Substring(0, parametro.IndexOf("-"));
-                try
-                {
-                    //codigo de Tutoriales Ya.com
-                    if (color_host == "Negro")
-                    {
-                        string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
-                        SqlConnection conexion = new SqlConnection(a);
-                        conexion.Open();
-                        SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,empate) values('1vs1','empate'," +
-                               move_negro + ",'" + jugador_host + "','invitado',1)", conexion);
-                        script.ExecuteNonQuery();
-                        conexion.Close();
-                    }
-                    if (color_host == "Blanco")
-                    {
-                        string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
-                        SqlConnection conexion = new SqlConnection(a);
-                        conexion.Open();
-                        SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,empate) values('1vs1','empate'," +
-                               move_blanco + ",'" + jugador_host + "','invitado',1)", conexion);
-                        script.ExecuteNonQuery();
-                        conexion.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Response.Write(ex);
-                    ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo guardar el resultado en la base de datos.\")", true);
-                }
-            }
+            //if (Request.Params["Parametro"] != null && ganador != "empate")
+            //{
+            //    string parametro = Request.Params["Parametro"];
+            //    string color_host = parametro.Substring(parametro.IndexOf("-") + 1);
+            //    string jugador_host = parametro.Substring(0, parametro.IndexOf("-"));
+            //    string winner = "";
+            //    string loser = "";
+            //    string estado = "";
+            //    switch (color_host)
+            //    {
+            //        case "Negro":
+            //            if (ganador == "blanco") estado = "perdida";
+            //            if (ganador == "negro") estado = "ganada";
+            //            if (ganador == color_host.ToLower()) { winner = jugador_host; loser = "invitado"; }
+            //            if (ganador != color_host.ToLower()) { winner = "invitado"; loser = jugador_host; }
+            //            try
+            //            {
+            //                //codigo de Tutoriales Ya.com
+            //                string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
+            //                SqlConnection conexion = new SqlConnection(a);
+            //                conexion.Open();
+            //                SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,ganador,perdedor,empate) values('1vs1','" +
+            //                        estado + "'," + moveUsuario + ",'" + jugador_host + "','invitado','" + winner + "','" + loser + "',0)", conexion);
+            //                script.ExecuteNonQuery();
+            //                conexion.Close();
+            //            }
+            //            catch (Exception)
+            //            {
+            //                ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo guardar el resultado en la base de datos.\")", true);
+            //            }
+            //            break;
+            //        case "Blanco":
+            //            if (ganador == "blanco") estado = "ganada";
+            //            if (ganador == "negro") estado = "perdida";
+            //            if (ganador == "empate") { estado = "empate"; winner = ""; loser = ""; }
+            //            if (ganador == color_host.ToLower()) { winner = jugador_host; loser = "invitado"; }
+            //            if (ganador != color_host.ToLower() && ganador != "empate") { winner = "invitado"; loser = jugador_host; }
+            //            try
+            //            {
+            //                //codigo de Tutoriales Ya.com
+            //                string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
+            //                SqlConnection conexion = new SqlConnection(a);
+            //                conexion.Open();
+            //                SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,ganador,perdedor,empate) values('1vs1','" +
+            //                        estado + "'," + movePlayer + ",'" + jugador_host + "','invitado','" + winner + "','" + loser + "',0)", conexion);
+            //                script.ExecuteNonQuery();
+            //                conexion.Close();
+            //            }
+            //            catch (Exception)
+            //            {
+            //                ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo guardar el resultado en la base de datos.\")", true);
+            //            }
+            //            break;
+            //    }
+            //}
+            //if (Request.Params["Parametro"] != null && ganador == "empate")
+            //{
+            //    string parametro = Request.Params["Parametro"];
+            //    string color_host = parametro.Substring(parametro.IndexOf("-") + 1);
+            //    string jugador_host = parametro.Substring(0, parametro.IndexOf("-"));
+            //    try
+            //    {
+            //        //codigo de Tutoriales Ya.com
+            //        if (color_host == "Negro")
+            //        {
+            //            string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
+            //            SqlConnection conexion = new SqlConnection(a);
+            //            conexion.Open();
+            //            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,empate) values('1vs1','empate'," +
+            //                   moveUsuario + ",'" + jugador_host + "','invitado',1)", conexion);
+            //            script.ExecuteNonQuery();
+            //            conexion.Close();
+            //        }
+            //        if (color_host == "Blanco")
+            //        {
+            //            string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
+            //            SqlConnection conexion = new SqlConnection(a);
+            //            conexion.Open();
+            //            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,empate) values('1vs1','empate'," +
+            //                   movePlayer + ",'" + jugador_host + "','invitado',1)", conexion);
+            //            script.ExecuteNonQuery();
+            //            conexion.Close();
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Response.Write(ex);
+            //        ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo guardar el resultado en la base de datos.\")", true);
+            //    }
+            //}
         }
 
         public void Salir(object sender, EventArgs e)
@@ -944,73 +1135,315 @@ namespace Othello
             }
             if (permitido && permitido2)
             {
-                ComerFicha(casilla, color, clic, aux);
-                ComerFicha(casilla, color, clic, aux2);
+                //ComerFicha(casilla, color, clic, aux);
+                //ComerFicha(casilla, color, clic, aux2);
                 return -1;
             }
             else
                 return -1;
         }
 
-        public void ComerFicha(WebControl[] casilla, string color, int clic, int index)
+        public void Turno_siguiente(string color)
         {
-            if (FichaAlApar(casilla, color, clic))
+            //auxCU = coloresUsuario;
+            if (listaColores.Text.Contains(color))
             {
-                if (index != -1)
+                guardar.Text = color;
+                turno.Text = listaOponente.Text.Split(',').ToList().First();
+                string[] a = listaColores.Text.Split(',');
+                if (listaColores.Text.Contains(","))
                 {
-                    if (VerVacio(casilla, clic, index) == true)
-                    {
-                        try
-                        {
-                            if (color == "Negro")
-                            {
-                                if (index < clic)
-                                {
-                                    for (int i = index; i <= clic; i++)
-                                    {
-                                        casilla[i].CssClass = negro;
-                                    }
-                                }
-                                if (index > clic)
-                                {
-                                    for (int i = clic; i <= index; i++)
-                                    {
-                                        casilla[i].CssClass = negro;
-                                    }
-                                }
-                                turno.Text = "Blanco";
-                                turno.ForeColor = Color.White;
-                                ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); //inicia cronometro
-                            }
-                            if (color == "Blanco")
-                            {
-
-                                if (index < clic)
-                                {
-                                    for (int i = index; i <= clic; i++)
-                                    {
-                                        casilla[i].CssClass = blanco;
-                                    }
-                                }
-                                if (index > clic)
-                                {
-                                    for (int i = clic; i <= index; i++)
-                                    {
-                                        casilla[i].CssClass = blanco;
-                                    }
-                                }
-                                turno.Text = "Negro";
-                                turno.ForeColor = Color.Black;
-                                ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); //inicia cronometro
-                            }
-                        }
-                        catch (IndexOutOfRangeException)
-                        {
-
-                        }
-                    }
+                    
+                    listaColores.Text = listaColores.Text.Substring(listaColores.Text.IndexOf(',') + 1);
+                }
+                else if (!listaColores.Text.Contains(","))
+                {
+                    listaColores.Text = Convert.ToString(Session["coloresUsuario"]);
+                    guardar.Text = listaColores.Text;
                 }
             }
+
+            else if (listaOponente.Text.Contains(color))
+            {
+                //Response.Write(color);
+                turno.Text = listaColores.Text.Split(',').ToList().First();
+                string [] a = listaOponente.Text.Split(',');
+                if (listaOponente.Text.Contains(","))
+                {
+                    listaOponente.Text = listaOponente.Text.Substring(listaOponente.Text.IndexOf(',') + 1);
+                }
+                else if (!listaOponente.Text.Contains(","))
+                {
+                    listaOponente.Text = Convert.ToString(Session["coloresPlayer2"]);
+                    //guardar.Text = listaOponente.Text;
+                }
+            }
+            ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); //inicia cronometro
+        }
+
+        public void ComerFicha(WebControl[] casilla, string color, int clic, int index)
+        {
+
+            //for (int i = aux1; i < ColoresUsuario().Count() + ColoresOponente().Count(); i++)
+            //{
+                if (color == "Negro")
+                {
+                    casilla[clic].BackColor = ColorTranslator.FromHtml(black);
+                    Turno_siguiente(color);
+                    aux1++;
+                }
+                if (color == "Blanco")
+                {
+                    casilla[clic].BackColor = ColorTranslator.FromHtml(white);
+                    Turno_siguiente(color);
+                    aux1++;
+                }
+                if (color == "Rojo")
+                {
+                    casilla[clic].BackColor = ColorTranslator.FromHtml(rojo);
+                    Turno_siguiente(color);
+                    aux1++;
+                }
+                if (color == "Amarillo")
+                {
+                    casilla[clic].BackColor = ColorTranslator.FromHtml(amarillo);
+                    Turno_siguiente(color);
+                    aux1++;
+                }
+                if (color == "Azul")
+                {
+                    casilla[clic].BackColor = ColorTranslator.FromHtml(azul);
+                    Turno_siguiente(color);
+                    aux1++;
+                }
+                if (color == "Naranja")
+                {
+                    casilla[clic].BackColor = ColorTranslator.FromHtml(naranja);
+                    Turno_siguiente(color);
+                    aux1++;
+                }
+                if (color == "Verde")
+                {
+                    casilla[clic].BackColor = ColorTranslator.FromHtml(verde);
+                    Turno_siguiente(color);
+                    aux1++;
+                }
+                if (color == "Violeta")
+                {
+                    casilla[clic].BackColor = ColorTranslator.FromHtml(violeta);
+                    Turno_siguiente(color);
+                    aux1++;
+                }
+                if (color == "Celeste")
+                {
+                    casilla[clic].BackColor = ColorTranslator.FromHtml(celeste);
+                    Turno_siguiente(color);
+                    aux1++;
+                }
+                if (color == "Gris")
+                {
+                    casilla[clic].BackColor = ColorTranslator.FromHtml(gris);
+                    Turno_siguiente(color);
+                    aux1++;
+                }
+            //}
+
+            //if (FichaAlApar(casilla, color, clic))
+            //{
+            //    if (index != -1)
+            //    {
+            //        if (VerVacio(casilla, clic, index) == true)
+            //        {
+            //            try
+            //            {
+            //                if (color == "Negro")
+            //                {
+            //                    if (index < clic)
+            //                    {
+            //                        for (int i = index; i <= clic; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(black);
+            //                        }
+            //                    }
+            //                    if (index > clic)
+            //                    {
+            //                        for (int i = clic; i <= index; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(black);
+            //                        }
+            //                    }
+            //                    Turno_siguiente(color);
+            //                }
+            //                if (color == "Blanco")
+            //                {
+            //                    if (index < clic)
+            //                    {
+            //                        for (int i = index; i <= clic; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(white);
+            //                        }
+            //                    }
+            //                    if (index > clic)
+            //                    {
+            //                        for (int i = clic; i <= index; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(white);
+            //                        }
+            //                    }
+            //                    Turno_siguiente(color);
+            //                }
+            //                if (color == "Rojo")
+            //                {
+            //                    if (index < clic)
+            //                    {
+            //                        for (int i = index; i <= clic; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(rojo);
+            //                        }
+            //                    }
+            //                    if (index > clic)
+            //                    {
+            //                        for (int i = clic; i <= index; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(rojo);
+            //                        }
+            //                    }
+            //                    Turno_siguiente(color);
+            //                }
+            //                if (color == "Amarillo")
+            //                {
+            //                    if (index < clic)
+            //                    {
+            //                        for (int i = index; i <= clic; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(amarillo);
+            //                        }
+            //                    }
+            //                    if (index > clic)
+            //                    {
+            //                        for (int i = clic; i <= index; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(amarillo);
+            //                        }
+            //                    }
+            //                    Turno_siguiente(color);
+            //                }
+            //                if (color == "Azul")
+            //                {
+            //                    if (index < clic)
+            //                    {
+            //                        for (int i = index; i <= clic; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(azul);
+            //                        }
+            //                    }
+            //                    if (index > clic)
+            //                    {
+            //                        for (int i = clic; i <= index; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(azul);
+            //                        }
+            //                    }
+            //                    Turno_siguiente(color);
+            //                }
+            //                if (color == "Naranja")
+            //                {
+            //                    if (index < clic)
+            //                    {
+            //                        for (int i = index; i <= clic; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(naranja);
+            //                        }
+            //                    }
+            //                    if (index > clic)
+            //                    {
+            //                        for (int i = clic; i <= index; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(naranja);
+            //                        }
+            //                    }
+            //                    Turno_siguiente(color);
+            //                }
+            //                if (color == "Verde")
+            //                {
+            //                    if (index < clic)
+            //                    {
+            //                        for (int i = index; i <= clic; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(verde);
+            //                        }
+            //                    }
+            //                    if (index > clic)
+            //                    {
+            //                        for (int i = clic; i <= index; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(verde);
+            //                        }
+            //                    }
+            //                    Turno_siguiente(color);
+            //                }
+            //                if (color == "Violeta")
+            //                {
+            //                    if (index < clic)
+            //                    {
+            //                        for (int i = index; i <= clic; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(violeta);
+            //                        }
+            //                    }
+            //                    if (index > clic)
+            //                    {
+            //                        for (int i = clic; i <= index; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(violeta);
+            //                        }
+            //                    }
+            //                    Turno_siguiente(color);
+            //                }
+            //                if (color == "Celeste")
+            //                {
+            //                    if (index < clic)
+            //                    {
+            //                        for (int i = index; i <= clic; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(celeste);
+            //                        }
+            //                    }
+            //                    if (index > clic)
+            //                    {
+            //                        for (int i = clic; i <= index; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(celeste);
+            //                        }
+            //                    }
+            //                    Turno_siguiente(color);
+            //                }
+            //                if (color == "Gris")
+            //                {
+            //                    if (index < clic)
+            //                    {
+            //                        for (int i = index; i <= clic; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(gris);
+            //                        }
+            //                    }
+            //                    if (index > clic)
+            //                    {
+            //                        for (int i = clic; i <= index; i++)
+            //                        {
+            //                            casilla[i].BackColor = ColorTranslator.FromHtml(gris);
+            //                        }
+            //                    }
+            //                    Turno_siguiente(color);
+            //                }
+            //            }
+            //            catch (IndexOutOfRangeException)
+            //            {
+
+            //            }
+            //        }
+                //}
+            //}
         }
 
         public bool VerVacio(WebControl[] casilla, int clic, int index)
@@ -1024,14 +1457,14 @@ namespace Othello
                     {
                         for (int i = index; i < clic; i++)
                         {
-                            if (casilla[i].CssClass == verde) { permitido = false; break; }
+                            if (casilla[i].CssClass == vacio) { permitido = false; break; }
                         }
                     }
                     if (index > clic)
                     {
                         for (int i = clic + 1; i <= index; i++)
                         {
-                            if (casilla[i].CssClass == verde) { permitido = false; break; }
+                            if (casilla[i].CssClass == vacio) { permitido = false; break; }
                         }
                     }
                 }
@@ -1044,14 +1477,14 @@ namespace Othello
             {
                 for (int i = clic + 1; i <= index; i++)
                 {
-                    if (casilla[i].CssClass == verde) { permitido = false; break; }
+                    if (casilla[i].CssClass == vacio) { permitido = false; break; }
                 }
             }
             if (clic + 1 >= casilla.Length && casilla.Length > 1 && index != -1)
             {
                 for (int i = index; i < clic; i++)
                 {
-                    if (casilla[i].CssClass == verde) { permitido = false; break; }
+                    if (casilla[i].CssClass == vacio) { permitido = false; break; }
                 }
             }
             return permitido;
@@ -1060,7 +1493,7 @@ namespace Othello
         public void A1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (a1.CssClass == verde)
+            if (a1.CssClass == vacio)
             {
                 ComerFicha(Tipo("colA"), color, 0, Verificar(Tipo("colA"), color, 0));
                 ComerFicha(Tipo("fila1"), color, 0, Verificar(Tipo("fila1"), color, 0));
@@ -1075,7 +1508,7 @@ namespace Othello
         public void B1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (b1.CssClass == verde)
+            if (b1.CssClass == vacio)
             {
                 ComerFicha(Tipo("colB"), color, 0, Verificar(Tipo("colB"), color, 0));
                 ComerFicha(Tipo("fila1"), color, 1, Verificar(Tipo("fila1"), color, 1));
@@ -1090,7 +1523,7 @@ namespace Othello
         protected void C1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (c1.CssClass == verde)
+            if (c1.CssClass == vacio)
             {
                 ComerFicha(Tipo("colC"), color, 0, Verificar(Tipo("colC"), color, 0));
                 ComerFicha(Tipo("fila1"), color, 2, Verificar(Tipo("fila1"), color, 2));
@@ -1105,7 +1538,7 @@ namespace Othello
         protected void D1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (d1.CssClass == verde)
+            if (d1.CssClass == vacio)
             {
                 ComerFicha(Tipo("colD"), color, 0, Verificar(Tipo("colD"), color, 0));
                 ComerFicha(Tipo("fila1"), color, 3, Verificar(Tipo("fila1"), color, 3));
@@ -1120,7 +1553,7 @@ namespace Othello
         protected void E1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (e1.CssClass == verde)
+            if (e1.CssClass == vacio)
             {
                 ComerFicha(Tipo("colE"), color, 0, Verificar(Tipo("colE"), color, 0));
                 ComerFicha(Tipo("fila1"), color, 4, Verificar(Tipo("fila1"), color, 4));
@@ -1135,7 +1568,7 @@ namespace Othello
         protected void F1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (f1.CssClass == verde)
+            if (f1.CssClass == vacio)
             {
                 ComerFicha(Tipo("colF"), color, 0, Verificar(Tipo("colF"), color, 0));
                 ComerFicha(Tipo("fila1"), color, 5, Verificar(Tipo("fila1"), color, 5));
@@ -1150,7 +1583,7 @@ namespace Othello
         protected void G1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (g1.CssClass == verde)
+            if (g1.CssClass == vacio)
             {
                 ComerFicha(Tipo("colG"), color, 0, Verificar(Tipo("colG"), color, 0));
                 ComerFicha(Tipo("fila1"), color, 6, Verificar(Tipo("fila1"), color, 6));
@@ -1165,7 +1598,7 @@ namespace Othello
         protected void H1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == verde)
+            if (h1.CssClass == vacio)
             {
                 ComerFicha(Tipo("colH"), color, 0, Verificar(Tipo("colH"), color, 0));
                 ComerFicha(Tipo("fila1"), color, 7, Verificar(Tipo("fila1"), color, 7));
@@ -1180,7 +1613,7 @@ namespace Othello
         protected void A2_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (a2.CssClass == verde)
+            if (a2.CssClass == vacio)
             {
                 ComerFicha(Tipo("colA"), color, 1, Verificar(Tipo("colA"), color, 1));
                 ComerFicha(Tipo("fila2"), color, 0, Verificar(Tipo("fila2"), color, 0));
@@ -1195,7 +1628,7 @@ namespace Othello
         protected void B2_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (b2.CssClass == verde)
+            if (b2.CssClass == vacio)
             {
                 ComerFicha(Tipo("colB"), color, 1, Verificar(Tipo("colB"), color, 1));
                 ComerFicha(Tipo("fila2"), color, 1, Verificar(Tipo("fila2"), color, 1));
@@ -1210,7 +1643,7 @@ namespace Othello
         protected void C2_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (c2.CssClass == verde)
+            if (c2.CssClass == vacio)
             {
                 ComerFicha(Tipo("colC"), color, 1, Verificar(Tipo("colC"), color, 1));
                 ComerFicha(Tipo("fila2"), color, 2, Verificar(Tipo("fila2"), color, 2));
@@ -1225,7 +1658,7 @@ namespace Othello
         protected void D2_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (d2.CssClass == verde)
+            if (d2.CssClass == vacio)
             {
                 ComerFicha(Tipo("colD"), color, 1, Verificar(Tipo("colD"), color, 1));
                 ComerFicha(Tipo("fila2"), color, 3, Verificar(Tipo("fila2"), color, 3));
@@ -1240,7 +1673,7 @@ namespace Othello
         protected void E2_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (e2.CssClass == verde)
+            if (e2.CssClass == vacio)
             {
                 ComerFicha(Tipo("colE"), color, 1, Verificar(Tipo("colE"), color, 1));
                 ComerFicha(Tipo("fila2"), color, 4, Verificar(Tipo("fila2"), color, 4));
@@ -1255,7 +1688,7 @@ namespace Othello
         protected void F2_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (f2.CssClass == verde)
+            if (f2.CssClass == vacio)
             {
                 ComerFicha(Tipo("colF"), color, 1, Verificar(Tipo("colF"), color, 1));
                 ComerFicha(Tipo("fila2"), color, 5, Verificar(Tipo("fila2"), color, 5));
@@ -1270,7 +1703,7 @@ namespace Othello
         protected void G2_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (g2.CssClass == verde)
+            if (g2.CssClass == vacio)
             {
                 ComerFicha(Tipo("colG"), color, 1, Verificar(Tipo("colG"), color, 1));
                 ComerFicha(Tipo("fila2"), color, 6, Verificar(Tipo("fila2"), color, 6));
@@ -1285,7 +1718,7 @@ namespace Othello
         protected void H2_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h2.CssClass == verde)
+            if (h2.CssClass == vacio)
             {
                 ComerFicha(Tipo("colH"), color, 1, Verificar(Tipo("colH"), color, 1));
                 ComerFicha(Tipo("fila2"), color, 7, Verificar(Tipo("fila2"), color, 7));
@@ -1300,7 +1733,7 @@ namespace Othello
         protected void A3_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (a3.CssClass == verde)
+            if (a3.CssClass == vacio)
             {
                 ComerFicha(Tipo("colA"), color, 2, Verificar(Tipo("colA"), color, 2));
                 ComerFicha(Tipo("fila3"), color, 0, Verificar(Tipo("fila3"), color, 0));
@@ -1315,7 +1748,7 @@ namespace Othello
         protected void B3_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (b3.CssClass == verde)
+            if (b3.CssClass == vacio)
             {
                 ComerFicha(Tipo("colB"), color, 2, Verificar(Tipo("colB"), color, 2));
                 ComerFicha(Tipo("fila3"), color, 1, Verificar(Tipo("fila3"), color, 1));
@@ -1330,7 +1763,7 @@ namespace Othello
         protected void C3_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (c3.CssClass == verde)
+            if (c3.CssClass == vacio)
             {
                 ComerFicha(Tipo("colC"), color, 2, Verificar(Tipo("colC"), color, 2));
                 ComerFicha(Tipo("fila3"), color, 2, Verificar(Tipo("fila3"), color, 2));
@@ -1345,7 +1778,7 @@ namespace Othello
         protected void D3_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (d3.CssClass == verde)
+            if (d3.CssClass == vacio)
             {
                 ComerFicha(Tipo("colD"), color, 2, Verificar(Tipo("colD"), color, 2));
                 ComerFicha(Tipo("fila3"), color, 3, Verificar(Tipo("fila3"), color, 3));
@@ -1360,7 +1793,7 @@ namespace Othello
         protected void E3_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (e3.CssClass == verde)
+            if (e3.CssClass == vacio)
             {
                 ComerFicha(Tipo("colE"), color, 2, Verificar(Tipo("colE"), color, 2));
                 ComerFicha(Tipo("fila3"), color, 4, Verificar(Tipo("fila3"), color, 4));
@@ -1375,7 +1808,7 @@ namespace Othello
         protected void F3_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (f3.CssClass == verde)
+            if (f3.CssClass == vacio)
             {
                 ComerFicha(Tipo("colF"), color, 2, Verificar(Tipo("colF"), color, 2));
                 ComerFicha(Tipo("fila3"), color, 5, Verificar(Tipo("fila3"), color, 5));
@@ -1390,7 +1823,7 @@ namespace Othello
         protected void G3_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (g3.CssClass == verde)
+            if (g3.CssClass == vacio)
             {
                 ComerFicha(Tipo("colG"), color, 2, Verificar(Tipo("colG"), color, 2));
                 ComerFicha(Tipo("fila3"), color, 6, Verificar(Tipo("fila3"), color, 6));
@@ -1405,7 +1838,7 @@ namespace Othello
         protected void H3_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h3.CssClass == verde)
+            if (h3.CssClass == vacio)
             {
                 ComerFicha(Tipo("colH"), color, 2, Verificar(Tipo("colH"), color, 2));
                 ComerFicha(Tipo("fila3"), color, 7, Verificar(Tipo("fila3"), color, 7));
@@ -1420,7 +1853,7 @@ namespace Othello
         protected void A4_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (a4.CssClass == verde)
+            if (a4.CssClass == vacio)
             {
                 ComerFicha(Tipo("colA"), color, 3, Verificar(Tipo("colA"), color, 3));
                 ComerFicha(Tipo("fila4"), color, 0, Verificar(Tipo("fila4"), color, 0));
@@ -1434,7 +1867,7 @@ namespace Othello
         protected void B4_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (b4.CssClass == verde)
+            if (b4.CssClass == vacio)
             {
                 ComerFicha(Tipo("colB"), color, 3, Verificar(Tipo("colB"), color, 3));
                 ComerFicha(Tipo("fila4"), color, 1, Verificar(Tipo("fila4"), color, 1));
@@ -1449,7 +1882,7 @@ namespace Othello
         protected void C4_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (c4.CssClass == verde)
+            if (c4.CssClass == vacio)
             {
                 ComerFicha(Tipo("colC"), color, 3, Verificar(Tipo("colC"), color, 3));
                 ComerFicha(Tipo("fila4"), color, 2, Verificar(Tipo("fila4"), color, 2));
@@ -1464,7 +1897,7 @@ namespace Othello
         protected void D4_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (d4.CssClass == verde)
+            if (d4.CssClass == vacio)
             {
                 ComerFicha(Tipo("colD"), color, 3, Verificar(Tipo("colD"), color, 3));
                 ComerFicha(Tipo("fila4"), color, 3, Verificar(Tipo("fila4"), color, 3));
@@ -1479,7 +1912,7 @@ namespace Othello
         protected void E4_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (e4.CssClass == verde)
+            if (e4.CssClass == vacio)
             {
                 ComerFicha(Tipo("colE"), color, 3, Verificar(Tipo("colE"), color, 3));
                 ComerFicha(Tipo("fila4"), color, 4, Verificar(Tipo("fila4"), color, 4));
@@ -1494,7 +1927,7 @@ namespace Othello
         protected void F4_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (f4.CssClass == verde)
+            if (f4.CssClass == vacio)
             {
                 ComerFicha(Tipo("colF"), color, 3, Verificar(Tipo("colF"), color, 3));
                 ComerFicha(Tipo("fila4"), color, 5, Verificar(Tipo("fila4"), color, 5));
@@ -1509,7 +1942,7 @@ namespace Othello
         protected void G4_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (g4.CssClass == verde)
+            if (g4.CssClass == vacio)
             {
                 ComerFicha(Tipo("colG"), color, 3, Verificar(Tipo("colG"), color, 3));
                 ComerFicha(Tipo("fila4"), color, 6, Verificar(Tipo("fila4"), color, 6));
@@ -1524,7 +1957,7 @@ namespace Othello
         protected void H4_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h4.CssClass == verde)
+            if (h4.CssClass == vacio)
             {
                 ComerFicha(Tipo("colH"), color, 3, Verificar(Tipo("colH"), color, 3));
                 ComerFicha(Tipo("fila4"), color, 7, Verificar(Tipo("fila4"), color, 7));
@@ -1539,7 +1972,7 @@ namespace Othello
         protected void A5_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (a5.CssClass == verde)
+            if (a5.CssClass == vacio)
             {
                 ComerFicha(Tipo("colA"), color, 4, Verificar(Tipo("colA"), color, 4));
                 ComerFicha(Tipo("fila5"), color, 0, Verificar(Tipo("fila5"), color, 0));
@@ -1554,7 +1987,7 @@ namespace Othello
         protected void B5_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (b5.CssClass == verde)
+            if (b5.CssClass == vacio)
             {
                 ComerFicha(Tipo("colB"), color, 4, Verificar(Tipo("colB"), color, 4));
                 ComerFicha(Tipo("fila5"), color, 1, Verificar(Tipo("fila5"), color, 1));
@@ -1569,7 +2002,7 @@ namespace Othello
         protected void C5_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (c5.CssClass == verde)
+            if (c5.CssClass == vacio)
             {
                 ComerFicha(Tipo("colC"), color, 4, Verificar(Tipo("colC"), color, 4));
                 ComerFicha(Tipo("fila5"), color, 2, Verificar(Tipo("fila5"), color, 2));
@@ -1584,7 +2017,7 @@ namespace Othello
         protected void D5_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (d5.CssClass == verde)
+            if (d5.CssClass == vacio)
             {
                 ComerFicha(Tipo("colD"), color, 4, Verificar(Tipo("colD"), color, 4));
                 ComerFicha(Tipo("fila5"), color, 3, Verificar(Tipo("fila5"), color, 3));
@@ -1599,7 +2032,7 @@ namespace Othello
         protected void E5_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (e5.CssClass == verde)
+            if (e5.CssClass == vacio)
             {
                 ComerFicha(Tipo("colE"), color, 4, Verificar(Tipo("colE"), color, 4));
                 ComerFicha(Tipo("fila5"), color, 4, Verificar(Tipo("fila5"), color, 4));
@@ -1614,7 +2047,7 @@ namespace Othello
         protected void F5_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (f5.CssClass == verde)
+            if (f5.CssClass == vacio)
             {
                 ComerFicha(Tipo("colF"), color, 4, Verificar(Tipo("colF"), color, 4));
                 ComerFicha(Tipo("fila5"), color, 5, Verificar(Tipo("fila5"), color, 5));
@@ -1629,7 +2062,7 @@ namespace Othello
         protected void G5_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (g5.CssClass == verde)
+            if (g5.CssClass == vacio)
             {
                 ComerFicha(Tipo("colG"), color, 4, Verificar(Tipo("colG"), color, 4));
                 ComerFicha(Tipo("fila5"), color, 6, Verificar(Tipo("fila5"), color, 6));
@@ -1644,7 +2077,7 @@ namespace Othello
         protected void H5_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h5.CssClass == verde)
+            if (h5.CssClass == vacio)
             {
                 ComerFicha(Tipo("colH"), color, 4, Verificar(Tipo("colH"), color, 4));
                 ComerFicha(Tipo("fila5"), color, 7, Verificar(Tipo("fila5"), color, 7));
@@ -1659,7 +2092,7 @@ namespace Othello
         protected void A6_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (a6.CssClass == verde)
+            if (a6.CssClass == vacio)
             {
                 ComerFicha(Tipo("colA"), color, 5, Verificar(Tipo("colA"), color, 5));
                 ComerFicha(Tipo("fila6"), color, 0, Verificar(Tipo("fila6"), color, 0));
@@ -1674,7 +2107,7 @@ namespace Othello
         protected void B6_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (b6.CssClass == verde)
+            if (b6.CssClass == vacio)
             {
                 ComerFicha(Tipo("colB"), color, 5, Verificar(Tipo("colB"), color, 5));
                 ComerFicha(Tipo("fila6"), color, 1, Verificar(Tipo("fila6"), color, 1));
@@ -1689,7 +2122,7 @@ namespace Othello
         protected void C6_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (c6.CssClass == verde)
+            if (c6.CssClass == vacio)
             {
                 ComerFicha(Tipo("colC"), color, 5, Verificar(Tipo("colC"), color, 5));
                 ComerFicha(Tipo("fila6"), color, 2, Verificar(Tipo("fila6"), color, 2));
@@ -1704,7 +2137,7 @@ namespace Othello
         protected void D6_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (d6.CssClass == verde)
+            if (d6.CssClass == vacio)
             {
                 ComerFicha(Tipo("colD"), color, 5, Verificar(Tipo("colD"), color, 5));
                 ComerFicha(Tipo("fila6"), color, 3, Verificar(Tipo("fila6"), color, 3));
@@ -1719,7 +2152,7 @@ namespace Othello
         protected void E6_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (e6.CssClass == verde)
+            if (e6.CssClass == vacio)
             {
                 ComerFicha(Tipo("colE"), color, 5, Verificar(Tipo("colE"), color, 5));
                 ComerFicha(Tipo("fila6"), color, 4, Verificar(Tipo("fila6"), color, 4));
@@ -1734,7 +2167,7 @@ namespace Othello
         protected void F6_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (f6.CssClass == verde)
+            if (f6.CssClass == vacio)
             {
                 ComerFicha(Tipo("colF"), color, 5, Verificar(Tipo("colF"), color, 5));
                 ComerFicha(Tipo("fila6"), color, 5, Verificar(Tipo("fila6"), color, 5));
@@ -1749,7 +2182,7 @@ namespace Othello
         protected void G6_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (g6.CssClass == verde)
+            if (g6.CssClass == vacio)
             {
                 ComerFicha(Tipo("colG"), color, 5, Verificar(Tipo("colG"), color, 5));
                 ComerFicha(Tipo("fila6"), color, 6, Verificar(Tipo("fila6"), color, 6));
@@ -1764,7 +2197,7 @@ namespace Othello
         protected void H6_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h6.CssClass == verde)
+            if (h6.CssClass == vacio)
             {
                 ComerFicha(Tipo("colH"), color, 5, Verificar(Tipo("colH"), color, 5));
                 ComerFicha(Tipo("fila6"), color, 7, Verificar(Tipo("fila6"), color, 7));
@@ -1779,7 +2212,7 @@ namespace Othello
         protected void A7_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (a7.CssClass == verde)
+            if (a7.CssClass == vacio)
             {
                 ComerFicha(Tipo("colA"), color, 6, Verificar(Tipo("colA"), color, 6));
                 ComerFicha(Tipo("fila7"), color, 0, Verificar(Tipo("fila7"), color, 0));
@@ -1794,7 +2227,7 @@ namespace Othello
         protected void B7_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (b7.CssClass == verde)
+            if (b7.CssClass == vacio)
             {
                 ComerFicha(Tipo("colB"), color, 6, Verificar(Tipo("colB"), color, 6));
                 ComerFicha(Tipo("fila7"), color, 1, Verificar(Tipo("fila7"), color, 1));
@@ -1809,7 +2242,7 @@ namespace Othello
         protected void C7_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (c7.CssClass == verde)
+            if (c7.CssClass == vacio)
             {
                 ComerFicha(Tipo("colC"), color, 6, Verificar(Tipo("colC"), color, 6));
                 ComerFicha(Tipo("fila7"), color, 2, Verificar(Tipo("fila7"), color, 2));
@@ -1824,7 +2257,7 @@ namespace Othello
         protected void D7_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (d7.CssClass == verde)
+            if (d7.CssClass == vacio)
             {
                 ComerFicha(Tipo("colD"), color, 6, Verificar(Tipo("colD"), color, 6));
                 ComerFicha(Tipo("fila7"), color, 3, Verificar(Tipo("fila7"), color, 3));
@@ -1839,7 +2272,7 @@ namespace Othello
         protected void E7_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (e7.CssClass == verde)
+            if (e7.CssClass == vacio)
             {
                 ComerFicha(Tipo("colE"), color, 6, Verificar(Tipo("colE"), color, 6));
                 ComerFicha(Tipo("fila7"), color, 4, Verificar(Tipo("fila7"), color, 4));
@@ -1854,7 +2287,7 @@ namespace Othello
         protected void F7_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (f7.CssClass == verde)
+            if (f7.CssClass == vacio)
             {
                 ComerFicha(Tipo("colF"), color, 6, Verificar(Tipo("colF"), color, 6));
                 ComerFicha(Tipo("fila7"), color, 5, Verificar(Tipo("fila7"), color, 5));
@@ -1869,7 +2302,7 @@ namespace Othello
         protected void G7_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (g7.CssClass == verde)
+            if (g7.CssClass == vacio)
             {
                 ComerFicha(Tipo("colG"), color, 6, Verificar(Tipo("colG"), color, 6));
                 ComerFicha(Tipo("fila7"), color, 6, Verificar(Tipo("fila7"), color, 6));
@@ -1884,7 +2317,7 @@ namespace Othello
         protected void H7_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h7.CssClass == verde)
+            if (h7.CssClass == vacio)
             {
                 ComerFicha(Tipo("colH"), color, 6, Verificar(Tipo("colH"), color, 6));
                 ComerFicha(Tipo("fila7"), color, 7, Verificar(Tipo("fila7"), color, 7));
@@ -1899,7 +2332,7 @@ namespace Othello
         protected void A8_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (a8.CssClass == verde)
+            if (a8.CssClass == vacio)
             {
                 ComerFicha(Tipo("colA"), color, 7, Verificar(Tipo("colA"), color, 7));
                 ComerFicha(Tipo("fila8"), color, 0, Verificar(Tipo("fila8"), color, 0));
@@ -1914,7 +2347,7 @@ namespace Othello
         protected void B8_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (b8.CssClass == verde)
+            if (b8.CssClass == vacio)
             {
                 ComerFicha(Tipo("colB"), color, 7, Verificar(Tipo("colB"), color, 7));
                 ComerFicha(Tipo("fila8"), color, 1, Verificar(Tipo("fila8"), color, 1));
@@ -1929,7 +2362,7 @@ namespace Othello
         protected void C8_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (c8.CssClass == verde)
+            if (c8.CssClass == vacio)
             {
                 ComerFicha(Tipo("colC"), color, 7, Verificar(Tipo("colC"), color, 7));
                 ComerFicha(Tipo("fila8"), color, 2, Verificar(Tipo("fila8"), color, 2));
@@ -1944,7 +2377,7 @@ namespace Othello
         protected void D8_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (d8.CssClass == verde)
+            if (d8.CssClass == vacio)
             {
                 ComerFicha(Tipo("colD"), color, 7, Verificar(Tipo("colD"), color, 7));
                 ComerFicha(Tipo("fila8"), color, 3, Verificar(Tipo("fila8"), color, 3));
@@ -1959,7 +2392,7 @@ namespace Othello
         protected void E8_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (e8.CssClass == verde)
+            if (e8.CssClass == vacio)
             {
                 ComerFicha(Tipo("colE"), color, 7, Verificar(Tipo("colE"), color, 7));
                 ComerFicha(Tipo("fila8"), color, 4, Verificar(Tipo("fila8"), color, 4));
@@ -1974,7 +2407,7 @@ namespace Othello
         protected void F8_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (f8.CssClass == verde)
+            if (f8.CssClass == vacio)
             {
                 ComerFicha(Tipo("colF"), color, 7, Verificar(Tipo("colF"), color, 7));
                 ComerFicha(Tipo("fila8"), color, 5, Verificar(Tipo("fila8"), color, 5));
@@ -1989,7 +2422,7 @@ namespace Othello
         protected void G8_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (g8.CssClass == verde)
+            if (g8.CssClass == vacio)
             {
                 ComerFicha(Tipo("colG"), color, 7, Verificar(Tipo("colG"), color, 7));
                 ComerFicha(Tipo("fila8"), color, 6, Verificar(Tipo("fila8"), color, 6));
@@ -2004,7 +2437,7 @@ namespace Othello
         protected void H8_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h8.CssClass == verde)
+            if (h8.CssClass == vacio)
             {
                 ComerFicha(Tipo("colH"), color, 7, Verificar(Tipo("colH"), color, 7));
                 ComerFicha(Tipo("fila8"), color, 7, Verificar(Tipo("fila8"), color, 7));

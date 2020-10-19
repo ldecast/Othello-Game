@@ -7,10 +7,107 @@ h1 {
     margin-bottom: 35px;
 }
 
-.reportes input {
-    width: 200px;
+.h5mod {
+    margin-bottom: 35px;
 }
 
 .row {
     background-color: #95a5a6;
+}
+
+.mod {
+    width: 206px;
+}
+
+.prof {
+    width: 200px;
+    padding-left: 5px;
+}
+
+.clasic {
+    width: 182px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.rojo {
+    margin-right: 10px;
+    background-color: #c72b2b;
+    padding: 3px 6px 5px 6px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.amarillo {
+    margin-right: 10px;
+    background-color: #e0bf07;
+    padding: 3px 6px 5px 6px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.azul {
+    margin-right: 10px;
+    background-color: #203ee9;
+    padding: 3px 6px 5px 6px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.naranja {
+    margin-right: 10px;
+    background-color: #f2751c;
+    padding: 3px 6px 5px 6px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.verde {
+    margin-right: 10px;
+    background-color: #28a739;
+    padding: 3px 6px 5px 6px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.violeta {
+    margin-right: 10px;
+    background-color: #951ec8;
+    padding: 3px 6px 5px 6px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.blanco {
+    margin-right: 10px;
+    background-color: #f6f6f6;
+    padding: 3px 6px 5px 6px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.negro {
+    margin-right: 10px;
+    background-color: #121111;
+    padding: 3px 6px 5px 6px;
+    border-radius: 5px;
+    font-size: 16px;
+    color: azure;
+}
+
+.celeste {
+    margin-right: 10px;
+    background-color: #1d90e4;
+    padding: 3px 6px 5px 6px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.gris {
+    margin-right: 10px;
+    background-color: gray;
+    padding: 3px 6px 5px 6px;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #121111
 }

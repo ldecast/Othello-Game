@@ -168,7 +168,7 @@ namespace Othello
             {
                 Session["coloresUsuario"] = ColoresUsuario();
                 Session["coloresPlayer2"] = ColoresPlayer2();
-                Response.Redirect("OthelloXtream.aspx?Parametro=" + usuario.Text);
+                Response.Redirect("OthelloXtream.aspx?Parametro=New-" + usuario.Text);
             }
         }
 
@@ -178,7 +178,7 @@ namespace Othello
             {
                 Session["coloresUsuario"] = ColoresUsuario();
                 Session["coloresPlayer2"] = ColoresPlayer2();
-                Response.Redirect("ReverseOthello.aspx?Parametro=" + usuario.Text);
+                Response.Redirect("ReverseOthello.aspx?Parametro=New-" + usuario.Text);
             }
         }
 

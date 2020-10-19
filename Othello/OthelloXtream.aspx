@@ -10,7 +10,9 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"/>
 <title>Othello game</title>
   
-<style>body{background-color: #2e86c1;} #guardar{margin-top: 47px; height:50px; margin-bottom:12px;} #cronometro{position:absolute; top:65px; left:85px;} #salir{margin-top: 60px; height:50px; margin-bottom:90px; width:120px;} #end{margin-top: 39px; height:50px; padding-left:10px; padding-right:10px; margin-bottom:7px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;} .aux{position:absolute; top:0px; left:0px;} .aux2{position:absolute; top:0px; right:0px;}</style>
+<style>body{background-color: #2e86c1;} #guardar{margin-top: 47px; height:50px; margin-bottom:12px;} #cronometro{position:absolute; top:65px; left:85px;} #salir{margin-top: 60px; height:50px; margin-bottom:90px; width:120px;} #end{margin-top: 39px; height:50px; padding-left:10px; padding-right:10px; margin-bottom:7px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;} .aux{position:absolute; top:0px; left:0px;} .aux2{position:absolute; top:0px; right:0px;} .aux3{position:absolute; top:0px; right:400px;} .aux4{position:absolute; top:0px; right:300px;} .aux5{position:absolute; top:0px; right:950px;}
+.btn-Rojo{ background-color: #c72b2b !important; } .btn-Amarillo{ background-color: #e0bf07 !important; } .btn-Azul{ background-color: #203ee9 !important; } .btn-Naranja{ background-color: #f2751c !important; } .btn-Verde{ background-color: #00ff22 !important; } .btn-Violeta{ background-color: #951ec8 !important; } .btn-Celeste{ background-color: #1d90e4 !important; } .btn-Gris{ background-color: gray !important; } .btn-Negro{ background-color: black !important; } .btn-Blanco{ background-color: ghostwhite !important; }
+</style>
 
  <script type="text/javascript">
     //script de www.aprenderaprogramar.com/index.php?option=com_content&view=article&id=847:ejemplo-reloj-javascript
@@ -33,8 +35,11 @@
 </head>
   <body>
       <form id="tablero" runat="server">
-          <asp:Label runat="server" ID="listaColores" CssClass="aux">hoal</asp:Label>
-          <asp:Label runat="server" ID="listaOponente" CssClass="aux2">holaaaa</asp:Label>
+          <asp:Label runat="server" ID="listaColores" CssClass="aux"></asp:Label>
+          <asp:Label runat="server" ID="listaOponente" CssClass="aux2"></asp:Label>
+          <asp:Label runat="server" ID="indice1" CssClass="aux3">0</asp:Label>
+          <asp:Label runat="server" ID="indice2" CssClass="aux4">0</asp:Label>
+          <asp:Label runat="server" ID="max" CssClass="aux5">0</asp:Label>
     <div class="container">
         <div id="cronometro" class="h3 ">&nbsp;</div>
         <h1 class="display-1 text-center my-3 text-white">OTHELLO GAME</h1>
@@ -160,10 +165,10 @@
                 
                 <div class="col-sm-12 col-lg-2 text-left border-right border-dark">
                     <h3>SCORE</h3><hr/><br/>
-                    <h4 class="text-white">Blanco</h4>
-                    <asp:Label runat="server" id="score1" CssClass="display-4 text-white" text="0" />
+                    <asp:Label runat="server" CssClass="h4" ID="scoreLabel1"></asp:Label><br />
+                    <asp:Label runat="server" id="score1" CssClass="display-4" text="0" />
                     <br/><br/>
-                    <h4>Negro</h4>
+                    <asp:Label runat="server" CssClass="h4" ID="scoreLabel2" Text="Jugador #2"></asp:Label><br />
                     <asp:Label runat="server" id="score2" CssClass="display-4" text="0" />
                     <br/><br/>
                     <asp:Button runat="server" type="button" id="end" CssClass="btn btn-outline-dark btn-lg" text="Terminar juego" OnClick="Terminar_Juego"/>

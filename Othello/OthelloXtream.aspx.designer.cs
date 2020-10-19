@@ -42,6 +42,33 @@ namespace Othello
         protected global::System.Web.UI.WebControls.Label listaOponente;
 
         /// <summary>
+        /// Control indice1.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label indice1;
+
+        /// <summary>
+        /// Control indice2.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label indice2;
+
+        /// <summary>
+        /// Control max.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label max;
+
+        /// <summary>
         /// Control ceder_turno.
         /// </summary>
         /// <remarks>
@@ -717,6 +744,15 @@ namespace Othello
         protected global::System.Web.UI.WebControls.Button h8;
 
         /// <summary>
+        /// Control scoreLabel1.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label scoreLabel1;
+
+        /// <summary>
         /// Control score1.
         /// </summary>
         /// <remarks>
@@ -724,6 +760,15 @@ namespace Othello
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label score1;
+
+        /// <summary>
+        /// Control scoreLabel2.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label scoreLabel2;
 
         /// <summary>
         /// Control score2.

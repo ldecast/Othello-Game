@@ -10,21 +10,41 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 <title>Othello game</title>
   
-  <style>body{background-color: #2e86c1;} #guardar{margin-top: 47px; height:50px; margin-bottom:12px;} #salir{margin-top: 60px; height:50px; margin-bottom:90px; width:120px;} #end{margin-top: 39px; height:50px; padding-left:10px; padding-right:10px; margin-bottom:5px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;}</style>
-  </head>
-  <body>
+  <style>body{background-color: #2e86c1;} #guardar{margin-top: 47px; height:50px; margin-bottom:12px;} #cronometro{position:absolute; top:65px; left:85px;} #salir{margin-top: 60px; height:50px; margin-bottom:90px; width:120px;} #end{margin-top: 39px; height:50px; padding-left:10px; padding-right:10px; margin-bottom:5px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;}</style>
+
+ <script type="text/javascript">
+    //script de www.aprenderaprogramar.com/index.php?option=com_content&view=article&id=847:ejemplo-reloj-javascript
+    function reloj() {
+        var h = 0; var m = 0; var s = 0;
+        document.getElementById('cronometro').style.cssText = document.getElementById('turno').style.cssText;
+        window.setInterval(function () {
+            s++;
+            if (s > 59) { s = 0; m++; }
+            if (m > 59) { m = 0; h++; }
+            document.getElementById('cronometro').innerHTML = digitocero(h) + ":" + digitocero(m) + ":" + digitocero(s);
+        }, 1000);
+    }
+    function digitocero(i) {
+        if (i<10) {i = "0" + i};
+        return i;
+    }
+ </script>
+
+</head>
+  <body onload="reloj()">
       <form id="tablero" runat="server">
     <div class="container">
+        <div id="cronometro" class="h3 ">&nbsp;</div>
         <h1 class="display-1 text-center my-3 text-white">OTHELLO GAME</h1>
         <asp:Button runat="server" id="ceder_turno" CssClass="text-center btn btn-outline-dark btn-lg" Text="Ceder turno" OnClick="Ceder_turno"/>
-        <br>
+        <br/>
     </div>
         <div class="container">
             <div class="row mb-5">
                 <div class="col-sm-12 col-lg-2 text-right border-left border-dark">
-                    <h3>Turno de:</h3><hr>
+                    <h3>Turno de:</h3><hr/>
                     <asp:Label runat="server" id="turno" CssClass="display-4" text="Negro" /><br /><br /><br /><br />
-                    <h3>Movimientos:</h3><hr>
+                    <h3>Movimientos:</h3><hr/>
                     <asp:Label runat="server" id="movimiento_negro" CssClass="display-4 text" text="0" />
                     <asp:Label runat="server" id="movimiento_blanco" CssClass="display-4 text-white" text="0" Visible="false"  />
                     <asp:Button runat="server" type="button" id="guardar" CssClass="btn btn-outline-dark btn-lg" text="Guardar partida" OnClick="GenerarXml"/>
@@ -136,13 +156,13 @@
                 </asp:Panel>
                 
                 <div class="col-sm-12 col-lg-2 text-left border-right border-dark">
-                    <h3>SCORE</h3><hr><br>
+                    <h3>SCORE</h3><hr/><br/>
                     <h4 class="text-white">Blanco</h4>
                     <asp:Label runat="server" id="score1" CssClass="display-4 text-white" text="0" />
-                    <br><br>
+                    <br/><br/>
                     <h4>Negro</h4>
                     <asp:Label runat="server" id="score2" CssClass="display-4" text="0" />
-                    <br><br>
+                    <br/><br/>
                     <asp:Button runat="server" type="button" id="end" CssClass="btn btn-outline-dark btn-lg" text="Terminar juego" OnClick="Terminar_Juego"/>
                 </div>
             </div>

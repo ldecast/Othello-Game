@@ -93,6 +93,7 @@
     <Content Include="Menu.aspx" />
     <Content Include="OthelloDinamico.aspx" />
     <Content Include="OthelloLoaded.aspx" />
+    <Content Include="OthelloXtream.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +145,13 @@
     </Compile>
     <Compile Include="OthelloLoaded.aspx.designer.cs">
       <DependentUpon>OthelloLoaded.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="OthelloXtream.aspx.cs">
+      <DependentUpon>OthelloXtream.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="OthelloXtream.aspx.designer.cs">
+      <DependentUpon>OthelloXtream.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

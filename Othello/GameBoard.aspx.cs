@@ -20,8 +20,6 @@ namespace Othello
         protected void Page_Load(object sender, EventArgs e)
         {
             Get_Score(null);
-           
-
         }
 
         private readonly string verde = "btn btn-success btn-lg border-dark rounded-0";
@@ -481,6 +479,7 @@ namespace Othello
                 ganador.CssClass = "display-2 text-white";
                 gameover.CssClass = "display-2 text-white";
                 turno.Text = "";
+                turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
                 move_blanco = movimiento_blanco.Text;
                 move_negro = movimiento_negro.Text;
                 movimiento_negro.Text = "";
@@ -493,6 +492,7 @@ namespace Othello
                 ganador.CssClass = "display-2 text-dark";
                 gameover.CssClass = "display-2 text-dark";
                 turno.Text = "";
+                turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
                 move_blanco = movimiento_blanco.Text;
                 move_negro = movimiento_negro.Text;
                 movimiento_negro.Text = "";
@@ -502,9 +502,10 @@ namespace Othello
             if (int.Parse(score1.Text) == int.Parse(score2.Text) && int.Parse(score1.Text) > 0)
             {
                 ganador.Text = "¡Empate!";
-                ganador.CssClass = "display-2 text-warning font-weight-bold";
-                gameover.CssClass = "display-2 text-warning font-weight-bold";
+                ganador.CssClass = "display-2 text-warning";
+                gameover.CssClass = "display-2 text-warning";
                 turno.Text = "";
+                turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
                 move_blanco = movimiento_blanco.Text;
                 move_negro = movimiento_negro.Text;
                 movimiento_negro.Text = "";

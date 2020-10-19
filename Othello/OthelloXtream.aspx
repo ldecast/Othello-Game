@@ -1,16 +1,16 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OthelloLoaded.aspx.cs" Inherits="Othello.OthelloLoaded" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OthelloXtream.aspx.cs" Inherits="Othello.OthelloXtream" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
     <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"/>
 <title>Othello game</title>
   
-<style>body{background-color: #2e86c1;} #guardar{margin-top: 47px; height:50px; margin-bottom:12px;} #cronometro{position:absolute; top:65px; left:85px;} #salir{margin-top: 60px; height:50px; margin-bottom:90px; width:120px;} #end{margin-top: 39px; height:50px; padding-left:10px; padding-right:10px; margin-bottom:7px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;}</style>
+<style>body{background-color: #2e86c1;} #guardar{margin-top: 47px; height:50px; margin-bottom:12px;} #cronometro{position:absolute; top:65px; left:85px;} #salir{margin-top: 60px; height:50px; margin-bottom:90px; width:120px;} #end{margin-top: 39px; height:50px; padding-left:10px; padding-right:10px; margin-bottom:7px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;} .aux{position:absolute; top:0px; left:0px;} .aux2{position:absolute; top:0px; right:0px;}</style>
 
  <script type="text/javascript">
     //script de www.aprenderaprogramar.com/index.php?option=com_content&view=article&id=847:ejemplo-reloj-javascript
@@ -33,19 +33,21 @@
 </head>
   <body>
       <form id="tablero" runat="server">
+          <asp:Label runat="server" ID="listaColores" CssClass="aux">hoal</asp:Label>
+          <asp:Label runat="server" ID="listaOponente" CssClass="aux2">holaaaa</asp:Label>
     <div class="container">
         <div id="cronometro" class="h3 ">&nbsp;</div>
         <h1 class="display-1 text-center my-3 text-white">OTHELLO GAME</h1>
         <asp:Button runat="server" id="ceder_turno" CssClass="text-center btn btn-outline-dark btn-lg" Text="Ceder turno" OnClick="Ceder_turno"/>
-        <br>
+        <br/>
     </div>
         <div class="container">
-            <asp:Button runat="server" id="iniciar" CssClass="text-center btn btn-warning btn-lg" Text="INICIAR" OnClick="Leer_xml"/>
+            <asp:Button runat="server" id="iniciar" CssClass="text-center btn btn-warning btn-lg" Visible="false" Text="INICIAR" OnClick="Leer_xml"/>
             <div class="row mb-5">
                 <div class="col-sm-12 col-lg-2 text-right border-left border-dark">
-                    <h3>Turno de:</h3><hr>
-                    <asp:Label runat="server" id="turno" CssClass="display-4" text="Negro" /><br /><br /><br /><br />
-                    <h3>Movimientos:</h3><hr>
+                    <h3>Turno de:</h3><hr/>
+                    <asp:Label runat="server" id="turno" CssClass="display-4" text="" /><br /><br /><br /><br />
+                    <h3>Movimientos:</h3><hr/>
                     <asp:Label runat="server" id="movimiento_negro" CssClass="display-4 text" text="0" />
                     <asp:Label runat="server" id="movimiento_blanco" CssClass="display-4 text-white" text="0" Visible="false"  />
                     <asp:Button runat="server" type="button" id="guardar" CssClass="btn btn-outline-dark btn-lg" text="Guardar partida" OnClick="GenerarXml"/>
@@ -157,13 +159,13 @@
                 </asp:Panel>
                 
                 <div class="col-sm-12 col-lg-2 text-left border-right border-dark">
-                    <h3>SCORE</h3><hr><br>
+                    <h3>SCORE</h3><hr/><br/>
                     <h4 class="text-white">Blanco</h4>
                     <asp:Label runat="server" id="score1" CssClass="display-4 text-white" text="0" />
-                    <br><br>
+                    <br/><br/>
                     <h4>Negro</h4>
                     <asp:Label runat="server" id="score2" CssClass="display-4" text="0" />
-                    <br><br>
+                    <br/><br/>
                     <asp:Button runat="server" type="button" id="end" CssClass="btn btn-outline-dark btn-lg" text="Terminar juego" OnClick="Terminar_Juego"/>
                 </div>
             </div>

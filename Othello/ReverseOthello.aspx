@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OthelloXtream.aspx.cs" Inherits="Othello.OthelloXtream" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ReverseOthello.aspx.cs" Inherits="Othello.ReverseOthello" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -15,7 +15,6 @@
 </style>
 
  <script type="text/javascript">
-    //script de www.aprenderaprogramar.com/index.php?option=com_content&view=article&id=847:ejemplo-reloj-javascript
     function reloj() {
         var h = 0; var m = 0; var s = 0;
         document.getElementById('cronometro').style.cssText = document.getElementById('turno').style.cssText;

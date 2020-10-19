@@ -94,6 +94,7 @@
     <Content Include="OthelloDinamico.aspx" />
     <Content Include="OthelloLoaded.aspx" />
     <Content Include="OthelloXtream.aspx" />
+    <Content Include="ReverseOthello.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +155,13 @@
       <DependentUpon>OthelloXtream.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReverseOthello.aspx.cs">
+      <DependentUpon>ReverseOthello.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReverseOthello.aspx.designer.cs">
+      <DependentUpon>ReverseOthello.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

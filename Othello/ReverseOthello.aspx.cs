@@ -11,7 +11,7 @@ using System.Data.SqlClient;
 
 namespace Othello
 {
-    public partial class OthelloXtream : System.Web.UI.Page
+    public partial class ReverseOthello : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -30,20 +30,8 @@ namespace Othello
                 listaOponente.Text = Convert.ToString(Session["coloresPlayer2"]);
                 turno.Text = ColoresUsuario().First().ToString();
 
-                //Ver_colores();
-                //coloresUsuario = ColoresUsuario();
-                //coloresOponente = ColoresOponente();
-
-                //coloresUsuario = listaColores.Text.Split(',').ToList();
-                //coloresOponente = listaOponente.Text.Split(',').ToList();
-
-                //end.Enabled = false;
-                //guardar.Enabled = false;
-                //ceder_turno.Enabled = false;
             }
 
-            //coloresUsuario = ColoresUsuario();
-            //coloresOponente = ColoresOponente();
             Get_Score(null);
 
         }
@@ -103,31 +91,21 @@ namespace Othello
                     movimiento_oponente.ForeColor = ColorTranslator.FromHtml(gris);
                     break;
             }
-            /////if (int.Parse(indice1.Text) >= 4*listaColores.Text.Split(',').Length) indice1.Text = "0";
-            /////if (int.Parse(indice2.Text) >= 4*listaOponente.Text.Split(',').Length) indice2.Text = "0";
-            ///
             if (int.Parse(indice1.Text) >= listaColores.Text.Split(',').Length) indice1.Text = "0";
             if (int.Parse(indice2.Text) >= listaOponente.Text.Split(',').Length) indice2.Text = "0";
 
-            //if(IsPostBack)
-            //    Get_Score(null);
+            if (IsPostBack)
+            {
+                if (int.Parse(max.Text) >= ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 && int.Parse(max.Text) >= 16)
+                {
+                    int score_white = int.Parse(score1.Text);
+                    int score_black = int.Parse(score2.Text);
+                    if (score_white == 0 && score_black > 0) GameOver();
+                    else if (score_black == 0 && score_white > 0) GameOver();
+                    if (score_white + score_black == 64) GameOver();
+                }
+            }
         }
-
-        //public void Ver_colores()
-        //{
-        //    if (Session["coloresUsuario"] != null)
-        //    {
-        //        string coloresUsuario = Convert.ToString(Session["coloresUsuario"]);
-        //        Response.Write(coloresUsuario);
-
-        //    }
-        //    if (Session["coloresPlayer2"] != null)
-        //    {
-        //        string coloresPlayer2 = Convert.ToString(Session["coloresPlayer2"]);
-        //        Response.Write(coloresPlayer2);
-
-        //    }
-        //}
 
         public List<string> ColoresUsuario()
         {
@@ -140,9 +118,6 @@ namespace Othello
             string coloresOponente = Convert.ToString(Session["coloresPlayer2"]);
             return coloresOponente.Split(',').ToList();
         }
-
-        //private List<string> coloresUsuario = new List<string>();
-        //private List<string> coloresOponente = new List<string>();
 
         private readonly string vacio = "btn btn-success btn-lg border-dark rounded-0";
         private readonly string negro = "btn btn-lg border-dark rounded-0 btn-Negro";
@@ -167,15 +142,6 @@ namespace Othello
 
         private string move_usuario = "";
         private string move_oponente = "";
-
-        //private readonly string white = "\"#f6f6f6\"";
-        //private readonly string black = "\"#121111\"";
-        //private string moveUsuario = "";
-        //private string movePlayer = "";
-
-
-        //int aux1 = 0;
-        //int aux2 = 0;
 
         public void Leer_xml(object sender, EventArgs e)
         {
@@ -724,10 +690,14 @@ namespace Othello
 
         public void Ceder_turno(object sender, EventArgs e)
         {
+
             Turno_siguiente(turno.Text);
+
         }
 
+        #pragma warning disable IDE0060 // Quitar el parámetro no utilizado
         public void Get_Score(WebControl boton)
+        #pragma warning restore IDE0060 // Quitar el parámetro no utilizado
         {
             WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8 };
             int white = 0;
@@ -741,8 +711,6 @@ namespace Othello
             int sky = 0;
             int grey = 0;
 
-            //int aux_white = int.Parse(score1.Text);
-            //int aux_black = int.Parse(score2.Text);
             for (int i = 0; i < botones.Length; i++)
             {
                 switch (botones[i].CssClass.ToString())
@@ -780,13 +748,11 @@ namespace Othello
                 }
             }
 
-            //if (score_white == aux_white + 1 && score_white + score_black != 64) { boton.CssClass = vacio; score_white--; turno.Text = "Blanco"; turno.ForeColor = Color.White; }
-            //else if (score_black == aux_black + 1 && score_white + score_black != 64) { boton.CssClass = vacio; score_black--; turno.Text = "Negro"; turno.ForeColor = Color.Black; }
             List<string> aux_user = ColoresUsuario();
             List<string> aux_oponent = ColoresOponente();
             List<int> scores_user = new List<int>();
             List<int> scores_oponente = new List<int>();
-            for (int i = 0; i < 1 ; i++)
+            for (int i = 0; i < 1; i++)
             {
                 if (aux_user.Contains("Rojo")) scores_user.Add(red);
                 if (aux_user.Contains("Amarillo")) scores_user.Add(yellow);
@@ -839,15 +805,16 @@ namespace Othello
                 }
             }
             //edit luego
-            int score_white = int.Parse(score1.Text);
-            int score_black = int.Parse(score2.Text);
-            if (score_white == 0 && score_black > 0) GameOver();
-            else if (score_black == 0 && score_white > 0) GameOver();
-            if (score_white + score_black == 64) GameOver();
+            //int score_white = int.Parse(score1.Text);
+            //int score_black = int.Parse(score2.Text);
+            //if (score_white == 0 && score_black > 0) GameOver();
+            //else if (score_black == 0 && score_white > 0) GameOver();
+            //if (score_white + score_black == 64) GameOver();
         }
 
         public void Terminar_Juego(object sender, EventArgs e)
         {
+            //edit luego
             if (int.Parse(score1.Text) > int.Parse(score2.Text))
             {
                 score1.Text = (64 - int.Parse(score2.Text)).ToString();
@@ -864,7 +831,7 @@ namespace Othello
         public void GameOver()
         {
             gameBoard.Visible = false;
-            if (int.Parse(score1.Text) > int.Parse(score2.Text))
+            if (int.Parse(score1.Text) < int.Parse(score2.Text))
             {
                 ganador.Text = scoreLabel1.Text + " gana!";
                 turno.Text = "";
@@ -875,7 +842,7 @@ namespace Othello
                 movimiento_oponente.Text = "";
                 Registrar("usuario");
             }
-            if (int.Parse(score1.Text) < int.Parse(score2.Text))
+            if (int.Parse(score1.Text) > int.Parse(score2.Text))
             {
                 ganador.Text = "Jugador 2 gana!";
                 turno.Text = "";
@@ -910,9 +877,11 @@ namespace Othello
         {
             if (Request.Params["Parametro"] != null && ganador != "empate")
             {
+                #pragma warning disable IDE0059
                 string winner = "";
                 string loser = "";
                 string estado = "";
+                #pragma warning restore IDE0059
                 switch (ganador)
                 {
                     case "usuario":
@@ -994,18 +963,18 @@ namespace Othello
             {
                 if (color == "Negro")
                 {
-                        if (casilla[clic + 1].CssClass == negro && casilla[clic - 1].CssClass == negro && casilla[clic].CssClass == negro)
-                            permitido = false;
+                    if (casilla[clic + 1].CssClass == negro && casilla[clic - 1].CssClass == negro && casilla[clic].CssClass == negro)
+                        permitido = false;
                 }
                 if (color == "Blanco")
                 {
-                        if (casilla[clic + 1].CssClass == blanco && casilla[clic - 1].CssClass == blanco && casilla[clic].CssClass == blanco)
-                            permitido = false;
+                    if (casilla[clic + 1].CssClass == blanco && casilla[clic - 1].CssClass == blanco && casilla[clic].CssClass == blanco)
+                        permitido = false;
                 }
                 if (color == "Rojo")
                 {
-                        if (casilla[clic + 1].CssClass == rojoCss && casilla[clic - 1].CssClass == rojoCss && casilla[clic].CssClass == rojoCss)
-                            permitido = false;
+                    if (casilla[clic + 1].CssClass == rojoCss && casilla[clic - 1].CssClass == rojoCss && casilla[clic].CssClass == rojoCss)
+                        permitido = false;
                 }
                 if (color == "Amarillo")
                 {
@@ -1163,15 +1132,20 @@ namespace Othello
 
             if (ColoresUsuario().Contains(color))
             {
-                //if (color == "Negro")
-                //{
-                    if (clic < casilla.Length && casilla.Length != 1)
+                if (clic < casilla.Length && casilla.Length != 1)
+                {
+                    if (permitido == false)
                     {
-                        if (permitido == false)
+                        for (int i = 0; i < clic; i++)
                         {
-                            for (int i = 0; i < clic; i++)
+                            if (ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
                             {
-                                if (ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                if (ColoresUsuario().Count == 1 && ColoresOponente().Count == 1) 
+                                {
+                                    permitido = true;
+                                    aux = i;
+                                }
+                                else
                                 {
                                     permitido = true;
                                     aux = i;
@@ -1179,26 +1153,24 @@ namespace Othello
                                 }
                             }
                         }
-                        if (true)
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
                         {
-                            for (int i = clic + 1; i < casilla.Length; i++)
+                            if (ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
                             {
-                                if (ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
-                                {
-                                    permitido2 = true;
-                                    aux2 = i;
-                                    break;
-                                }
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
                             }
                         }
                     }
-                //}
+                }
             }
 
             if (ColoresOponente().Contains(color))
             {
-                //if (color == "Negro")
-                //{
                 if (clic < casilla.Length && casilla.Length != 1)
                 {
                     if (permitido == false)
@@ -1207,9 +1179,17 @@ namespace Othello
                         {
                             if (ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
                             {
-                                permitido = true;
-                                aux = i;
-                                break;
+                                if (ColoresUsuario().Count == 1 && ColoresOponente().Count == 1)
+                                {
+                                    permitido = true;
+                                    aux = i;
+                                }
+                                else
+                                {
+                                    permitido = true;
+                                    aux = i;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -1226,7 +1206,6 @@ namespace Othello
                         }
                     }
                 }
-                //}
             }
 
             if (permitido != permitido2)
@@ -1246,19 +1225,19 @@ namespace Othello
 
         public void Turno_siguiente(string color)
         {
-                if (listaColores.Text.Contains(color))
-                {
-                    turno.Text = listaOponente.Text.Split(',')[int.Parse(indice2.Text)];
-                    indice1.Text = (int.Parse(indice1.Text) + 1).ToString();
-                }
+            if (listaColores.Text.Contains(color))
+            {
+                turno.Text = listaOponente.Text.Split(',')[int.Parse(indice2.Text)];
+                indice1.Text = (int.Parse(indice1.Text) + 1).ToString();
+            }
 
-                else if (listaOponente.Text.Contains(color))
-                {
-                    turno.Text = listaColores.Text.Split(',')[int.Parse(indice1.Text)];
-                    indice2.Text = (int.Parse(indice2.Text) + 1).ToString();
-                }
+            else if (listaOponente.Text.Contains(color))
+            {
+                turno.Text = listaColores.Text.Split(',')[int.Parse(indice1.Text)];
+                indice2.Text = (int.Parse(indice2.Text) + 1).ToString();
+            }
 
-                ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); //inicia cronometro
+            ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); //inicia cronometro
         }
 
         public void ComerFicha(WebControl[] casilla, string color, int clic, int index)
@@ -1268,61 +1247,51 @@ namespace Othello
                 if (color == "Negro")
                 {
                     casilla[clic].CssClass = negro;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Blanco")
                 {
                     casilla[clic].CssClass = blanco;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Rojo")
                 {
                     casilla[clic].CssClass = rojoCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Amarillo")
                 {
                     casilla[clic].CssClass = amarilloCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Azul")
                 {
                     casilla[clic].CssClass = azulCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Naranja")
                 {
                     casilla[clic].CssClass = naranjaCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Verde")
                 {
                     casilla[clic].CssClass = verdeCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Violeta")
                 {
                     casilla[clic].CssClass = violetaCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Celeste")
                 {
                     casilla[clic].CssClass = celesteCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Gris")
                 {
                     casilla[clic].CssClass = grisCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
             }
@@ -1377,7 +1346,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Blanco")
                                 {
@@ -1419,7 +1387,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Rojo")
                                 {
@@ -1438,7 +1405,7 @@ namespace Othello
                                             for (int i = index; i <= clic; i++)
                                             {
                                                 if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
-                                                casilla[i].CssClass = rojoCss;
+                                                    casilla[i].CssClass = rojoCss;
                                             }
                                         }
                                     }
@@ -1461,7 +1428,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Amarillo")
                                 {
@@ -1503,7 +1469,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Azul")
                                 {
@@ -1545,7 +1510,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Naranja")
                                 {
@@ -1587,7 +1551,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Verde")
                                 {
@@ -1629,7 +1592,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Violeta")
                                 {
@@ -1671,7 +1633,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Celeste")
                                 {
@@ -1713,7 +1674,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Gris")
                                 {
@@ -1755,7 +1715,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);
                                 }
                             }
                             catch (IndexOutOfRangeException)
@@ -1824,7 +1783,8 @@ namespace Othello
 
                 Get_Score(a1);
                 Get_Move(a1);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         public void B1_Click(object sender, EventArgs e)
@@ -1839,7 +1799,8 @@ namespace Othello
 
                 Get_Score(b1);
                 Get_Move(b1);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void C1_Click(object sender, EventArgs e)
@@ -1854,7 +1815,8 @@ namespace Othello
 
                 Get_Score(c1);
                 Get_Move(c1);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void D1_Click(object sender, EventArgs e)
@@ -1869,8 +1831,10 @@ namespace Othello
 
                 Get_Score(d1);
                 Get_Move(d1);
-            Turno_siguiente(color);}
-        Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
+            Turno_siguiente(color);
+        }
 
         protected void E1_Click(object sender, EventArgs e)
         {
@@ -1885,7 +1849,8 @@ namespace Othello
                 Get_Score(e1);
                 Get_Move(e1);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void F1_Click(object sender, EventArgs e)
         {
@@ -1900,7 +1865,8 @@ namespace Othello
                 Get_Score(f1);
                 Get_Move(f1);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void G1_Click(object sender, EventArgs e)
         {
@@ -1915,7 +1881,8 @@ namespace Othello
                 Get_Score(g1);
                 Get_Move(g1);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void H1_Click(object sender, EventArgs e)
         {
@@ -1930,7 +1897,8 @@ namespace Othello
                 Get_Score(h1);
                 Get_Move(h1);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void A2_Click(object sender, EventArgs e)
         {
@@ -1945,7 +1913,8 @@ namespace Othello
                 Get_Score(a2);
                 Get_Move(a2);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void B2_Click(object sender, EventArgs e)
         {
@@ -1960,7 +1929,8 @@ namespace Othello
                 Get_Score(b2);
                 Get_Move(b2);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void C2_Click(object sender, EventArgs e)
         {
@@ -1975,7 +1945,8 @@ namespace Othello
                 Get_Score(c2);
                 Get_Move(c2);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void D2_Click(object sender, EventArgs e)
         {
@@ -1990,7 +1961,8 @@ namespace Othello
                 Get_Score(d2);
                 Get_Move(d2);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void E2_Click(object sender, EventArgs e)
         {
@@ -2005,7 +1977,8 @@ namespace Othello
                 Get_Score(e2);
                 Get_Move(e2);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void F2_Click(object sender, EventArgs e)
         {
@@ -2020,7 +1993,8 @@ namespace Othello
                 Get_Score(f2);
                 Get_Move(f2);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void G2_Click(object sender, EventArgs e)
         {
@@ -2035,7 +2009,8 @@ namespace Othello
                 Get_Score(g2);
                 Get_Move(g2);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void H2_Click(object sender, EventArgs e)
         {
@@ -2050,7 +2025,8 @@ namespace Othello
                 Get_Score(h2);
                 Get_Move(h2);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void A3_Click(object sender, EventArgs e)
         {
@@ -2065,7 +2041,8 @@ namespace Othello
                 Get_Score(a3);
                 Get_Move(a3);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void B3_Click(object sender, EventArgs e)
         {
@@ -2080,7 +2057,8 @@ namespace Othello
                 Get_Score(b3);
                 Get_Move(b3);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void C3_Click(object sender, EventArgs e)
         {
@@ -2095,7 +2073,8 @@ namespace Othello
                 Get_Score(c3);
                 Get_Move(c3);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void D3_Click(object sender, EventArgs e)
         {
@@ -2110,7 +2089,8 @@ namespace Othello
                 Get_Score(d3);
                 Get_Move(d3);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void E3_Click(object sender, EventArgs e)
         {
@@ -2125,7 +2105,8 @@ namespace Othello
                 Get_Score(e3);
                 Get_Move(e3);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void F3_Click(object sender, EventArgs e)
         {
@@ -2140,7 +2121,8 @@ namespace Othello
                 Get_Score(f3);
                 Get_Move(f3);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void G3_Click(object sender, EventArgs e)
         {
@@ -2155,7 +2137,8 @@ namespace Othello
                 Get_Score(g3);
                 Get_Move(g3);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void H3_Click(object sender, EventArgs e)
         {
@@ -2170,7 +2153,8 @@ namespace Othello
                 Get_Score(h3);
                 Get_Move(h3);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void A4_Click(object sender, EventArgs e)
         {
@@ -2185,7 +2169,8 @@ namespace Othello
                 Get_Score(a4);
                 Get_Move(a4);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
         protected void B4_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
@@ -2199,7 +2184,8 @@ namespace Othello
                 Get_Score(b4);
                 Get_Move(b4);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void C4_Click(object sender, EventArgs e)
         {
@@ -2214,7 +2200,8 @@ namespace Othello
                 Get_Score(c4);
                 Get_Move(c4);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void D4_Click(object sender, EventArgs e)
         {
@@ -2229,7 +2216,8 @@ namespace Othello
                 Get_Score(d4);
                 Get_Move(d4);
             }
-        Turno_siguiente(color);}
+            Turno_siguiente(color);
+        }
 
         protected void E4_Click(object sender, EventArgs e)
         {
@@ -2243,7 +2231,8 @@ namespace Othello
 
                 Get_Score(e4);
                 Get_Move(e4);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void F4_Click(object sender, EventArgs e)
@@ -2258,7 +2247,8 @@ namespace Othello
 
                 Get_Score(f4);
                 Get_Move(f4);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void G4_Click(object sender, EventArgs e)
@@ -2273,7 +2263,8 @@ namespace Othello
 
                 Get_Score(g4);
                 Get_Move(g4);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void H4_Click(object sender, EventArgs e)
@@ -2288,7 +2279,8 @@ namespace Othello
 
                 Get_Score(h4);
                 Get_Move(h4);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void A5_Click(object sender, EventArgs e)
@@ -2303,7 +2295,8 @@ namespace Othello
 
                 Get_Score(a5);
                 Get_Move(a5);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void B5_Click(object sender, EventArgs e)
@@ -2318,7 +2311,8 @@ namespace Othello
 
                 Get_Score(b5);
                 Get_Move(b5);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void C5_Click(object sender, EventArgs e)
@@ -2333,7 +2327,8 @@ namespace Othello
 
                 Get_Score(c5);
                 Get_Move(c5);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void D5_Click(object sender, EventArgs e)
@@ -2348,7 +2343,8 @@ namespace Othello
 
                 Get_Score(d5);
                 Get_Move(d5);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void E5_Click(object sender, EventArgs e)
@@ -2363,7 +2359,8 @@ namespace Othello
 
                 Get_Score(e5);
                 Get_Move(e5);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void F5_Click(object sender, EventArgs e)
@@ -2378,7 +2375,8 @@ namespace Othello
 
                 Get_Score(f5);
                 Get_Move(f5);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void G5_Click(object sender, EventArgs e)
@@ -2393,7 +2391,8 @@ namespace Othello
 
                 Get_Score(g5);
                 Get_Move(g5);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void H5_Click(object sender, EventArgs e)
@@ -2408,7 +2407,8 @@ namespace Othello
 
                 Get_Score(h5);
                 Get_Move(h5);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void A6_Click(object sender, EventArgs e)
@@ -2423,7 +2423,8 @@ namespace Othello
 
                 Get_Score(a6);
                 Get_Move(a6);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void B6_Click(object sender, EventArgs e)
@@ -2438,7 +2439,8 @@ namespace Othello
 
                 Get_Score(b6);
                 Get_Move(b6);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void C6_Click(object sender, EventArgs e)
@@ -2453,7 +2455,8 @@ namespace Othello
 
                 Get_Score(c6);
                 Get_Move(c6);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void D6_Click(object sender, EventArgs e)
@@ -2468,7 +2471,8 @@ namespace Othello
 
                 Get_Score(d6);
                 Get_Move(d6);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void E6_Click(object sender, EventArgs e)
@@ -2483,7 +2487,8 @@ namespace Othello
 
                 Get_Score(e6);
                 Get_Move(e6);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void F6_Click(object sender, EventArgs e)
@@ -2498,7 +2503,8 @@ namespace Othello
 
                 Get_Score(f6);
                 Get_Move(f6);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void G6_Click(object sender, EventArgs e)
@@ -2513,7 +2519,8 @@ namespace Othello
 
                 Get_Score(g6);
                 Get_Move(g6);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void H6_Click(object sender, EventArgs e)
@@ -2528,7 +2535,8 @@ namespace Othello
 
                 Get_Score(h6);
                 Get_Move(h6);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void A7_Click(object sender, EventArgs e)
@@ -2543,7 +2551,8 @@ namespace Othello
 
                 Get_Score(a7);
                 Get_Move(a7);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void B7_Click(object sender, EventArgs e)
@@ -2558,7 +2567,8 @@ namespace Othello
 
                 Get_Score(b7);
                 Get_Move(b7);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void C7_Click(object sender, EventArgs e)
@@ -2573,7 +2583,8 @@ namespace Othello
 
                 Get_Score(c7);
                 Get_Move(c7);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void D7_Click(object sender, EventArgs e)
@@ -2588,7 +2599,8 @@ namespace Othello
 
                 Get_Score(d7);
                 Get_Move(d7);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void E7_Click(object sender, EventArgs e)
@@ -2603,7 +2615,8 @@ namespace Othello
 
                 Get_Score(e7);
                 Get_Move(e7);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void F7_Click(object sender, EventArgs e)
@@ -2618,7 +2631,8 @@ namespace Othello
 
                 Get_Score(f7);
                 Get_Move(f7);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void G7_Click(object sender, EventArgs e)
@@ -2633,7 +2647,8 @@ namespace Othello
 
                 Get_Score(g7);
                 Get_Move(g7);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void H7_Click(object sender, EventArgs e)
@@ -2648,7 +2663,8 @@ namespace Othello
 
                 Get_Score(h7);
                 Get_Move(h7);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void A8_Click(object sender, EventArgs e)
@@ -2663,7 +2679,8 @@ namespace Othello
 
                 Get_Score(a8);
                 Get_Move(a8);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void B8_Click(object sender, EventArgs e)
@@ -2678,7 +2695,8 @@ namespace Othello
 
                 Get_Score(b8);
                 Get_Move(b8);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void C8_Click(object sender, EventArgs e)
@@ -2693,7 +2711,8 @@ namespace Othello
 
                 Get_Score(c8);
                 Get_Move(c8);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void D8_Click(object sender, EventArgs e)
@@ -2708,7 +2727,8 @@ namespace Othello
 
                 Get_Score(d8);
                 Get_Move(d8);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void E8_Click(object sender, EventArgs e)
@@ -2723,7 +2743,8 @@ namespace Othello
 
                 Get_Score(e8);
                 Get_Move(e8);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void F8_Click(object sender, EventArgs e)
@@ -2738,7 +2759,8 @@ namespace Othello
 
                 Get_Score(f8);
                 Get_Move(f8);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void G8_Click(object sender, EventArgs e)
@@ -2753,7 +2775,8 @@ namespace Othello
 
                 Get_Score(g8);
                 Get_Move(g8);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
 
         protected void H8_Click(object sender, EventArgs e)
@@ -2768,7 +2791,8 @@ namespace Othello
 
                 Get_Score(h8);
                 Get_Move(h8);
-            Turno_siguiente(color);}
+                Turno_siguiente(color);
+            }
         }
     }
 }

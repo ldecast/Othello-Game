@@ -1,6 +1,7 @@
 ﻿using NHibernate.Mapping;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -84,6 +85,36 @@ namespace Othello
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error: por favor seleccione un archivo\")", true);
         }
 
+        public void Redireccionar5(object sender, EventArgs e)
+        {
+            if (upload.HasFile)
+            {
+                upload.SaveAs(Server.MapPath(".") + "\\XML\\" + upload.FileName);
+                string ruta = Server.MapPath(".") + "\\XML\\" + upload.FileName;
+
+                if (File.ReadAllText(ruta).Contains("<Modalidad>Normal</Modalidad>"))
+                {
+                    Session["archivo"] = ruta;
+                    Session["modalidad"] = "normal";
+                    Session["coloresUsuario"] = "Negro";
+                    Session["coloresPlayer2"] = "Blanco";
+                    Response.Redirect("OthelloXtream.aspx?Parametro=Loaded-" + usuario.Text);
+                }
+
+                else if (File.ReadAllText(ruta).Contains("<Modalidad>Inversa</Modalidad>"))
+                {
+                    Session["archivo"] = ruta;
+                    Session["modalidad"] = "inversa";
+                    Session["coloresUsuario"] = "Negro";
+                    Session["coloresPlayer2"] = "Blanco";
+                    Response.Redirect("OthelloXtream.aspx?Parametro=Loaded-" + usuario.Text);
+                }
+                else Response.Write("No se reconoce la modalidad de la partida. Por favor corrija el archivo de entrada.");
+            }
+            else
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error: por favor seleccione un archivo\")", true);
+        }
+
         protected void NewGame_Click_White(object sender, EventArgs e)
         {
             Response.Redirect("GameBoard.aspx?Parametro=" + usuario.Text+"-Blanco");
@@ -106,6 +137,7 @@ namespace Othello
         {
             cargar1.Visible = false;
             cargar2.Visible = false;
+            Panel3.Visible = false;
             Panel1.Visible = true;
             Label3.Text = "Color para " + usuario.Text;
             upload.Visible = true;
@@ -117,6 +149,14 @@ namespace Othello
             cargar2.Visible = false;
             Panel2.Visible = true;
             Label3.Text = "Color para " + usuario.Text;
+            upload.Visible = true;
+        }
+
+        protected void CargarElegir3(object sender, EventArgs e)
+        {
+            cargar1.Visible = false;
+            cargar2.Visible = false;
+            Panel3.Visible = true;
             upload.Visible = true;
         }
 
@@ -168,6 +208,7 @@ namespace Othello
             {
                 Session["coloresUsuario"] = ColoresUsuario();
                 Session["coloresPlayer2"] = ColoresPlayer2();
+                Session["modalidad"] = "normal";
                 Response.Redirect("OthelloXtream.aspx?Parametro=New-" + usuario.Text);
             }
         }
@@ -178,7 +219,8 @@ namespace Othello
             {
                 Session["coloresUsuario"] = ColoresUsuario();
                 Session["coloresPlayer2"] = ColoresPlayer2();
-                Response.Redirect("ReverseOthello.aspx?Parametro=New-" + usuario.Text);
+                Session["modalidad"] = "inversa";
+                Response.Redirect("OthelloXtream.aspx?Parametro=New-" + usuario.Text);
             }
         }
 

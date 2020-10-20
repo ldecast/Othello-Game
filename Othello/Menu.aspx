@@ -28,7 +28,7 @@
                 <asp:Label runat="server" id="Label3" CssClass="h1 text-center" Text="Cargar partida" /><br/>
 
                     <asp:FileUpload runat="server" id="upload" accept=".xml" AllowMultiple="false" CssClass="btn btn-dark btn-lg mt-4" Visible="false"/><br/><br/>
-                    <asp:Button runat="server" id="cargar1" CssClass="btn btn-dark btn-lg m-1" Text="2 jugadores" OnClick="CargarElegir1"/>
+                    <asp:Button runat="server" id="cargar1" CssClass="btn btn-dark btn-lg m-1" Text="2 jugadores" OnClick="CargarElegir3"/>
                     <asp:Button runat="server" id="cargar2" CssClass="btn btn-dark btn-lg m-1" Text="Individual" OnClick="CargarElegir2"/>
 
                 <asp:Panel runat="server" id="Panel1" CssClass="mt-0 pt-0" Visible="false">
@@ -39,6 +39,11 @@
                 <asp:Panel runat="server" id="Panel2" CssClass="mt-0 pt-0" Visible="false">
                     <asp:Button runat="server" id="Button3" CssClass="btn btn-outline-light btn-lg mr-3" Text="Blanco" OnClick="Redireccionar3"/>
                     <asp:Button runat="server" id="Button4" CssClass="btn btn-outline-dark btn-lg block" Text="Negro" OnClick="Redireccionar4"/>
+                </asp:Panel>
+
+                <asp:Panel runat="server" id="Panel3" CssClass="mt-0 pt-0" Visible="false">
+                    <asp:Button runat="server" id="Button5" CssClass="btn btn-outline-light btn-lg mr-3" Text="Clásico" OnClick="CargarElegir1"/>
+                    <asp:Button runat="server" id="Button6" CssClass="btn btn-outline-dark btn-lg block" Text="Xtream" OnClick="Redireccionar5"/>
                 </asp:Panel>
                   
             </div>

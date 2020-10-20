@@ -1,4 +1,6 @@
 # Othello-Game
-Proyecto de IPC2 Segundo Semestre 2020
-Autor del proyecto: Luis Danniel Ernesto Castellanos Galindo
-Carnet: 201902238
+
+### Autor: Luis Danniel Ernesto Castellanos Galindo
+_Carnet: 201902238_
+
+**Proyecto de IPC2 Segundo Semestre 2020**

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OthelloXtream.aspx.cs" Inherits="Othello.OthelloXtream" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OthelloXtream.aspx.cs" Inherits="Othello.ReverseOthello" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -10,12 +10,11 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"/>
 <title>Othello game</title>
   
-<style>body{background-color: #2e86c1;} #guardar{margin-top: 47px; height:50px; margin-bottom:12px;} #cronometro{position:absolute; top:65px; left:85px;} #salir{margin-top: 60px; height:50px; margin-bottom:90px; width:120px;} #end{margin-top: 39px; height:50px; padding-left:10px; padding-right:10px; margin-bottom:7px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;} .aux{position:absolute; top:0px; left:0px;} .aux2{position:absolute; top:0px; right:0px;} .aux3{position:absolute; top:0px; right:400px;} .aux4{position:absolute; top:0px; right:300px;} .aux5{position:absolute; top:0px; right:950px;}
+<style>body{background-color: #2e86c1;} #guardar{margin-top: 47px; height:50px; margin-bottom:12px;} #cronometro{position:absolute; top:65px; left:85px;} #salir{margin-top: 60px; height:50px; margin-bottom:90px; width:120px;} #end{margin-top: 39px; height:50px; padding-left:10px; padding-right:10px; margin-bottom:7px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;} .aux{position:absolute; top:0px; left:0px;} .aux2{position:absolute; top:0px; right:0px;} .aux3{position:absolute; top:0px; right:400px; color: #2e86c1;} .aux4{position:absolute; top:0px; right:300px; color: #2e86c1;} .aux5{position:absolute; top:0px; right:950px; color: #2e86c1;}
 .btn-Rojo{ background-color: #c72b2b !important; } .btn-Amarillo{ background-color: #e0bf07 !important; } .btn-Azul{ background-color: #203ee9 !important; } .btn-Naranja{ background-color: #f2751c !important; } .btn-Verde{ background-color: #00ff22 !important; } .btn-Violeta{ background-color: #951ec8 !important; } .btn-Celeste{ background-color: #1d90e4 !important; } .btn-Gris{ background-color: gray !important; } .btn-Negro{ background-color: black !important; } .btn-Blanco{ background-color: ghostwhite !important; }
 </style>
 
  <script type="text/javascript">
-    //script de www.aprenderaprogramar.com/index.php?option=com_content&view=article&id=847:ejemplo-reloj-javascript
     function reloj() {
         var h = 0; var m = 0; var s = 0;
         document.getElementById('cronometro').style.cssText = document.getElementById('turno').style.cssText;
@@ -59,7 +58,7 @@
                 </div>
                 <asp:Panel runat="server" id="resultados" Cssclass="col-sm-12 col-lg-8 text-center" Visible="false">
                     <asp:Label runat="server" id ="gameover" CssClass="display-2" Text="GAME OVER"/><br />
-                    <asp:Label runat="server" CssClass="display-2" id="ganador"/><br /><br />
+                    <asp:Label runat="server" CssClass="display-2" id="ganador" Visible="true"/><br /><br />
                     <asp:Button runat="server" type="button" id="salir" CssClass="btn btn-warning btn-lg" text="SALIR" OnClick="Salir"/>
                 </asp:Panel>
                 <asp:Panel runat="server" id="gameBoard" Cssclass="col-sm-12 col-lg-8 text-center">
@@ -168,7 +167,7 @@
                     <asp:Label runat="server" CssClass="h4" ID="scoreLabel1"></asp:Label><br />
                     <asp:Label runat="server" id="score1" CssClass="display-4" text="0" />
                     <br/><br/>
-                    <asp:Label runat="server" CssClass="h4" ID="scoreLabel2" Text="Jugador #2"></asp:Label><br />
+                    <asp:Label runat="server" CssClass="h4" ID="scoreLabel2" Text="Oponente"></asp:Label><br />
                     <asp:Label runat="server" id="score2" CssClass="display-4" text="0" />
                     <br/><br/>
                     <asp:Button runat="server" type="button" id="end" CssClass="btn btn-outline-dark btn-lg" text="Terminar juego" OnClick="Terminar_Juego"/>

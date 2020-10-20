@@ -11,7 +11,7 @@ namespace Othello
 {
 
 
-    public partial class OthelloXtream
+    public partial class ReverseOthello
     {
 
         /// <summary>

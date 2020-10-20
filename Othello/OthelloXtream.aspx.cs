@@ -11,7 +11,7 @@ using System.Data.SqlClient;
 
 namespace Othello
 {
-    public partial class OthelloXtream : System.Web.UI.Page
+    public partial class ReverseOthello : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -21,7 +21,14 @@ namespace Othello
                 {
                     string parametro = Request.Params["Parametro"];
                     scoreLabel1.Text = parametro.Substring(parametro.LastIndexOf('-') + 1);
-                    if (parametro.Contains("Loaded")) iniciar.Visible = true;
+                    if (parametro.Contains("Loaded"))
+                    {
+                        max.Text = (ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 + 8).ToString();
+                        iniciar.Visible = true;
+                        ceder_turno.Enabled = false;
+                        guardar.Enabled = false;
+                        end.Enabled = false;
+                    }
                     else { iniciar.Visible = false; ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); }
                 }
 
@@ -30,22 +37,20 @@ namespace Othello
                 listaOponente.Text = Convert.ToString(Session["coloresPlayer2"]);
                 turno.Text = ColoresUsuario().First().ToString();
 
-                //Ver_colores();
-                //coloresUsuario = ColoresUsuario();
-                //coloresOponente = ColoresOponente();
-
-                //coloresUsuario = listaColores.Text.Split(',').ToList();
-                //coloresOponente = listaOponente.Text.Split(',').ToList();
-
-                //end.Enabled = false;
-                //guardar.Enabled = false;
-                //ceder_turno.Enabled = false;
             }
 
-            //coloresUsuario = ColoresUsuario();
-            //coloresOponente = ColoresOponente();
+            if (Session["modalidad"] != null)
+            {
+                if (Session["modalidad"].ToString() == "normal")
+                {
+                    modalidad = "normal";
+                }
+                else if (Session["modalidad"].ToString() == "inversa")
+                {
+                    modalidad = "inversa";
+                }
+            }
             Get_Score(null);
-
         }
 
         protected void Page_LoadComplete(object sender, EventArgs e)
@@ -103,31 +108,29 @@ namespace Othello
                     movimiento_oponente.ForeColor = ColorTranslator.FromHtml(gris);
                     break;
             }
-            /////if (int.Parse(indice1.Text) >= 4*listaColores.Text.Split(',').Length) indice1.Text = "0";
-            /////if (int.Parse(indice2.Text) >= 4*listaOponente.Text.Split(',').Length) indice2.Text = "0";
-            ///
             if (int.Parse(indice1.Text) >= listaColores.Text.Split(',').Length) indice1.Text = "0";
             if (int.Parse(indice2.Text) >= listaOponente.Text.Split(',').Length) indice2.Text = "0";
 
-            //if(IsPostBack)
-            //    Get_Score(null);
+            if (IsPostBack)
+            {
+                if (int.Parse(max.Text) >= ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 && int.Parse(max.Text) >= 16 && forzado == false)
+                {
+                    max.Text = "100";
+                    int score_user = int.Parse(score1.Text);
+                    int score_oponente = int.Parse(score2.Text);
+                    if (score_user == 0 && score_oponente > 0) GameOver();
+                    else if (score_oponente == 0 && score_user > 0) GameOver();
+                    if (score_user + score_oponente == 64) GameOver();
+                }
+                if (finalizado)
+                {
+                    turno.Text = "";
+                    turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                    movimiento_user.ForeColor = ColorTranslator.FromHtml("#2e86c1");
+                    movimiento_oponente.Text = "";
+                }
+            }
         }
-
-        //public void Ver_colores()
-        //{
-        //    if (Session["coloresUsuario"] != null)
-        //    {
-        //        string coloresUsuario = Convert.ToString(Session["coloresUsuario"]);
-        //        Response.Write(coloresUsuario);
-
-        //    }
-        //    if (Session["coloresPlayer2"] != null)
-        //    {
-        //        string coloresPlayer2 = Convert.ToString(Session["coloresPlayer2"]);
-        //        Response.Write(coloresPlayer2);
-
-        //    }
-        //}
 
         public List<string> ColoresUsuario()
         {
@@ -141,9 +144,6 @@ namespace Othello
             return coloresOponente.Split(',').ToList();
         }
 
-        //private List<string> coloresUsuario = new List<string>();
-        //private List<string> coloresOponente = new List<string>();
-
         private readonly string vacio = "btn btn-success btn-lg border-dark rounded-0";
         private readonly string negro = "btn btn-lg border-dark rounded-0 btn-Negro";
         private readonly string blanco = "btn btn-lg border-dark rounded-0 btn-Blanco";
@@ -156,6 +156,10 @@ namespace Othello
         private readonly string celeste = "\"#1d90e4\"";
         private readonly string gris = "\"#807e7e\"";
 
+        private string modalidad = "";
+        private bool finalizado = false;
+        private bool forzado = false;
+
         private readonly string rojoCss = "btn btn-lg border-dark rounded-0 btn-Rojo";
         private readonly string amarilloCss = "btn btn-lg border-dark rounded-0 btn-Amarillo";
         private readonly string azulCss = "btn btn-lg border-dark rounded-0 btn-Azul";
@@ -165,17 +169,6 @@ namespace Othello
         private readonly string celesteCss = "btn btn-lg border-dark rounded-0 btn-Celeste";
         private readonly string grisCss = "btn btn-lg border-dark rounded-0 btn-Gris";
 
-        private string move_usuario = "";
-        private string move_oponente = "";
-
-        //private readonly string white = "\"#f6f6f6\"";
-        //private readonly string black = "\"#121111\"";
-        //private string moveUsuario = "";
-        //private string movePlayer = "";
-
-
-        //int aux1 = 0;
-        //int aux2 = 0;
 
         public void Leer_xml(object sender, EventArgs e)
         {
@@ -327,20 +320,31 @@ namespace Othello
                     }
                 }
 
+                XmlNodeList mod = reader.GetElementsByTagName("Modalidad");
+                for (int i = 0; i < mod.Count; i++)
+                {
+                    if (mod[i].InnerText.Contains("Normal"))
+                    {
+                        modalidad = "normal";
+                    }
+                    if (mod[i].InnerText.Contains("Inversa"))
+                    {
+                        modalidad = "inversa";
+                    }
+                }
+
                 XmlNodeList tiro = reader.GetElementsByTagName("siguienteTiro");
                 for (int i = 0; i < tiro.Count; i++)
                 {
                     if (tiro[i].InnerText.Contains("blanco"))
                     {
                         turno.Text = "Blanco";
-                        turno.ForeColor = Color.White;
                         movimiento_user.Visible = false;
                         movimiento_oponente.Visible = true;
                     }
                     if (tiro[i].InnerText.Contains("negro"))
                     {
                         turno.Text = "Negro";
-                        turno.ForeColor = Color.Black;
                         movimiento_oponente.Visible = false;
                         movimiento_user.Visible = true;
                     }
@@ -349,15 +353,15 @@ namespace Othello
                 XmlNodeList movimientos = reader.GetElementsByTagName("movimientos");
                 if (movimientos.Count > 0)
                 {
-                    XmlNodeList white_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("blanco");
-                    foreach (XmlElement Wmoves in white_moves)
+                    XmlNodeList op_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("blanco");
+                    foreach (XmlElement Omoves in op_moves)
                     {
-                        movimiento_oponente.Text = Wmoves.InnerText;
+                        movimiento_oponente.Text = Omoves.InnerText;
                     }
-                    XmlNodeList black_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("negro");
-                    foreach (XmlElement Bmoves in black_moves)
+                    XmlNodeList user_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("negro");
+                    foreach (XmlElement Umoves in user_moves)
                     {
-                        movimiento_user.Text = Bmoves.InnerText;
+                        movimiento_user.Text = Umoves.InnerText;
                     }
                 }
                 iniciar.Visible = false;
@@ -534,12 +538,12 @@ namespace Othello
 
             string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
             int id = 1;
-            string ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
+            string ruta = mdoc + "Partida Xtream " + modalidad + " - " + persona + "(" + id + ").xml";
 
             while (File.Exists(ruta))
             {
                 id++;
-                ruta = mdoc + "Partida 1vs1 " + persona + "(" + id + ").xml";
+                ruta = mdoc + "Partida Xtream " + modalidad + " - " + persona + "(" + id + ").xml";
             }
 
             XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
@@ -601,11 +605,11 @@ namespace Othello
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("movimientos");
-            xmlWriter.WriteStartElement("negro");
+            xmlWriter.WriteStartElement("usuario");
             xmlWriter.WriteString(movimiento_user.Text);
             xmlWriter.WriteEndElement();
 
-            xmlWriter.WriteStartElement("blanco");
+            xmlWriter.WriteStartElement("oponente");
             xmlWriter.WriteString(movimiento_oponente.Text);
             xmlWriter.WriteEndElement();
             xmlWriter.WriteEndElement();
@@ -724,7 +728,9 @@ namespace Othello
 
         public void Ceder_turno(object sender, EventArgs e)
         {
+
             Turno_siguiente(turno.Text);
+
         }
 
         public void Get_Score(WebControl boton)
@@ -741,8 +747,10 @@ namespace Othello
             int sky = 0;
             int grey = 0;
 
-            //int aux_white = int.Parse(score1.Text);
-            //int aux_black = int.Parse(score2.Text);
+            string aux_turno = turno.Text;
+            int aux_usuario = int.Parse(score1.Text);
+            int aux_oponente = int.Parse(score2.Text);
+
             for (int i = 0; i < botones.Length; i++)
             {
                 switch (botones[i].CssClass.ToString())
@@ -780,13 +788,11 @@ namespace Othello
                 }
             }
 
-            //if (score_white == aux_white + 1 && score_white + score_black != 64) { boton.CssClass = vacio; score_white--; turno.Text = "Blanco"; turno.ForeColor = Color.White; }
-            //else if (score_black == aux_black + 1 && score_white + score_black != 64) { boton.CssClass = vacio; score_black--; turno.Text = "Negro"; turno.ForeColor = Color.Black; }
             List<string> aux_user = ColoresUsuario();
             List<string> aux_oponent = ColoresOponente();
             List<int> scores_user = new List<int>();
             List<int> scores_oponente = new List<int>();
-            for (int i = 0; i < 1 ; i++)
+            for (int i = 0; i < 1; i++)
             {
                 if (aux_user.Contains("Rojo")) scores_user.Add(red);
                 if (aux_user.Contains("Amarillo")) scores_user.Add(yellow);
@@ -813,11 +819,19 @@ namespace Othello
                 if (aux_oponent.Contains("Celeste")) scores_oponente.Add(sky);
                 if (aux_oponent.Contains("Gris")) scores_oponente.Add(grey);
             }
-            score1.Text = scores_user.Sum().ToString();
-            score2.Text = scores_oponente.Sum().ToString();
+
+            int score_user_aux = scores_user.Sum();
+            int score_oponent_aux = scores_oponente.Sum();
+
+            //edit para que no sea 64
+            if (scores_user.Sum() == aux_usuario + 1 && int.Parse(max.Text) > ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 && int.Parse(max.Text) > 16) { boton.CssClass = vacio; score_user_aux--; turno.Text = aux_turno; }
+            else if (scores_oponente.Sum() == aux_oponente + 1 && int.Parse(max.Text) > ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 && int.Parse(max.Text) > 16) { boton.CssClass = vacio; score_oponent_aux--; turno.Text = aux_turno; }
+
+            score1.Text = score_user_aux.ToString();
+            score2.Text = score_oponent_aux.ToString();
         }
 
-        public void Get_Move(WebControl boton)
+        public void Get_Move(WebControl boton, string color)
         {
             int user_move = int.Parse(movimiento_user.Text);
             int oponente_move = int.Parse(movimiento_oponente.Text);
@@ -837,17 +851,21 @@ namespace Othello
                     movimiento_oponente.Visible = false;
                     movimiento_user.Visible = true;
                 }
+                Turno_siguiente(color);
             }
-            //edit luego
-            int score_white = int.Parse(score1.Text);
-            int score_black = int.Parse(score2.Text);
-            if (score_white == 0 && score_black > 0) GameOver();
-            else if (score_black == 0 && score_white > 0) GameOver();
-            if (score_white + score_black == 64) GameOver();
+            //edit luego, esta en el complete load
+            //int score_white = int.Parse(score1.Text);
+            //int score_black = int.Parse(score2.Text);
+            //if (score_white == 0 && score_black > 0) GameOver();
+            //else if (score_black == 0 && score_white > 0) GameOver();
+            //if (score_white + score_black == 64) GameOver();
         }
 
         public void Terminar_Juego(object sender, EventArgs e)
         {
+            finalizado = true;
+            forzado = true;
+            //edit luego para que no sea 64 si no MxN
             if (int.Parse(score1.Text) > int.Parse(score2.Text))
             {
                 score1.Text = (64 - int.Parse(score2.Text)).ToString();
@@ -863,40 +881,41 @@ namespace Othello
 
         public void GameOver()
         {
+            finalizado = true;
             gameBoard.Visible = false;
-            if (int.Parse(score1.Text) > int.Parse(score2.Text))
+            if (modalidad == "inversa")
             {
-                ganador.Text = scoreLabel1.Text + " gana!";
-                turno.Text = "";
-                turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
-                move_usuario = movimiento_user.Text;
-                move_oponente = movimiento_oponente.Text;
-                movimiento_user.Text = "";
-                movimiento_oponente.Text = "";
-                Registrar("usuario");
+                if (int.Parse(score1.Text) < int.Parse(score2.Text))
+                {
+                    ganador.Text = scoreLabel1.Text + " gana!";
+                    Registrar("usuario");
+                }
+                if (int.Parse(score1.Text) > int.Parse(score2.Text))
+                {
+                    ganador.Text = "Jugador 2 gana!";
+                    Registrar("oponente");
+                }
             }
-            if (int.Parse(score1.Text) < int.Parse(score2.Text))
+
+            else if (modalidad == "normal")
             {
-                ganador.Text = "Jugador 2 gana!";
-                turno.Text = "";
-                turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
-                move_usuario = movimiento_user.Text;
-                move_oponente = movimiento_oponente.Text;
-                movimiento_user.Text = "";
-                movimiento_oponente.Text = "";
-                Registrar("oponente");
+                if (int.Parse(score1.Text) > int.Parse(score2.Text))
+                {
+                    ganador.Text = scoreLabel1.Text + " gana!";
+                    Registrar("usuario");
+                }
+                if (int.Parse(score1.Text) < int.Parse(score2.Text))
+                {
+                    ganador.Text = "Jugador 2 gana!";
+                    Registrar("oponente");
+                }
             }
+
             if (int.Parse(score1.Text) == int.Parse(score2.Text) && int.Parse(score1.Text) > 0)
             {
                 ganador.Text = "¡Empate!";
                 ganador.CssClass = "display-2 text-warning";
                 gameover.CssClass = "display-2 text-warning";
-                turno.Text = "";
-                turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
-                move_usuario = movimiento_user.Text;
-                move_oponente = movimiento_oponente.Text;
-                movimiento_user.Text = "";
-                movimiento_oponente.Text = "";
                 Registrar("empate");
             }
             resultados.Visible = true;
@@ -908,24 +927,27 @@ namespace Othello
 
         public void Registrar(string ganador)
         {
-            if (Request.Params["Parametro"] != null && ganador != "empate")
+            if (Request.Params["Parametro"] != null)
             {
+                #pragma warning disable IDE0059
                 string winner = "";
                 string loser = "";
                 string estado = "";
+                #pragma warning restore IDE0059
+                string tipo = "Xtream - " + modalidad;
                 switch (ganador)
                 {
                     case "usuario":
                         estado = "ganada";
-                        winner = scoreLabel1.Text;
+                        winner = scoreLabel1.Text.ToString();
                         loser = "invitado";
                         try
                         {
                             string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
                             SqlConnection conexion = new SqlConnection(a);
                             conexion.Open();
-                            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,ganador,perdedor,empate) values('1vs1 Xtream','" +
-                                    estado + "'," + move_usuario + ",'" + scoreLabel1.Text + "','invitado','" + winner + "','" + loser + "',0)", conexion);
+                            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,ganador,perdedor,empate) values('"+tipo + "','" +
+                                    estado + "'," + movimiento_user.Text + ",'" + winner + "','"+loser+"','" + winner + "','" + loser + "',0)", conexion);
                             script.ExecuteNonQuery();
                             conexion.Close();
                         }
@@ -934,17 +956,18 @@ namespace Othello
                             ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo guardar el resultado en la base de datos.\")", true);
                         }
                         break;
+
                     case "oponente":
                         estado = "perdida";
                         winner = "invitado";
-                        loser = scoreLabel1.Text;
+                        loser = scoreLabel1.Text.ToString();
                         try
                         {
                             string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
                             SqlConnection conexion = new SqlConnection(a);
                             conexion.Open();
-                            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,ganador,perdedor,empate) values('1vs1 Xtream','" +
-                                    estado + "'," + move_usuario + ",'" + scoreLabel1.Text + "','invitado','" + winner + "','" + loser + "',0)", conexion);
+                            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,ganador,perdedor,empate) values('" + tipo + "','" +
+                                    estado + "'," + movimiento_user.Text + ",'" + loser + "','" + winner + "','" + winner + "','" + loser + "',0)", conexion);
                             script.ExecuteNonQuery();
                             conexion.Close();
                         }
@@ -957,13 +980,14 @@ namespace Othello
                         estado = "empate";
                         winner = "";
                         loser = "";
+                        string usuario = scoreLabel1.Text.ToString();
                         try
                         {
                             string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
                             SqlConnection conexion = new SqlConnection(a);
                             conexion.Open();
-                            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,ganador,perdedor,empate) values('1vs1 Xtream','" +
-                                    estado + "'," + move_usuario + ",'" + scoreLabel1.Text + "','invitado','" + winner + "','" + loser + "',0)", conexion);
+                            SqlCommand script = new SqlCommand("insert into Partida(tipo,estado,movimientos,jugador1,jugador2,empate) values('" + tipo + "','empate'," +
+                                   movimiento_user.Text + ",'" + usuario + "','invitado',1)", conexion);
                             script.ExecuteNonQuery();
                             conexion.Close();
                         }
@@ -994,18 +1018,18 @@ namespace Othello
             {
                 if (color == "Negro")
                 {
-                        if (casilla[clic + 1].CssClass == negro && casilla[clic - 1].CssClass == negro && casilla[clic].CssClass == negro)
-                            permitido = false;
+                    if (casilla[clic + 1].CssClass == negro && casilla[clic - 1].CssClass == negro && casilla[clic].CssClass == negro)
+                        permitido = false;
                 }
                 if (color == "Blanco")
                 {
-                        if (casilla[clic + 1].CssClass == blanco && casilla[clic - 1].CssClass == blanco && casilla[clic].CssClass == blanco)
-                            permitido = false;
+                    if (casilla[clic + 1].CssClass == blanco && casilla[clic - 1].CssClass == blanco && casilla[clic].CssClass == blanco)
+                        permitido = false;
                 }
                 if (color == "Rojo")
                 {
-                        if (casilla[clic + 1].CssClass == rojoCss && casilla[clic - 1].CssClass == rojoCss && casilla[clic].CssClass == rojoCss)
-                            permitido = false;
+                    if (casilla[clic + 1].CssClass == rojoCss && casilla[clic - 1].CssClass == rojoCss && casilla[clic].CssClass == rojoCss)
+                        permitido = false;
                 }
                 if (color == "Amarillo")
                 {
@@ -1163,15 +1187,20 @@ namespace Othello
 
             if (ColoresUsuario().Contains(color))
             {
-                //if (color == "Negro")
-                //{
-                    if (clic < casilla.Length && casilla.Length != 1)
+                if (clic < casilla.Length && casilla.Length != 1)
+                {
+                    if (permitido == false)
                     {
-                        if (permitido == false)
+                        for (int i = 0; i < clic; i++)
                         {
-                            for (int i = 0; i < clic; i++)
+                            if (ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
                             {
-                                if (ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
+                                if (ColoresUsuario().Count == 1 && ColoresOponente().Count == 1) 
+                                {
+                                    permitido = true;
+                                    aux = i;
+                                }
+                                else
                                 {
                                     permitido = true;
                                     aux = i;
@@ -1179,26 +1208,24 @@ namespace Othello
                                 }
                             }
                         }
-                        if (true)
+                    }
+                    if (true)
+                    {
+                        for (int i = clic + 1; i < casilla.Length; i++)
                         {
-                            for (int i = clic + 1; i < casilla.Length; i++)
+                            if (ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
                             {
-                                if (ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
-                                {
-                                    permitido2 = true;
-                                    aux2 = i;
-                                    break;
-                                }
+                                permitido2 = true;
+                                aux2 = i;
+                                break;
                             }
                         }
                     }
-                //}
+                }
             }
 
             if (ColoresOponente().Contains(color))
             {
-                //if (color == "Negro")
-                //{
                 if (clic < casilla.Length && casilla.Length != 1)
                 {
                     if (permitido == false)
@@ -1207,9 +1234,17 @@ namespace Othello
                         {
                             if (ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
                             {
-                                permitido = true;
-                                aux = i;
-                                break;
+                                if (ColoresUsuario().Count == 1 && ColoresOponente().Count == 1)
+                                {
+                                    permitido = true;
+                                    aux = i;
+                                }
+                                else
+                                {
+                                    permitido = true;
+                                    aux = i;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -1226,7 +1261,6 @@ namespace Othello
                         }
                     }
                 }
-                //}
             }
 
             if (permitido != permitido2)
@@ -1246,19 +1280,19 @@ namespace Othello
 
         public void Turno_siguiente(string color)
         {
-                if (listaColores.Text.Contains(color))
-                {
-                    turno.Text = listaOponente.Text.Split(',')[int.Parse(indice2.Text)];
-                    indice1.Text = (int.Parse(indice1.Text) + 1).ToString();
-                }
+            if (listaColores.Text.Contains(color))
+            {
+                turno.Text = listaOponente.Text.Split(',')[int.Parse(indice2.Text)];
+                indice1.Text = (int.Parse(indice1.Text) + 1).ToString();
+            }
 
-                else if (listaOponente.Text.Contains(color))
-                {
-                    turno.Text = listaColores.Text.Split(',')[int.Parse(indice1.Text)];
-                    indice2.Text = (int.Parse(indice2.Text) + 1).ToString();
-                }
+            else if (listaOponente.Text.Contains(color))
+            {
+                turno.Text = listaColores.Text.Split(',')[int.Parse(indice1.Text)];
+                indice2.Text = (int.Parse(indice2.Text) + 1).ToString();
+            }
 
-                ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); //inicia cronometro
+            ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); //inicia cronometro
         }
 
         public void ComerFicha(WebControl[] casilla, string color, int clic, int index)
@@ -1268,61 +1302,51 @@ namespace Othello
                 if (color == "Negro")
                 {
                     casilla[clic].CssClass = negro;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Blanco")
                 {
                     casilla[clic].CssClass = blanco;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Rojo")
                 {
                     casilla[clic].CssClass = rojoCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Amarillo")
                 {
                     casilla[clic].CssClass = amarilloCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Azul")
                 {
                     casilla[clic].CssClass = azulCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Naranja")
                 {
                     casilla[clic].CssClass = naranjaCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Verde")
                 {
                     casilla[clic].CssClass = verdeCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Violeta")
                 {
                     casilla[clic].CssClass = violetaCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Celeste")
                 {
                     casilla[clic].CssClass = celesteCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
                 if (color == "Gris")
                 {
                     casilla[clic].CssClass = grisCss;
-                    //Turno_siguiente(color);
                     max.Text = (int.Parse(max.Text) + 1).ToString();
                 }
             }
@@ -1377,7 +1401,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Blanco")
                                 {
@@ -1419,7 +1442,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Rojo")
                                 {
@@ -1438,7 +1460,7 @@ namespace Othello
                                             for (int i = index; i <= clic; i++)
                                             {
                                                 if (!ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
-                                                casilla[i].CssClass = rojoCss;
+                                                    casilla[i].CssClass = rojoCss;
                                             }
                                         }
                                     }
@@ -1461,7 +1483,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Amarillo")
                                 {
@@ -1503,7 +1524,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Azul")
                                 {
@@ -1545,7 +1565,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Naranja")
                                 {
@@ -1587,7 +1606,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Verde")
                                 {
@@ -1629,7 +1647,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Violeta")
                                 {
@@ -1671,7 +1688,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Celeste")
                                 {
@@ -1713,7 +1729,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);}
                                 }
                                 if (color == "Gris")
                                 {
@@ -1755,7 +1770,6 @@ namespace Othello
                                             }
                                         }
                                     }
-                                    //Turno_siguiente(color);
                                 }
                             }
                             catch (IndexOutOfRangeException)
@@ -1823,8 +1837,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg8"), color, 0, Verificar(Tipo("diagNeg8"), color, 0));
 
                 Get_Score(a1);
-                Get_Move(a1);
-            Turno_siguiente(color);}
+                Get_Move(a1, color);
+
+            }
         }
 
         public void B1_Click(object sender, EventArgs e)
@@ -1838,8 +1853,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg7"), color, 0, Verificar(Tipo("diagNeg7"), color, 0));
 
                 Get_Score(b1);
-                Get_Move(b1);
-            Turno_siguiente(color);}
+                Get_Move(b1, color);
+
+            }
         }
 
         protected void C1_Click(object sender, EventArgs e)
@@ -1853,8 +1869,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg6"), color, 0, Verificar(Tipo("diagNeg6"), color, 0));
 
                 Get_Score(c1);
-                Get_Move(c1);
-            Turno_siguiente(color);}
+                Get_Move(c1, color);
+
+            }
         }
 
         protected void D1_Click(object sender, EventArgs e)
@@ -1868,9 +1885,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg5"), color, 0, Verificar(Tipo("diagNeg5"), color, 0));
 
                 Get_Score(d1);
-                Get_Move(d1);
-            Turno_siguiente(color);}
-        Turno_siguiente(color);}
+                Get_Move(d1, color);
+
+            }
+        }
 
         protected void E1_Click(object sender, EventArgs e)
         {
@@ -1883,9 +1901,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg4"), color, 0, Verificar(Tipo("diagNeg4"), color, 0));
 
                 Get_Score(e1);
-                Get_Move(e1);
+                Get_Move(e1, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void F1_Click(object sender, EventArgs e)
         {
@@ -1898,9 +1917,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg3"), color, 0, Verificar(Tipo("diagNeg3"), color, 0));
 
                 Get_Score(f1);
-                Get_Move(f1);
+                Get_Move(f1, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void G1_Click(object sender, EventArgs e)
         {
@@ -1913,9 +1933,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg2"), color, 0, Verificar(Tipo("diagNeg2"), color, 0));
 
                 Get_Score(g1);
-                Get_Move(g1);
+                Get_Move(g1, color);
             }
-        Turno_siguiente(color);}
+        }
 
         protected void H1_Click(object sender, EventArgs e)
         {
@@ -1928,9 +1948,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg1"), color, 0, Verificar(Tipo("diagNeg1"), color, 0));
 
                 Get_Score(h1);
-                Get_Move(h1);
+                Get_Move(h1, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void A2_Click(object sender, EventArgs e)
         {
@@ -1943,9 +1964,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg9"), color, 0, Verificar(Tipo("diagNeg9"), color, 0));
 
                 Get_Score(a2);
-                Get_Move(a2);
+                Get_Move(a2, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void B2_Click(object sender, EventArgs e)
         {
@@ -1958,9 +1980,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg8"), color, 1, Verificar(Tipo("diagNeg8"), color, 1));
 
                 Get_Score(b2);
-                Get_Move(b2);
+                Get_Move(b2, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void C2_Click(object sender, EventArgs e)
         {
@@ -1973,9 +1996,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg7"), color, 1, Verificar(Tipo("diagNeg7"), color, 1));
 
                 Get_Score(c2);
-                Get_Move(c2);
+                Get_Move(c2, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void D2_Click(object sender, EventArgs e)
         {
@@ -1988,9 +2012,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg6"), color, 1, Verificar(Tipo("diagNeg6"), color, 1));
 
                 Get_Score(d2);
-                Get_Move(d2);
+                Get_Move(d2, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void E2_Click(object sender, EventArgs e)
         {
@@ -2003,9 +2028,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg5"), color, 1, Verificar(Tipo("diagNeg5"), color, 1));
 
                 Get_Score(e2);
-                Get_Move(e2);
+                Get_Move(e2, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void F2_Click(object sender, EventArgs e)
         {
@@ -2018,9 +2044,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg4"), color, 1, Verificar(Tipo("diagNeg4"), color, 1));
 
                 Get_Score(f2);
-                Get_Move(f2);
+                Get_Move(f2, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void G2_Click(object sender, EventArgs e)
         {
@@ -2033,9 +2060,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg3"), color, 1, Verificar(Tipo("diagNeg3"), color, 1));
 
                 Get_Score(g2);
-                Get_Move(g2);
+                Get_Move(g2, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void H2_Click(object sender, EventArgs e)
         {
@@ -2048,9 +2076,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg2"), color, 1, Verificar(Tipo("diagNeg2"), color, 1));
 
                 Get_Score(h2);
-                Get_Move(h2);
+                Get_Move(h2, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void A3_Click(object sender, EventArgs e)
         {
@@ -2063,9 +2092,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg10"), color, 0, Verificar(Tipo("diagNeg10"), color, 0));
 
                 Get_Score(a3);
-                Get_Move(a3);
+                Get_Move(a3, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void B3_Click(object sender, EventArgs e)
         {
@@ -2078,9 +2108,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg9"), color, 1, Verificar(Tipo("diagNeg9"), color, 1));
 
                 Get_Score(b3);
-                Get_Move(b3);
+                Get_Move(b3, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void C3_Click(object sender, EventArgs e)
         {
@@ -2093,9 +2124,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg8"), color, 2, Verificar(Tipo("diagNeg8"), color, 2));
 
                 Get_Score(c3);
-                Get_Move(c3);
+                Get_Move(c3, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void D3_Click(object sender, EventArgs e)
         {
@@ -2108,9 +2140,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg7"), color, 2, Verificar(Tipo("diagNeg7"), color, 2));
 
                 Get_Score(d3);
-                Get_Move(d3);
+                Get_Move(d3, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void E3_Click(object sender, EventArgs e)
         {
@@ -2123,9 +2156,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg6"), color, 2, Verificar(Tipo("diagNeg6"), color, 2));
 
                 Get_Score(e3);
-                Get_Move(e3);
+                Get_Move(e3, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void F3_Click(object sender, EventArgs e)
         {
@@ -2138,9 +2172,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg5"), color, 2, Verificar(Tipo("diagNeg5"), color, 2));
 
                 Get_Score(f3);
-                Get_Move(f3);
+                Get_Move(f3, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void G3_Click(object sender, EventArgs e)
         {
@@ -2153,9 +2188,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg4"), color, 2, Verificar(Tipo("diagNeg4"), color, 2));
 
                 Get_Score(g3);
-                Get_Move(g3);
+                Get_Move(g3, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void H3_Click(object sender, EventArgs e)
         {
@@ -2168,9 +2204,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg3"), color, 2, Verificar(Tipo("diagNeg3"), color, 2));
 
                 Get_Score(h3);
-                Get_Move(h3);
+                Get_Move(h3, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void A4_Click(object sender, EventArgs e)
         {
@@ -2183,9 +2220,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg11"), color, 0, Verificar(Tipo("diagNeg11"), color, 0));
 
                 Get_Score(a4);
-                Get_Move(a4);
+                Get_Move(a4, color);
+
             }
-        Turno_siguiente(color);}
+        }
         protected void B4_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
@@ -2197,9 +2235,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg10"), color, 1, Verificar(Tipo("diagNeg10"), color, 1));
 
                 Get_Score(b4);
-                Get_Move(b4);
+                Get_Move(b4, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void C4_Click(object sender, EventArgs e)
         {
@@ -2212,9 +2251,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg9"), color, 2, Verificar(Tipo("diagNeg9"), color, 2));
 
                 Get_Score(c4);
-                Get_Move(c4);
+                Get_Move(c4, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void D4_Click(object sender, EventArgs e)
         {
@@ -2227,9 +2267,10 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg8"), color, 3, Verificar(Tipo("diagNeg8"), color, 3));
 
                 Get_Score(d4);
-                Get_Move(d4);
+                Get_Move(d4, color);
+
             }
-        Turno_siguiente(color);}
+        }
 
         protected void E4_Click(object sender, EventArgs e)
         {
@@ -2242,8 +2283,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg7"), color, 3, Verificar(Tipo("diagNeg7"), color, 3));
 
                 Get_Score(e4);
-                Get_Move(e4);
-            Turno_siguiente(color);}
+                Get_Move(e4, color);
+
+            }
         }
 
         protected void F4_Click(object sender, EventArgs e)
@@ -2257,8 +2299,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg6"), color, 3, Verificar(Tipo("diagNeg6"), color, 3));
 
                 Get_Score(f4);
-                Get_Move(f4);
-            Turno_siguiente(color);}
+                Get_Move(f4, color);
+
+            }
         }
 
         protected void G4_Click(object sender, EventArgs e)
@@ -2272,8 +2315,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg5"), color, 3, Verificar(Tipo("diagNeg5"), color, 3));
 
                 Get_Score(g4);
-                Get_Move(g4);
-            Turno_siguiente(color);}
+                Get_Move(g4, color);
+
+            }
         }
 
         protected void H4_Click(object sender, EventArgs e)
@@ -2287,8 +2331,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg4"), color, 3, Verificar(Tipo("diagNeg4"), color, 3));
 
                 Get_Score(h4);
-                Get_Move(h4);
-            Turno_siguiente(color);}
+                Get_Move(h4, color);
+
+            }
         }
 
         protected void A5_Click(object sender, EventArgs e)
@@ -2302,8 +2347,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg12"), color, 0, Verificar(Tipo("diagNeg12"), color, 0));
 
                 Get_Score(a5);
-                Get_Move(a5);
-            Turno_siguiente(color);}
+                Get_Move(a5, color);
+
+            }
         }
 
         protected void B5_Click(object sender, EventArgs e)
@@ -2317,8 +2363,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg11"), color, 1, Verificar(Tipo("diagNeg11"), color, 1));
 
                 Get_Score(b5);
-                Get_Move(b5);
-            Turno_siguiente(color);}
+                Get_Move(b5, color);
+
+            }
         }
 
         protected void C5_Click(object sender, EventArgs e)
@@ -2332,8 +2379,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg10"), color, 2, Verificar(Tipo("diagNeg10"), color, 2));
 
                 Get_Score(c5);
-                Get_Move(c5);
-            Turno_siguiente(color);}
+                Get_Move(c5, color);
+
+            }
         }
 
         protected void D5_Click(object sender, EventArgs e)
@@ -2347,8 +2395,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg9"), color, 3, Verificar(Tipo("diagNeg9"), color, 3));
 
                 Get_Score(d5);
-                Get_Move(d5);
-            Turno_siguiente(color);}
+                Get_Move(d5, color);
+
+            }
         }
 
         protected void E5_Click(object sender, EventArgs e)
@@ -2362,8 +2411,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg8"), color, 4, Verificar(Tipo("diagNeg8"), color, 4));
 
                 Get_Score(e5);
-                Get_Move(e5);
-            Turno_siguiente(color);}
+                Get_Move(e5, color);
+
+            }
         }
 
         protected void F5_Click(object sender, EventArgs e)
@@ -2377,8 +2427,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg7"), color, 4, Verificar(Tipo("diagNeg7"), color, 4));
 
                 Get_Score(f5);
-                Get_Move(f5);
-            Turno_siguiente(color);}
+                Get_Move(f5, color);
+
+            }
         }
 
         protected void G5_Click(object sender, EventArgs e)
@@ -2392,8 +2443,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg6"), color, 4, Verificar(Tipo("diagNeg6"), color, 4));
 
                 Get_Score(g5);
-                Get_Move(g5);
-            Turno_siguiente(color);}
+                Get_Move(g5, color);
+
+            }
         }
 
         protected void H5_Click(object sender, EventArgs e)
@@ -2407,8 +2459,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg5"), color, 4, Verificar(Tipo("diagNeg5"), color, 4));
 
                 Get_Score(h5);
-                Get_Move(h5);
-            Turno_siguiente(color);}
+                Get_Move(h5, color);
+
+            }
         }
 
         protected void A6_Click(object sender, EventArgs e)
@@ -2422,8 +2475,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg13"), color, 0, Verificar(Tipo("diagNeg13"), color, 0));
 
                 Get_Score(a6);
-                Get_Move(a6);
-            Turno_siguiente(color);}
+                Get_Move(a6, color);
+
+            }
         }
 
         protected void B6_Click(object sender, EventArgs e)
@@ -2437,8 +2491,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg12"), color, 1, Verificar(Tipo("diagNeg12"), color, 1));
 
                 Get_Score(b6);
-                Get_Move(b6);
-            Turno_siguiente(color);}
+                Get_Move(b6, color);
+
+            }
         }
 
         protected void C6_Click(object sender, EventArgs e)
@@ -2452,8 +2507,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg11"), color, 2, Verificar(Tipo("diagNeg11"), color, 2));
 
                 Get_Score(c6);
-                Get_Move(c6);
-            Turno_siguiente(color);}
+                Get_Move(c6, color);
+
+            }
         }
 
         protected void D6_Click(object sender, EventArgs e)
@@ -2467,8 +2523,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg10"), color, 3, Verificar(Tipo("diagNeg10"), color, 3));
 
                 Get_Score(d6);
-                Get_Move(d6);
-            Turno_siguiente(color);}
+                Get_Move(d6, color);
+
+            }
         }
 
         protected void E6_Click(object sender, EventArgs e)
@@ -2482,8 +2539,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg9"), color, 4, Verificar(Tipo("diagNeg9"), color, 4));
 
                 Get_Score(e6);
-                Get_Move(e6);
-            Turno_siguiente(color);}
+                Get_Move(e6, color);
+
+            }
         }
 
         protected void F6_Click(object sender, EventArgs e)
@@ -2497,8 +2555,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg8"), color, 5, Verificar(Tipo("diagNeg8"), color, 5));
 
                 Get_Score(f6);
-                Get_Move(f6);
-            Turno_siguiente(color);}
+                Get_Move(f6, color);
+
+            }
         }
 
         protected void G6_Click(object sender, EventArgs e)
@@ -2512,8 +2571,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg7"), color, 5, Verificar(Tipo("diagNeg7"), color, 5));
 
                 Get_Score(g6);
-                Get_Move(g6);
-            Turno_siguiente(color);}
+                Get_Move(g6, color);
+
+            }
         }
 
         protected void H6_Click(object sender, EventArgs e)
@@ -2527,8 +2587,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg6"), color, 5, Verificar(Tipo("diagNeg6"), color, 5));
 
                 Get_Score(h6);
-                Get_Move(h6);
-            Turno_siguiente(color);}
+                Get_Move(h6, color);
+
+            }
         }
 
         protected void A7_Click(object sender, EventArgs e)
@@ -2542,8 +2603,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg14"), color, 0, Verificar(Tipo("diagNeg14"), color, 0));
 
                 Get_Score(a7);
-                Get_Move(a7);
-            Turno_siguiente(color);}
+                Get_Move(a7, color);
+
+            }
         }
 
         protected void B7_Click(object sender, EventArgs e)
@@ -2557,8 +2619,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg13"), color, 1, Verificar(Tipo("diagNeg13"), color, 1));
 
                 Get_Score(b7);
-                Get_Move(b7);
-            Turno_siguiente(color);}
+                Get_Move(b7, color);
+
+            }
         }
 
         protected void C7_Click(object sender, EventArgs e)
@@ -2572,8 +2635,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg12"), color, 2, Verificar(Tipo("diagNeg12"), color, 2));
 
                 Get_Score(c7);
-                Get_Move(c7);
-            Turno_siguiente(color);}
+                Get_Move(c7, color);
+
+            }
         }
 
         protected void D7_Click(object sender, EventArgs e)
@@ -2587,8 +2651,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg11"), color, 3, Verificar(Tipo("diagNeg11"), color, 3));
 
                 Get_Score(d7);
-                Get_Move(d7);
-            Turno_siguiente(color);}
+                Get_Move(d7, color);
+
+            }
         }
 
         protected void E7_Click(object sender, EventArgs e)
@@ -2602,8 +2667,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg10"), color, 4, Verificar(Tipo("diagNeg10"), color, 4));
 
                 Get_Score(e7);
-                Get_Move(e7);
-            Turno_siguiente(color);}
+                Get_Move(e7, color);
+
+            }
         }
 
         protected void F7_Click(object sender, EventArgs e)
@@ -2617,8 +2683,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg9"), color, 5, Verificar(Tipo("diagNeg9"), color, 5));
 
                 Get_Score(f7);
-                Get_Move(f7);
-            Turno_siguiente(color);}
+                Get_Move(f7, color);
+
+            }
         }
 
         protected void G7_Click(object sender, EventArgs e)
@@ -2632,8 +2699,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg8"), color, 6, Verificar(Tipo("diagNeg8"), color, 6));
 
                 Get_Score(g7);
-                Get_Move(g7);
-            Turno_siguiente(color);}
+                Get_Move(g7, color);
+
+            }
         }
 
         protected void H7_Click(object sender, EventArgs e)
@@ -2647,8 +2715,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg7"), color, 6, Verificar(Tipo("diagNeg7"), color, 6));
 
                 Get_Score(h7);
-                Get_Move(h7);
-            Turno_siguiente(color);}
+                Get_Move(h7, color);
+
+            }
         }
 
         protected void A8_Click(object sender, EventArgs e)
@@ -2662,8 +2731,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg15"), color, 0, Verificar(Tipo("diagNeg15"), color, 0));
 
                 Get_Score(a8);
-                Get_Move(a8);
-            Turno_siguiente(color);}
+                Get_Move(a8, color);
+
+            }
         }
 
         protected void B8_Click(object sender, EventArgs e)
@@ -2677,8 +2747,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg14"), color, 1, Verificar(Tipo("diagNeg14"), color, 1));
 
                 Get_Score(b8);
-                Get_Move(b8);
-            Turno_siguiente(color);}
+                Get_Move(b8, color);
+
+            }
         }
 
         protected void C8_Click(object sender, EventArgs e)
@@ -2692,8 +2763,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg13"), color, 2, Verificar(Tipo("diagNeg13"), color, 2));
 
                 Get_Score(c8);
-                Get_Move(c8);
-            Turno_siguiente(color);}
+                Get_Move(c8, color);
+
+            }
         }
 
         protected void D8_Click(object sender, EventArgs e)
@@ -2707,8 +2779,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg12"), color, 3, Verificar(Tipo("diagNeg12"), color, 3));
 
                 Get_Score(d8);
-                Get_Move(d8);
-            Turno_siguiente(color);}
+                Get_Move(d8, color);
+
+            }
         }
 
         protected void E8_Click(object sender, EventArgs e)
@@ -2722,8 +2795,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg11"), color, 4, Verificar(Tipo("diagNeg11"), color, 4));
 
                 Get_Score(e8);
-                Get_Move(e8);
-            Turno_siguiente(color);}
+                Get_Move(e8, color);
+
+            }
         }
 
         protected void F8_Click(object sender, EventArgs e)
@@ -2737,8 +2811,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg10"), color, 5, Verificar(Tipo("diagNeg10"), color, 5));
 
                 Get_Score(f8);
-                Get_Move(f8);
-            Turno_siguiente(color);}
+                Get_Move(f8, color);
+
+            }
         }
 
         protected void G8_Click(object sender, EventArgs e)
@@ -2752,8 +2827,9 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg9"), color, 6, Verificar(Tipo("diagNeg9"), color, 6));
 
                 Get_Score(g8);
-                Get_Move(g8);
-            Turno_siguiente(color);}
+                Get_Move(g8, color);
+
+            }
         }
 
         protected void H8_Click(object sender, EventArgs e)
@@ -2767,8 +2843,8 @@ namespace Othello
                 ComerFicha(Tipo("diagNeg8"), color, 7, Verificar(Tipo("diagNeg8"), color, 7));
 
                 Get_Score(h8);
-                Get_Move(h8);
-            Turno_siguiente(color);}
+                Get_Move(h8, color);
+            }
         }
     }
 }

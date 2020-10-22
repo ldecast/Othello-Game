@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Menu.aspx.cs" Inherits="Othello.Menu" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Menu.aspx.cs" Inherits="Othello.Menu" MaintainScrollPositionOnPostback="true" %>
 
 <!DOCTYPE html>
 
@@ -13,7 +13,6 @@
 <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <title>Menú de juego</title>
-
   </head>
   <body>
     <form id="menu" runat="server">

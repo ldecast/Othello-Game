@@ -10,31 +10,53 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 <title>Othello game</title>
   
-  <style>body{background-color: #2e86c1;} #guardar{margin-top: 47px; height:50px; margin-bottom:12px;} #cronometro{position:absolute; top:65px; left:85px;} #salir{margin-top: 60px; height:50px; margin-bottom:90px; width:120px;} #end{margin-top: 39px; height:50px; padding-left:10px; padding-right:10px; margin-bottom:5px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;}</style>
+  <style>body{background-color: #2e86c1;} #guardar{margin-top: 47px; height:50px; margin-bottom:12px;} #cronometro{position:absolute; top:65px; left:85px;} #salir{margin-top: 60px; height:50px; margin-bottom:90px; width:120px;} #end{margin-top: 39px; height:50px; padding-left:10px; padding-right:10px; margin-bottom:5px;} 
+         #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;} .time{position:absolute; top:65px; left:85px;}
+  </style>
 
  <script type="text/javascript">
     //script de www.aprenderaprogramar.com/index.php?option=com_content&view=article&id=847:ejemplo-reloj-javascript
-    function reloj() {
-        var h = 0; var m = 0; var s = 0;
-        document.getElementById('cronometro').style.cssText = document.getElementById('turno').style.cssText;
-        window.setInterval(function () {
-            s++;
-            if (s > 59) { s = 0; m++; }
-            if (m > 59) { m = 0; h++; }
-            document.getElementById('cronometro').innerHTML = digitocero(h) + ":" + digitocero(m) + ":" + digitocero(s);
+     function reloj1() {
+         var tiempo = document.getElementById('<%= cronometro1.ClientID %>').innerHTML;
+         var h = parseInt(tiempo.substring(0, tiempo.indexOf(':'))); var m = parseInt(tiempo.substring(tiempo.indexOf(':', 0) + 1)); var s = parseInt(tiempo.substring(tiempo.indexOf(':', 3) + 1));
+         document.getElementById('cronometro1').style.cssText = document.getElementById('turno').style.cssText;
+         window.setInterval(function () {
+             s++;
+             if (s > 59) { s = 0; m++; }
+             if (m > 59) { m = 0; h++; }
+             document.getElementById('cronometro1').innerHTML = digitocero(h) + ":" + digitocero(m) + ":" + digitocero(s);
+             document.getElementById('<%= estado1.ClientID %>').value = digitocero(h) + ":" + digitocero(m) + ":" + digitocero(s);
         }, 1000);
-    }
-    function digitocero(i) {
-        if (i<10) {i = "0" + i};
-        return i;
-    }
+     }
+
+     function reloj2() {
+         var tiempo = document.getElementById('<%= cronometro2.ClientID %>').innerHTML;
+         var h = parseInt(tiempo.substring(0, tiempo.indexOf(':'))); var m = parseInt(tiempo.substring(tiempo.indexOf(':', 0) + 1)); var s = parseInt(tiempo.substring(tiempo.indexOf(':', 3) + 1));
+         document.getElementById('cronometro2').style.cssText = document.getElementById('turno').style.cssText;
+         window.setInterval(function () {
+             s++;
+             if (s > 59) { s = 0; m++; }
+             if (m > 59) { m = 0; h++; }
+             document.getElementById('cronometro2').innerHTML = digitocero(h) + ":" + digitocero(m) + ":" + digitocero(s);
+             document.getElementById('<%= estado2.ClientID %>').value = digitocero(h) + ":" + digitocero(m) + ":" + digitocero(s);
+         }, 1000);
+
+     }
+     function digitocero(i) {
+         if (i < 10) { i = "0" + i };
+         return i;
+     }
  </script>
 
 </head>
-  <body onload="reloj()">
+  <body>
       <form id="tablero" runat="server">
+          <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true" />
     <div class="container">
-        <div id="cronometro" class="h3 ">&nbsp;</div>
+        <input id="estado1" value="00:00:00" type="hidden" runat="server"/>
+        <input id="estado2" value="00:00:00" type="hidden" runat="server"/>
+        <div runat="server" id="cronometro1" class="h3 time">00:00:00</div>
+        <div runat="server" id="cronometro2" visible="false" class="h3 time">00:00:00</div>
         <h1 class="display-1 text-center my-3 text-white">OTHELLO GAME</h1>
         <asp:Button runat="server" id="ceder_turno" CssClass="text-center btn btn-outline-dark btn-lg" Text="Ceder turno" OnClick="Ceder_turno"/>
         <br/>

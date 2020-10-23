@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Menu.aspx.cs" Inherits="Othello.Menu" MaintainScrollPositionOnPostback="true" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Menu.aspx.cs" Inherits="Othello.Menu" %>
 
 <!DOCTYPE html>
 
@@ -17,12 +17,12 @@
   <body>
     <form id="menu" runat="server">
     <div class="container">
-        <div class="container-fluid text-center mt-4 mb-3">
+        <div class="container-fluid text-center mt-1 mb-0">
         <asp:Label runat="server" id="Label1" CssClass="display-1 text-white titulo" Text="Hola "/>
         <asp:Label runat="server" id="usuario" CssClass="display-1 text-white titulo" Text="Usuario"/>
         <asp:Label runat="server" id="Label2" CssClass="display-1 text-white titulo" Text="!"/>
-        </div><br/>
-        <div class="row py-4">
+        </div>
+        <div class="row mt-3 py-4">
             <div class="col-sm-12 col-md-6 col-lg-6 text-center mb-2 border-right border-secondary">
                 <asp:Label runat="server" id="Label3" CssClass="h1 text-center" Text="Cargar partida" /><br/>
 
@@ -63,7 +63,7 @@
                 </asp:Panel>
             </div>
         </div>
-        <div class="row py-4">
+        <div class="row pt-4 pb-5">
 
             <div class="col-sm-12 col-md-6 col-lg-6 border-right border-secondary text-center mb-2">
                 <asp:Label runat="server" id="Label4" CssClass="h1" Text="Perfil de usuario" /><br/><br/>

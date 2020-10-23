@@ -15,11 +15,8 @@ namespace Othello
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Request.Params["__EVENTTARGET"] == "tiempo")
-            {
-                ceder_turno.Text = Request["__EVENTARGUMENT"];
-                ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
-            }
+            if (!IsPostBack)
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "Tamaño_tablero()", true);
 
             if (Request.Params["__EVENTTARGET"] == "dimensionar")
             {
@@ -48,7 +45,6 @@ namespace Othello
                     numeros[i].Visible = true;
                 }
 
-
                 if (Request.Params["Parametro"] != null)
                 {
                     string parametro = Request.Params["Parametro"];
@@ -61,7 +57,7 @@ namespace Othello
                         guardar.Enabled = false;
                         end.Enabled = false;
                     }
-                    else { iniciar.Visible = false; ClientScript.RegisterStartupScript(GetType(), "hwa", "intermedia()", true); }
+                    else { iniciar.Visible = false; ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true); }
                 }
 
                 listaColores.Text = Convert.ToString(Session["coloresUsuario"]);
@@ -69,44 +65,16 @@ namespace Othello
                 turno.Text = ColoresUsuario().First().ToString();
             }
 
-
-            if (!IsPostBack)
-            {
-                ClientScript.RegisterStartupScript(GetType(), "hwa", "Tamaño_tablero()", true);
-
-                if (Request.Params["Parametro"] != null)
-                {
-                    string parametro = Request.Params["Parametro"];
-                    scoreLabel1.Text = parametro.Substring(parametro.LastIndexOf('-') + 1);
-                    if (parametro.Contains("Loaded"))
-                    {
-                        max.Text = (ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 + 8).ToString();
-                        iniciar.Visible = true;
-                        ceder_turno.Enabled = false;
-                        guardar.Enabled = false;
-                        end.Enabled = false;
-                    }
-                    else { iniciar.Visible = false; }//ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj()", true); }
-                }
-
-                //Get_Score(null);
-                listaColores.Text = Convert.ToString(Session["coloresUsuario"]);
-                listaOponente.Text = Convert.ToString(Session["coloresPlayer2"]);
-                //turno.Text = ColoresUsuario().First().ToString();
-            }
-
             if (Session["modalidad"] != null)
             {
                 if (Session["modalidad"].ToString() == "normal")
-                {
                     modalidad = "normal";
-                }
                 else if (Session["modalidad"].ToString() == "inversa")
-                {
                     modalidad = "inversa";
-                }
             }
             Get_Score(null);
+            cronometro1.InnerText = estado1.Value;
+            cronometro2.InnerText = estado2.Value;
         }
 
         protected void Page_LoadComplete(object sender, EventArgs e)
@@ -186,6 +154,13 @@ namespace Othello
                     turno.ForeColor = ColorTranslator.FromHtml("#2e86c1");
                     movimiento_user.ForeColor = ColorTranslator.FromHtml("#2e86c1");
                     movimiento_oponente.Text = "";
+                    resultados.Visible = true;
+                    cronometro1.Visible = false;
+                    cronometro2.Visible = false;
+                    guardar.Visible = false;
+                    ceder_turno.Visible = false;
+                    end.Visible = false;
+                    salir.Visible = true;
                 }
             }
         }
@@ -1122,12 +1097,7 @@ namespace Othello
                 ganador.CssClass = "display-2 text-warning";
                 gameover.CssClass = "display-2 text-warning";
                 Registrar("empate");
-            }
-            resultados.Visible = true;
-            guardar.Visible = false;
-            ceder_turno.Visible = false;
-            end.Visible = false;
-            salir.Visible = true;
+            }            
         }
 
         public void Registrar(string ganador)
@@ -1496,15 +1466,19 @@ namespace Othello
             {
                 turno.Text = listaOponente.Text.Split(',')[int.Parse(indice2.Text)];
                 indice1.Text = (int.Parse(indice1.Text) + 1).ToString();
+                cronometro1.Visible = false;
+                cronometro2.Visible = true;
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj2()", true);//inicia cronometro
             }
 
             else if (listaOponente.Text.Contains(color))
             {
                 turno.Text = listaColores.Text.Split(',')[int.Parse(indice1.Text)];
                 indice2.Text = (int.Parse(indice2.Text) + 1).ToString();
+                cronometro2.Visible = false;
+                cronometro1.Visible = true;
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
             }
-
-            ClientScript.RegisterStartupScript(GetType(), "hwa", "intermedia()", true); //inicia cronometro
         }
 
         public void ComerFicha(WebControl[] casilla, string color, WebControl boton)

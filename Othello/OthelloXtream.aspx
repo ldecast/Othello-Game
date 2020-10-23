@@ -8,39 +8,37 @@
 
     <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"/>
-<title>Othello game</title>
+<title>Othello Xtream</title>
   
 <style>body{background-color: #2e86c1;} #guardar{margin-top: 52px; width:170px; height:50px;} #cronometro{position:absolute; top:65px; left:85px;} #salir{margin-top: 20px; margin-bottom:20px; width:170px; height:50px;} #end{margin-top: 20px; margin-bottom:20px; width:170px; height:50px;} #iniciar{margin-left: 520px; margin-bottom: 30px; width:115px;} #ceder_turno{position:absolute; top:59px; right:60px;} .aux{position:absolute; top:0px; left:0px;} .aux2{position:absolute; top:0px; right:0px;} .aux3{position:absolute; top:0px; right:400px; color: #2e86c1;} .aux4{position:absolute; top:0px; right:300px; color: #2e86c1;} .aux5{position:absolute; top:0px; right:750px; color: #2e86c1;}
 .btn-Rojo{ background-color: #c72b2b !important; } .btn-Amarillo{ background-color: #e0bf07 !important; } .btn-Azul{ background-color: #203ee9 !important; } .btn-Naranja{ background-color: #f2751c !important; } .btn-Verde{ background-color: #00ff22 !important; } .btn-Violeta{ background-color: #951ec8 !important; } .btn-Celeste{ background-color: #1d90e4 !important; } .btn-Gris{ background-color: gray !important; } .btn-Negro{ background-color: black !important; } .btn-Blanco{ background-color: ghostwhite !important; } .aux6{position:absolute; top:0px; right:850px; color: #2e86c1;}
-.tablero { position:absolute; right: 500px; } .panel{ position:absolute; left: 50px; } .letras{ width:50px; text-align:center;} .none{width:40px;} .resultados{ position:absolute; left:255px;}
+.tablero { position:absolute; right: 500px; } .panel{ position:absolute; left: 50px; } .letras{ width:50px; text-align:center;} .none{width:40px;} .resultados{ position:absolute; top:210px; left:250px;} .time{position:absolute; top:65px; left:85px;}
 </style>
 
  <script type="text/javascript">
      function reloj1() {
-        var tiempo = document.getElementById('cronometro1').innerHTML;
-         var h = parseInt(tiempo.substring(0, tiempo.indexOf(':'))); var m = parseInt(tiempo.substring(tiempo.indexOf(':', 1) + 1)); var s = parseInt(tiempo.substring(tiempo.indexOf(':', 2) + 1));
-        document.getElementById('cronometro1').style.cssText = document.getElementById('turno').style.cssText;
-        window.setInterval(function () {
+         var tiempo = document.getElementById('<%= cronometro1.ClientID %>').innerHTML;
+         var h = parseInt(tiempo.substring(0, tiempo.indexOf(':'))); var m = parseInt(tiempo.substring(tiempo.indexOf(':', 0) + 1)); var s = parseInt(tiempo.substring(tiempo.indexOf(':', 3) + 1));
+         document.getElementById('cronometro1').style.cssText = document.getElementById('turno').style.cssText;
+         window.setInterval(function () {
             s++;
             if (s > 59) { s = 0; m++; }
             if (m > 59) { m = 0; h++; }
             document.getElementById('cronometro1').innerHTML = digitocero(h) + ":" + digitocero(m) + ":" + digitocero(s);
+            document.getElementById('<%= estado1.ClientID %>').value = digitocero(h) + ":" + digitocero(m) + ":" + digitocero(s);
         }, 1000);
      }
 
-     function intermedia() {
-         var tiempo = document.getElementById('cronometro1').innerHTML;
-         __doPostBack("tiempo", tiempo);
-     }
-
      function reloj2() {
-         var tiempo = document.getElementById('cronometro2');
-         var h = parseInt(tiempo.substring(0, tiempo.indexOf(':'))); var m = parseInt(tiempo.substring(tiempo.indexOf(':',0) + 1, tiempo.indexOf(':', 1))); var s = parseInt(tiempo.substring(tiempo.indexOf(':', 1) + 1));
+         var tiempo = document.getElementById('<%= cronometro2.ClientID %>').innerHTML;
+         var h = parseInt(tiempo.substring(0, tiempo.indexOf(':'))); var m = parseInt(tiempo.substring(tiempo.indexOf(':', 0) + 1)); var s = parseInt(tiempo.substring(tiempo.indexOf(':', 3) + 1));
+         document.getElementById('cronometro2').style.cssText = document.getElementById('turno').style.cssText;
          window.setInterval(function () {
              s++;
              if (s > 59) { s = 0; m++; }
              if (m > 59) { m = 0; h++; }
              document.getElementById('cronometro2').innerHTML = digitocero(h) + ":" + digitocero(m) + ":" + digitocero(s);
+             document.getElementById('<%= estado2.ClientID %>').value = digitocero(h) + ":" + digitocero(m) + ":" + digitocero(s);
          }, 1000);
 
      }
@@ -75,8 +73,10 @@
           <asp:Label runat="server" ID="max" CssClass="aux5">0</asp:Label>
           <asp:Label runat="server" ID="dimension" Text="" CssClass="aux6"></asp:Label>
     <div class="container">
-        <div id="cronometro1" class="h3 ">00:00:00</div>
-        <div id="cronometro2" class="h3 ">00:00:00</div>
+        <input id="estado1" value="00:00:00" type="hidden" runat="server"/>
+        <input id="estado2" value="00:00:00" type="hidden" runat="server"/>
+        <div runat="server" id="cronometro1" class="h3 time">00:00:00</div>
+        <div runat="server" id="cronometro2" visible="false" class="h3 time">00:00:00</div>
         <h1 class="display-1 text-center my-3 text-white">OTHELLO GAME</h1>
         <asp:Button runat="server" id="ceder_turno" CssClass="text-center btn btn-outline-dark btn-lg" Text="Ceder turno" OnClick="Ceder_turno"/>
         <br/>

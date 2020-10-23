@@ -19,7 +19,12 @@ namespace Othello
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
+            
             Get_Score(null);
+            cronometro1.InnerText = estado1.Value;
+            cronometro2.InnerText = estado2.Value;
         }
 
         private readonly string verde = "btn btn-success btn-lg border-dark rounded-0";
@@ -439,6 +444,9 @@ namespace Othello
                     movimiento_negro.Text = black_move.ToString();
                     movimiento_negro.Visible = false;
                     movimiento_blanco.Visible = true;
+                    cronometro1.Visible = false;
+                    cronometro2.Visible = true;
+                    ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj2()", true);
                 }
                 if (boton.CssClass == blanco)
                 {
@@ -446,6 +454,9 @@ namespace Othello
                     movimiento_blanco.Text = white_move.ToString();
                     movimiento_blanco.Visible = false;
                     movimiento_negro.Visible = true;
+                    cronometro2.Visible = false;
+                    cronometro1.Visible = true;
+                    ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
                 }
             }
             int score_white = int.Parse(score1.Text);
@@ -513,6 +524,8 @@ namespace Othello
                 Registrar("empate");
             }
             resultados.Visible = true;
+            cronometro1.Visible = false;
+            cronometro2.Visible = false;
             guardar.Visible = false;
             ceder_turno.Visible = false;
             end.Visible = false;

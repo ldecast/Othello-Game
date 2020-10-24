@@ -82,7 +82,7 @@
         <br/>
     </div>
         <div class="container">
-            <asp:Button runat="server" id="iniciar" CssClass="text-center btn btn-warning btn-lg" Text="INICIAR" Visible="false" OnClick="Leer_xml"/>
+            <asp:Button runat="server" id="iniciar" CssClass="text-center btn btn-warning btn-lg" Text="INICIAR" Visible="false" />
             <div class="row mb-5">
                 <div class="col-sm-12 col-lg-2 pr-5 mt-5 text-right panel border-left border-dark">
                     <h3>Turno de:</h3><hr>
@@ -101,6 +101,7 @@
                     <asp:Button runat="server" type="button" id="guardar" CssClass="btn btn-outline-dark btn-lg" text="Guardar partida" OnClick="GenerarXml"/>
                     <br />
                     <asp:Button runat="server" type="button" id="end" CssClass="btn btn-outline-dark btn-lg" text="Terminar juego" OnClick="Terminar_Juego"/>
+                    <br />
                 </div>
 
 

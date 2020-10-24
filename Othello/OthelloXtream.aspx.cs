@@ -15,8 +15,23 @@ namespace Othello
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+            if (!IsPostBack && Request.Params["Parametro"].Contains("New"))
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "Tamaño_tablero()", true);
+
+            if (!IsPostBack && Request.Params["Parametro"].Contains("Loaded"))
+            {
+                //iniciar.Visible = true;
+                string parametro = Request.Params["Parametro"];
+                scoreLabel1.Text = parametro.Substring(parametro.LastIndexOf('-') + 1);
+                max.Text = (ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 + 8).ToString();
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
+                max.Text = "100";
+                Leer_xml();
+                //iniciar.Visible = true;
+                //ceder_turno.Enabled = false;
+                //guardar.Enabled = false;
+                //end.Enabled = false;
+            }
 
             if (Request.Params["__EVENTTARGET"] == "dimensionar")
             {
@@ -49,29 +64,22 @@ namespace Othello
                 {
                     string parametro = Request.Params["Parametro"];
                     scoreLabel1.Text = parametro.Substring(parametro.LastIndexOf('-') + 1);
-                    if (parametro.Contains("Loaded"))
-                    {
-                        max.Text = (ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 + 8).ToString();
-                        iniciar.Visible = true;
-                        ceder_turno.Enabled = false;
-                        guardar.Enabled = false;
-                        end.Enabled = false;
-                    }
-                    else { iniciar.Visible = false; ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true); }
+                    iniciar.Visible = false; ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
                 }
 
                 listaColores.Text = Convert.ToString(Session["coloresUsuario"]);
                 listaOponente.Text = Convert.ToString(Session["coloresPlayer2"]);
                 turno.Text = ColoresUsuario().First().ToString();
+
+                if (Session["modalidad"] != null)
+                {
+                    if (Session["modalidad"].ToString() == "normal")
+                        modalidad = "normal";
+                    else if (Session["modalidad"].ToString() == "inversa")
+                        modalidad = "inversa";
+                }
             }
 
-            if (Session["modalidad"] != null)
-            {
-                if (Session["modalidad"].ToString() == "normal")
-                    modalidad = "normal";
-                else if (Session["modalidad"].ToString() == "inversa")
-                    modalidad = "inversa";
-            }
             Get_Score(null);
             cronometro1.InnerText = estado1.Value;
             cronometro2.InnerText = estado2.Value;
@@ -204,7 +212,7 @@ namespace Othello
         private readonly string grisCss = "btn btn-lg border-dark rounded-0 btn-Gris";
 
 
-        public void Leer_xml(object sender, EventArgs e)
+        public void Leer_xml()//object sender, EventArgs e)
         {
             if (Session["archivo"] != null)
             {
@@ -213,344 +221,268 @@ namespace Othello
                 string ruta = Convert.ToString(Session["archivo"]);
                 XmlDocument reader = new XmlDocument();
                 reader.Load(ruta);
-                WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, a2, b2, c2, d2, e2, f2, g2, h2, a3, b3, c3, d3, e3, f3, g3, h3, a4, b4, c4, d4, e4, f4, g4, h4, a5, b5, c5, d5, e5, f5, g5, h5, a6, b6, c6, d6, e6, f6, g6, h6, a7, b7, c7, d7, e7, f7, g7, h7, a8, b8, c8, d8, e8, f8, g8, h8, };
 
-                XmlNodeList fichas = reader.GetElementsByTagName("ficha");
-                for (int i = 0; i < fichas.Count; i++)
+                XmlNodeList fil = reader.GetElementsByTagName("filas");
+                for (int i = 0; i < fil.Count; i++)
                 {
-                    if (fichas[i].InnerText.Contains("blanco"))
+                    dimension.Text = fil[i].InnerText;
+                }
+
+                XmlNodeList col = reader.GetElementsByTagName("columnas");
+                for (int i = 0; i < col.Count; i++)
+                {
+                    dimension.Text = dimension.Text + "," + col[i].InnerText;
+                }
+
+                int filas = int.Parse(dimension.Text.Substring(0, dimension.Text.IndexOf(',')));
+                int columnas = int.Parse(dimension.Text.Substring(dimension.Text.IndexOf(',') + 1));
+                WebControl[][] fila = { Tipo("fila1"), Tipo("fila2"), Tipo("fila3"), Tipo("fila4"), Tipo("fila5"), Tipo("fila6"), Tipo("fila7"), Tipo("fila8"), Tipo("fila9"), Tipo("fila10"), Tipo("fila11"), Tipo("fila12"), Tipo("fila13"), Tipo("fila14"), Tipo("fila15"), Tipo("fila16"), Tipo("fila17"), Tipo("fila18"), Tipo("fila19"), Tipo("fila20") };
+
+                for (int i = 0; i < filas; i++)
+                {
+                    for (int j = 0; j < columnas; j++)
                     {
-                        if (fichas[i].InnerText.Contains("A1")) { botones[0].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("B1")) { botones[1].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("C1")) { botones[2].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("D1")) { botones[3].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("E1")) { botones[4].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("F1")) { botones[5].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("G1")) { botones[6].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("H1")) { botones[7].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("A2")) { botones[8].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("B2")) { botones[9].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("C2")) { botones[10].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("D2")) { botones[11].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("E2")) { botones[12].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("F2")) { botones[13].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("G2")) { botones[14].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("H2")) { botones[15].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("A3")) { botones[16].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("B3")) { botones[17].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("C3")) { botones[18].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("D3")) { botones[19].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("E3")) { botones[20].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("F3")) { botones[21].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("G3")) { botones[22].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("H3")) { botones[23].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("A4")) { botones[24].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("B4")) { botones[25].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("C4")) { botones[26].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("D4")) { botones[27].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("E4")) { botones[28].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("F4")) { botones[29].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("G4")) { botones[30].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("H4")) { botones[31].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("A5")) { botones[32].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("B5")) { botones[33].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("C5")) { botones[34].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("D5")) { botones[35].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("E5")) { botones[36].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("F5")) { botones[37].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("G5")) { botones[38].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("H5")) { botones[39].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("A6")) { botones[40].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("B6")) { botones[41].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("C6")) { botones[42].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("D6")) { botones[43].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("E6")) { botones[44].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("F6")) { botones[45].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("G6")) { botones[46].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("H6")) { botones[47].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("A7")) { botones[48].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("B7")) { botones[49].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("C7")) { botones[50].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("D7")) { botones[51].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("E7")) { botones[52].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("F7")) { botones[53].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("G7")) { botones[54].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("H7")) { botones[55].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("A8")) { botones[56].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("B8")) { botones[57].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("C8")) { botones[58].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("D8")) { botones[59].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("E8")) { botones[60].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("F8")) { botones[61].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("G8")) { botones[62].CssClass = blanco; }
-                        if (fichas[i].InnerText.Contains("H8")) { botones[63].CssClass = blanco; }
+                        fila[i][j].Visible = true;
                     }
-                    if (fichas[i].InnerText.Contains("negro"))
+                }
+
+                WebControl[] letras = { ca, cb, cc, cd, ce, cf, cg, ch, ci, cj, ck, cl, cm, cn, co, cp, cq, cr, cs, ct };
+                for (int i = 0; i < columnas; i++)
+                {
+                    letras[i].Visible = true;
+                }
+
+                WebControl[] numeros = { funo, fdos, ftres, fcuatro, fcinco, fseis, fsiete, focho, fnueve, fdiez, fonce, fdoce, ftrece, fcatorce, fquince, fdsies, fdsiete, fdocho, fdnueve, fveinte };
+                for (int i = 0; i < filas; i++)
+                {
+                    numeros[i].Visible = true;
+                }
+
+
+                XmlNodeList jugador1 = reader.GetElementsByTagName("Jugador1");
+                if (jugador1.Count > 0)
+                {
+                    XmlNodeList J1colors = ((XmlElement)jugador1[0]).GetElementsByTagName("color");
+                    foreach (XmlElement colors in J1colors)
                     {
-                        if (fichas[i].InnerText.Contains("A1")) { botones[0].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("B1")) { botones[1].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("C1")) { botones[2].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("D1")) { botones[3].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("E1")) { botones[4].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("F1")) { botones[5].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("G1")) { botones[6].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("H1")) { botones[7].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("A2")) { botones[8].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("B2")) { botones[9].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("C2")) { botones[10].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("D2")) { botones[11].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("E2")) { botones[12].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("F2")) { botones[13].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("G2")) { botones[14].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("H2")) { botones[15].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("A3")) { botones[16].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("B3")) { botones[17].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("C3")) { botones[18].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("D3")) { botones[19].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("E3")) { botones[20].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("F3")) { botones[21].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("G3")) { botones[22].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("H3")) { botones[23].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("A4")) { botones[24].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("B4")) { botones[25].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("C4")) { botones[26].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("D4")) { botones[27].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("E4")) { botones[28].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("F4")) { botones[29].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("G4")) { botones[30].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("H4")) { botones[31].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("A5")) { botones[32].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("B5")) { botones[33].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("C5")) { botones[34].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("D5")) { botones[35].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("E5")) { botones[36].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("F5")) { botones[37].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("G5")) { botones[38].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("H5")) { botones[39].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("A6")) { botones[40].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("B6")) { botones[41].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("C6")) { botones[42].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("D6")) { botones[43].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("E6")) { botones[44].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("F6")) { botones[45].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("G6")) { botones[46].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("H6")) { botones[47].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("A7")) { botones[48].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("B7")) { botones[49].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("C7")) { botones[50].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("D7")) { botones[51].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("E7")) { botones[52].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("F7")) { botones[53].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("G7")) { botones[54].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("H7")) { botones[55].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("A8")) { botones[56].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("B8")) { botones[57].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("C8")) { botones[58].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("D8")) { botones[59].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("E8")) { botones[60].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("F8")) { botones[61].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("G8")) { botones[62].CssClass = negro; }
-                        if (fichas[i].InnerText.Contains("H8")) { botones[63].CssClass = negro; }
+                        listaColores.Text = listaColores.Text + "," + char.ToUpper(colors.InnerText[0]) + colors.InnerText.Substring(1);
                     }
+                    listaColores.Text = listaColores.Text.Substring(1);
+                    Session["coloresUsuario"] = listaColores.Text;
+                }
+
+                XmlNodeList jugador2 = reader.GetElementsByTagName("Jugador2");
+                if (jugador2.Count > 0)
+                {
+                    XmlNodeList J2colors = ((XmlElement)jugador2[0]).GetElementsByTagName("color");
+                    foreach (XmlElement colors in J2colors)
+                    {
+                        listaOponente.Text = listaOponente.Text + "," + char.ToUpper(colors.InnerText[0]) + colors.InnerText.Substring(1);
+                    }
+                    listaOponente.Text = listaOponente.Text.Substring(1);
+                    Session["coloresPlayer2"] = listaOponente.Text;
                 }
 
                 XmlNodeList mod = reader.GetElementsByTagName("Modalidad");
                 for (int i = 0; i < mod.Count; i++)
                 {
-                    if (mod[i].InnerText.Contains("Normal"))
+                    if (mod[i].InnerText.Contains("ormal"))
                     {
                         modalidad = "normal";
                     }
-                    if (mod[i].InnerText.Contains("Inversa"))
+                    if (mod[i].InnerText.Contains("nversa"))
                     {
                         modalidad = "inversa";
                     }
                 }
 
+                WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, i1, j1, k1, l1, m1, n1, o1, p1, q1, r1, s1, t1, a2, b2, c2, d2, e2, f2, g2, h2, i2, j2, k2, l2, m2, n2, o2, p2, q2, r2, s2, t2, a3, b3, c3, d3, e3, f3, g3, h3, i3, j3, k3, l3, m3, n3, o3, p3, q3, r3, s3, t3, a4, b4, c4, d4, e4, f4, g4, h4, i4, j4, k4, l4, m4, n4, o4, p4, q4, r4, s4, t4, a5, b5, c5, d5, e5, f5, g5, h5, i5, j5, k5, l5, m5, n5, o5, p5, q5, r5, s5, t5, a6, b6, c6, d6, e6, f6, g6, h6, i6, j6, k6, l6, m6, n6, o6, p6, q6, r6, s6, t6, a7, b7, c7, d7, e7, f7, g7, h7, i7, j7, k7, l7, m7, n7, o7, p7, q7, r7, s7, t7, a8, b8, c8, d8, e8, f8, g8, h8, i8, j8, k8, l8, m8, n8, o8, p8, q8, r8, s8, t8, a9, b9, c9, d9, e9, f9, g9, h9, i9, j9, k9, l9, m9, n9, o9, p9, q9, r9, s9, t9, a10, b10, c10, d10, e10, f10, g10, h10, i10, j10, k10, l10, m10, n10, o10, p10, q10, r10, s10, t10, a11, b11, c11, d11, e11, f11, g11, h11, i11, j11, k11, l11, m11, n11, o11, p11, q11, r11, s11, t11, a12, b12, c12, d12, e12, f12, g12, h12, i12, j12, k12, l12, m12, n12, o12, p12, q12, r12, s12, t12, a13, b13, c13, d13, e13, f13, g13, h13, i13, j13, k13, l13, m13, n13, o13, p13, q13, r13, s13, t13, a14, b14, c14, d14, e14, f14, g14, h14, i14, j14, k14, l14, m14, n14, o14, p14, q14, r14, s14, t14, a15, b15, c15, d15, e15, f15, g15, h15, i15, j15, k15, l15, m15, n15, o15, p15, q15, r15, s15, t15, a16, b16, c16, d16, e16, f16, g16, h16, i16, j16, k16, l16, m16, n16, o16, p16, q16, r16, s16, t16, a17, b17, c17, d17, e17, f17, g17, h17, i17, j17, k17, l17, m17, n17, o17, p17, q17, r17, s17, t17, a18, b18, c18, d18, e18, f18, g18, h18, i18, j18, k18, l18, m18, n18, o18, p18, q18, r18, s18, t18, a19, b19, c19, d19, e19, f19, g19, h19, i19, j19, k19, l19, m19, n19, o19, p19, q19, r19, s19, t19, a20, b20, c20, d20, e20, f20, g20, h20, i20, j20, k20, l20, m20, n20, o20, p20, q20, r20, s20, t20, };
+                string color = "";
+                XmlNodeList fichas = reader.GetElementsByTagName("ficha");
+                for (int i = 0; i < fichas.Count; i++)
+                {
+                    if (fichas[i].InnerText.Contains("blanco"))
+                        color = blanco;
+                    if (fichas[i].InnerText.Contains("negro"))
+                        color = negro;
+                    if (fichas[i].InnerText.Contains("rojo"))
+                        color = rojoCss;
+                    if (fichas[i].InnerText.Contains("amarillo"))
+                        color = amarilloCss;
+                    if (fichas[i].InnerText.Contains("azul"))
+                        color = azulCss;
+                    if (fichas[i].InnerText.Contains("verde"))
+                        color = verdeCss;
+                    if (fichas[i].InnerText.Contains("naranja"))
+                        color = naranjaCss;
+                    if (fichas[i].InnerText.Contains("violeta"))
+                        color = violetaCss;
+                    if (fichas[i].InnerText.Contains("gris"))
+                        color = grisCss;
+                    if (fichas[i].InnerText.Contains("celeste"))
+                        color = celesteCss;
+
+                    if (fichas[i].InnerText.Contains("A1")) { botones[0].CssClass = color; } if (fichas[i].InnerText.Contains("B1")) { botones[1].CssClass = color; } if (fichas[i].InnerText.Contains("C1")) { botones[2].CssClass = color; } if (fichas[i].InnerText.Contains("D1")) { botones[3].CssClass = color; } if (fichas[i].InnerText.Contains("E1")) { botones[4].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F1")) { botones[5].CssClass = color; } if (fichas[i].InnerText.Contains("G1")) { botones[6].CssClass = color; } if (fichas[i].InnerText.Contains("H1")) { botones[7].CssClass = color; } if (fichas[i].InnerText.Contains("I1")) { botones[8].CssClass = color; } if (fichas[i].InnerText.Contains("J1")) { botones[9].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K1")) { botones[10].CssClass = color; } if (fichas[i].InnerText.Contains("L1")) { botones[11].CssClass = color; } if (fichas[i].InnerText.Contains("M1")) { botones[12].CssClass = color; } if (fichas[i].InnerText.Contains("N1")) { botones[13].CssClass = color; } if (fichas[i].InnerText.Contains("O1")) { botones[14].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P1")) { botones[15].CssClass = color; } if (fichas[i].InnerText.Contains("Q1")) { botones[16].CssClass = color; } if (fichas[i].InnerText.Contains("R1")) { botones[17].CssClass = color; } if (fichas[i].InnerText.Contains("S1")) { botones[18].CssClass = color; } if (fichas[i].InnerText.Contains("T1")) { botones[19].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A2")) { botones[20].CssClass = color; } if (fichas[i].InnerText.Contains("B2")) { botones[21].CssClass = color; } if (fichas[i].InnerText.Contains("C2")) { botones[22].CssClass = color; } if (fichas[i].InnerText.Contains("D2")) { botones[23].CssClass = color; } if (fichas[i].InnerText.Contains("E2")) { botones[24].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F2")) { botones[25].CssClass = color; } if (fichas[i].InnerText.Contains("G2")) { botones[26].CssClass = color; } if (fichas[i].InnerText.Contains("H2")) { botones[27].CssClass = color; } if (fichas[i].InnerText.Contains("I2")) { botones[28].CssClass = color; } if (fichas[i].InnerText.Contains("J2")) { botones[29].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K2")) { botones[30].CssClass = color; } if (fichas[i].InnerText.Contains("L2")) { botones[31].CssClass = color; } if (fichas[i].InnerText.Contains("M2")) { botones[32].CssClass = color; } if (fichas[i].InnerText.Contains("N2")) { botones[33].CssClass = color; } if (fichas[i].InnerText.Contains("O2")) { botones[34].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P2")) { botones[35].CssClass = color; } if (fichas[i].InnerText.Contains("Q2")) { botones[36].CssClass = color; } if (fichas[i].InnerText.Contains("R2")) { botones[37].CssClass = color; } if (fichas[i].InnerText.Contains("S2")) { botones[38].CssClass = color; } if (fichas[i].InnerText.Contains("T2")) { botones[39].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A3")) { botones[40].CssClass = color; } if (fichas[i].InnerText.Contains("B3")) { botones[41].CssClass = color; } if (fichas[i].InnerText.Contains("C3")) { botones[42].CssClass = color; } if (fichas[i].InnerText.Contains("D3")) { botones[43].CssClass = color; } if (fichas[i].InnerText.Contains("E3")) { botones[44].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F3")) { botones[45].CssClass = color; } if (fichas[i].InnerText.Contains("G3")) { botones[46].CssClass = color; } if (fichas[i].InnerText.Contains("H3")) { botones[47].CssClass = color; } if (fichas[i].InnerText.Contains("I3")) { botones[48].CssClass = color; } if (fichas[i].InnerText.Contains("J3")) { botones[49].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K3")) { botones[50].CssClass = color; } if (fichas[i].InnerText.Contains("L3")) { botones[51].CssClass = color; } if (fichas[i].InnerText.Contains("M3")) { botones[52].CssClass = color; } if (fichas[i].InnerText.Contains("N3")) { botones[53].CssClass = color; } if (fichas[i].InnerText.Contains("O3")) { botones[54].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P3")) { botones[55].CssClass = color; } if (fichas[i].InnerText.Contains("Q3")) { botones[56].CssClass = color; } if (fichas[i].InnerText.Contains("R3")) { botones[57].CssClass = color; } if (fichas[i].InnerText.Contains("S3")) { botones[58].CssClass = color; } if (fichas[i].InnerText.Contains("T3")) { botones[59].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A4")) { botones[60].CssClass = color; } if (fichas[i].InnerText.Contains("B4")) { botones[61].CssClass = color; } if (fichas[i].InnerText.Contains("C4")) { botones[62].CssClass = color; } if (fichas[i].InnerText.Contains("D4")) { botones[63].CssClass = color; } if (fichas[i].InnerText.Contains("E4")) { botones[64].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F4")) { botones[65].CssClass = color; } if (fichas[i].InnerText.Contains("G4")) { botones[66].CssClass = color; } if (fichas[i].InnerText.Contains("H4")) { botones[67].CssClass = color; } if (fichas[i].InnerText.Contains("I4")) { botones[68].CssClass = color; } if (fichas[i].InnerText.Contains("J4")) { botones[69].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K4")) { botones[70].CssClass = color; } if (fichas[i].InnerText.Contains("L4")) { botones[71].CssClass = color; } if (fichas[i].InnerText.Contains("M4")) { botones[72].CssClass = color; } if (fichas[i].InnerText.Contains("N4")) { botones[73].CssClass = color; } if (fichas[i].InnerText.Contains("O4")) { botones[74].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P4")) { botones[75].CssClass = color; } if (fichas[i].InnerText.Contains("Q4")) { botones[76].CssClass = color; } if (fichas[i].InnerText.Contains("R4")) { botones[77].CssClass = color; } if (fichas[i].InnerText.Contains("S4")) { botones[78].CssClass = color; } if (fichas[i].InnerText.Contains("T4")) { botones[79].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A5")) { botones[80].CssClass = color; } if (fichas[i].InnerText.Contains("B5")) { botones[81].CssClass = color; } if (fichas[i].InnerText.Contains("C5")) { botones[82].CssClass = color; } if (fichas[i].InnerText.Contains("D5")) { botones[83].CssClass = color; } if (fichas[i].InnerText.Contains("E5")) { botones[84].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F5")) { botones[85].CssClass = color; } if (fichas[i].InnerText.Contains("G5")) { botones[86].CssClass = color; } if (fichas[i].InnerText.Contains("H5")) { botones[87].CssClass = color; } if (fichas[i].InnerText.Contains("I5")) { botones[88].CssClass = color; } if (fichas[i].InnerText.Contains("J5")) { botones[89].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K5")) { botones[90].CssClass = color; } if (fichas[i].InnerText.Contains("L5")) { botones[91].CssClass = color; } if (fichas[i].InnerText.Contains("M5")) { botones[92].CssClass = color; } if (fichas[i].InnerText.Contains("N5")) { botones[93].CssClass = color; } if (fichas[i].InnerText.Contains("O5")) { botones[94].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P5")) { botones[95].CssClass = color; } if (fichas[i].InnerText.Contains("Q5")) { botones[96].CssClass = color; } if (fichas[i].InnerText.Contains("R5")) { botones[97].CssClass = color; } if (fichas[i].InnerText.Contains("S5")) { botones[98].CssClass = color; } if (fichas[i].InnerText.Contains("T5")) { botones[99].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A6")) { botones[100].CssClass = color; } if (fichas[i].InnerText.Contains("B6")) { botones[101].CssClass = color; } if (fichas[i].InnerText.Contains("C6")) { botones[102].CssClass = color; } if (fichas[i].InnerText.Contains("D6")) { botones[103].CssClass = color; } if (fichas[i].InnerText.Contains("E6")) { botones[104].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F6")) { botones[105].CssClass = color; } if (fichas[i].InnerText.Contains("G6")) { botones[106].CssClass = color; } if (fichas[i].InnerText.Contains("H6")) { botones[107].CssClass = color; } if (fichas[i].InnerText.Contains("I6")) { botones[108].CssClass = color; } if (fichas[i].InnerText.Contains("J6")) { botones[109].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K6")) { botones[110].CssClass = color; } if (fichas[i].InnerText.Contains("L6")) { botones[111].CssClass = color; } if (fichas[i].InnerText.Contains("M6")) { botones[112].CssClass = color; } if (fichas[i].InnerText.Contains("N6")) { botones[113].CssClass = color; } if (fichas[i].InnerText.Contains("O6")) { botones[114].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P6")) { botones[115].CssClass = color; } if (fichas[i].InnerText.Contains("Q6")) { botones[116].CssClass = color; } if (fichas[i].InnerText.Contains("R6")) { botones[117].CssClass = color; } if (fichas[i].InnerText.Contains("S6")) { botones[118].CssClass = color; } if (fichas[i].InnerText.Contains("T6")) { botones[119].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A7")) { botones[120].CssClass = color; } if (fichas[i].InnerText.Contains("B7")) { botones[121].CssClass = color; } if (fichas[i].InnerText.Contains("C7")) { botones[122].CssClass = color; } if (fichas[i].InnerText.Contains("D7")) { botones[123].CssClass = color; } if (fichas[i].InnerText.Contains("E7")) { botones[124].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F7")) { botones[125].CssClass = color; } if (fichas[i].InnerText.Contains("G7")) { botones[126].CssClass = color; } if (fichas[i].InnerText.Contains("H7")) { botones[127].CssClass = color; } if (fichas[i].InnerText.Contains("I7")) { botones[128].CssClass = color; } if (fichas[i].InnerText.Contains("J7")) { botones[129].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K7")) { botones[130].CssClass = color; } if (fichas[i].InnerText.Contains("L7")) { botones[131].CssClass = color; } if (fichas[i].InnerText.Contains("M7")) { botones[132].CssClass = color; } if (fichas[i].InnerText.Contains("N7")) { botones[133].CssClass = color; } if (fichas[i].InnerText.Contains("O7")) { botones[134].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P7")) { botones[135].CssClass = color; } if (fichas[i].InnerText.Contains("Q7")) { botones[136].CssClass = color; } if (fichas[i].InnerText.Contains("R7")) { botones[137].CssClass = color; } if (fichas[i].InnerText.Contains("S7")) { botones[138].CssClass = color; } if (fichas[i].InnerText.Contains("T7")) { botones[139].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A8")) { botones[140].CssClass = color; } if (fichas[i].InnerText.Contains("B8")) { botones[141].CssClass = color; } if (fichas[i].InnerText.Contains("C8")) { botones[142].CssClass = color; } if (fichas[i].InnerText.Contains("D8")) { botones[143].CssClass = color; } if (fichas[i].InnerText.Contains("E8")) { botones[144].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F8")) { botones[145].CssClass = color; } if (fichas[i].InnerText.Contains("G8")) { botones[146].CssClass = color; } if (fichas[i].InnerText.Contains("H8")) { botones[147].CssClass = color; } if (fichas[i].InnerText.Contains("I8")) { botones[148].CssClass = color; } if (fichas[i].InnerText.Contains("J8")) { botones[149].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K8")) { botones[150].CssClass = color; } if (fichas[i].InnerText.Contains("L8")) { botones[151].CssClass = color; } if (fichas[i].InnerText.Contains("M8")) { botones[152].CssClass = color; } if (fichas[i].InnerText.Contains("N8")) { botones[153].CssClass = color; } if (fichas[i].InnerText.Contains("O8")) { botones[154].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P8")) { botones[155].CssClass = color; } if (fichas[i].InnerText.Contains("Q8")) { botones[156].CssClass = color; } if (fichas[i].InnerText.Contains("R8")) { botones[157].CssClass = color; } if (fichas[i].InnerText.Contains("S8")) { botones[158].CssClass = color; } if (fichas[i].InnerText.Contains("T8")) { botones[159].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A9")) { botones[160].CssClass = color; } if (fichas[i].InnerText.Contains("B9")) { botones[161].CssClass = color; } if (fichas[i].InnerText.Contains("C9")) { botones[162].CssClass = color; } if (fichas[i].InnerText.Contains("D9")) { botones[163].CssClass = color; } if (fichas[i].InnerText.Contains("E9")) { botones[164].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F9")) { botones[165].CssClass = color; } if (fichas[i].InnerText.Contains("G9")) { botones[166].CssClass = color; } if (fichas[i].InnerText.Contains("H9")) { botones[167].CssClass = color; } if (fichas[i].InnerText.Contains("I9")) { botones[168].CssClass = color; } if (fichas[i].InnerText.Contains("J9")) { botones[169].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K9")) { botones[170].CssClass = color; } if (fichas[i].InnerText.Contains("L9")) { botones[171].CssClass = color; } if (fichas[i].InnerText.Contains("M9")) { botones[172].CssClass = color; } if (fichas[i].InnerText.Contains("N9")) { botones[173].CssClass = color; } if (fichas[i].InnerText.Contains("O9")) { botones[174].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P9")) { botones[175].CssClass = color; } if (fichas[i].InnerText.Contains("Q9")) { botones[176].CssClass = color; } if (fichas[i].InnerText.Contains("R9")) { botones[177].CssClass = color; } if (fichas[i].InnerText.Contains("S9")) { botones[178].CssClass = color; } if (fichas[i].InnerText.Contains("T9")) { botones[179].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A10")) { botones[180].CssClass = color; } if (fichas[i].InnerText.Contains("B10")) { botones[181].CssClass = color; } if (fichas[i].InnerText.Contains("C10")) { botones[182].CssClass = color; } if (fichas[i].InnerText.Contains("D10")) { botones[183].CssClass = color; } if (fichas[i].InnerText.Contains("E10")) { botones[184].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F10")) { botones[185].CssClass = color; } if (fichas[i].InnerText.Contains("G10")) { botones[186].CssClass = color; } if (fichas[i].InnerText.Contains("H10")) { botones[187].CssClass = color; } if (fichas[i].InnerText.Contains("I10")) { botones[188].CssClass = color; } if (fichas[i].InnerText.Contains("J10")) { botones[189].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K10")) { botones[190].CssClass = color; } if (fichas[i].InnerText.Contains("L10")) { botones[191].CssClass = color; } if (fichas[i].InnerText.Contains("M10")) { botones[192].CssClass = color; } if (fichas[i].InnerText.Contains("N10")) { botones[193].CssClass = color; } if (fichas[i].InnerText.Contains("O10")) { botones[194].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P10")) { botones[195].CssClass = color; } if (fichas[i].InnerText.Contains("Q10")) { botones[196].CssClass = color; } if (fichas[i].InnerText.Contains("R10")) { botones[197].CssClass = color; } if (fichas[i].InnerText.Contains("S10")) { botones[198].CssClass = color; } if (fichas[i].InnerText.Contains("T10")) { botones[199].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A11")) { botones[200].CssClass = color; } if (fichas[i].InnerText.Contains("B11")) { botones[201].CssClass = color; } if (fichas[i].InnerText.Contains("C11")) { botones[202].CssClass = color; } if (fichas[i].InnerText.Contains("D11")) { botones[203].CssClass = color; } if (fichas[i].InnerText.Contains("E11")) { botones[204].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F11")) { botones[205].CssClass = color; } if (fichas[i].InnerText.Contains("G11")) { botones[206].CssClass = color; } if (fichas[i].InnerText.Contains("H11")) { botones[207].CssClass = color; } if (fichas[i].InnerText.Contains("I11")) { botones[208].CssClass = color; } if (fichas[i].InnerText.Contains("J11")) { botones[209].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K11")) { botones[210].CssClass = color; } if (fichas[i].InnerText.Contains("L11")) { botones[211].CssClass = color; } if (fichas[i].InnerText.Contains("M11")) { botones[212].CssClass = color; } if (fichas[i].InnerText.Contains("N11")) { botones[213].CssClass = color; } if (fichas[i].InnerText.Contains("O11")) { botones[214].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P11")) { botones[215].CssClass = color; } if (fichas[i].InnerText.Contains("Q11")) { botones[216].CssClass = color; } if (fichas[i].InnerText.Contains("R11")) { botones[217].CssClass = color; } if (fichas[i].InnerText.Contains("S11")) { botones[218].CssClass = color; } if (fichas[i].InnerText.Contains("T11")) { botones[219].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A12")) { botones[220].CssClass = color; } if (fichas[i].InnerText.Contains("B12")) { botones[221].CssClass = color; } if (fichas[i].InnerText.Contains("C12")) { botones[222].CssClass = color; } if (fichas[i].InnerText.Contains("D12")) { botones[223].CssClass = color; } if (fichas[i].InnerText.Contains("E12")) { botones[224].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F12")) { botones[225].CssClass = color; } if (fichas[i].InnerText.Contains("G12")) { botones[226].CssClass = color; } if (fichas[i].InnerText.Contains("H12")) { botones[227].CssClass = color; } if (fichas[i].InnerText.Contains("I12")) { botones[228].CssClass = color; } if (fichas[i].InnerText.Contains("J12")) { botones[229].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K12")) { botones[230].CssClass = color; } if (fichas[i].InnerText.Contains("L12")) { botones[231].CssClass = color; } if (fichas[i].InnerText.Contains("M12")) { botones[232].CssClass = color; } if (fichas[i].InnerText.Contains("N12")) { botones[233].CssClass = color; } if (fichas[i].InnerText.Contains("O12")) { botones[234].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P12")) { botones[235].CssClass = color; } if (fichas[i].InnerText.Contains("Q12")) { botones[236].CssClass = color; } if (fichas[i].InnerText.Contains("R12")) { botones[237].CssClass = color; } if (fichas[i].InnerText.Contains("S12")) { botones[238].CssClass = color; } if (fichas[i].InnerText.Contains("T12")) { botones[239].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A13")) { botones[240].CssClass = color; } if (fichas[i].InnerText.Contains("B13")) { botones[241].CssClass = color; } if (fichas[i].InnerText.Contains("C13")) { botones[242].CssClass = color; } if (fichas[i].InnerText.Contains("D13")) { botones[243].CssClass = color; } if (fichas[i].InnerText.Contains("E13")) { botones[244].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F13")) { botones[245].CssClass = color; } if (fichas[i].InnerText.Contains("G13")) { botones[246].CssClass = color; } if (fichas[i].InnerText.Contains("H13")) { botones[247].CssClass = color; } if (fichas[i].InnerText.Contains("I13")) { botones[248].CssClass = color; } if (fichas[i].InnerText.Contains("J13")) { botones[249].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K13")) { botones[250].CssClass = color; } if (fichas[i].InnerText.Contains("L13")) { botones[251].CssClass = color; } if (fichas[i].InnerText.Contains("M13")) { botones[252].CssClass = color; } if (fichas[i].InnerText.Contains("N13")) { botones[253].CssClass = color; } if (fichas[i].InnerText.Contains("O13")) { botones[254].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P13")) { botones[255].CssClass = color; } if (fichas[i].InnerText.Contains("Q13")) { botones[256].CssClass = color; } if (fichas[i].InnerText.Contains("R13")) { botones[257].CssClass = color; } if (fichas[i].InnerText.Contains("S13")) { botones[258].CssClass = color; } if (fichas[i].InnerText.Contains("T13")) { botones[259].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A14")) { botones[260].CssClass = color; } if (fichas[i].InnerText.Contains("B14")) { botones[261].CssClass = color; } if (fichas[i].InnerText.Contains("C14")) { botones[262].CssClass = color; } if (fichas[i].InnerText.Contains("D14")) { botones[263].CssClass = color; } if (fichas[i].InnerText.Contains("E14")) { botones[264].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F14")) { botones[265].CssClass = color; } if (fichas[i].InnerText.Contains("G14")) { botones[266].CssClass = color; } if (fichas[i].InnerText.Contains("H14")) { botones[267].CssClass = color; } if (fichas[i].InnerText.Contains("I14")) { botones[268].CssClass = color; } if (fichas[i].InnerText.Contains("J14")) { botones[269].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K14")) { botones[270].CssClass = color; } if (fichas[i].InnerText.Contains("L14")) { botones[271].CssClass = color; } if (fichas[i].InnerText.Contains("M14")) { botones[272].CssClass = color; } if (fichas[i].InnerText.Contains("N14")) { botones[273].CssClass = color; } if (fichas[i].InnerText.Contains("O14")) { botones[274].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P14")) { botones[275].CssClass = color; } if (fichas[i].InnerText.Contains("Q14")) { botones[276].CssClass = color; } if (fichas[i].InnerText.Contains("R14")) { botones[277].CssClass = color; } if (fichas[i].InnerText.Contains("S14")) { botones[278].CssClass = color; } if (fichas[i].InnerText.Contains("T14")) { botones[279].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A15")) { botones[280].CssClass = color; } if (fichas[i].InnerText.Contains("B15")) { botones[281].CssClass = color; } if (fichas[i].InnerText.Contains("C15")) { botones[282].CssClass = color; } if (fichas[i].InnerText.Contains("D15")) { botones[283].CssClass = color; } if (fichas[i].InnerText.Contains("E15")) { botones[284].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F15")) { botones[285].CssClass = color; } if (fichas[i].InnerText.Contains("G15")) { botones[286].CssClass = color; } if (fichas[i].InnerText.Contains("H15")) { botones[287].CssClass = color; } if (fichas[i].InnerText.Contains("I15")) { botones[288].CssClass = color; } if (fichas[i].InnerText.Contains("J15")) { botones[289].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K15")) { botones[290].CssClass = color; } if (fichas[i].InnerText.Contains("L15")) { botones[291].CssClass = color; } if (fichas[i].InnerText.Contains("M15")) { botones[292].CssClass = color; } if (fichas[i].InnerText.Contains("N15")) { botones[293].CssClass = color; } if (fichas[i].InnerText.Contains("O15")) { botones[294].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P15")) { botones[295].CssClass = color; } if (fichas[i].InnerText.Contains("Q15")) { botones[296].CssClass = color; } if (fichas[i].InnerText.Contains("R15")) { botones[297].CssClass = color; } if (fichas[i].InnerText.Contains("S15")) { botones[298].CssClass = color; } if (fichas[i].InnerText.Contains("T15")) { botones[299].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A16")) { botones[300].CssClass = color; } if (fichas[i].InnerText.Contains("B16")) { botones[301].CssClass = color; } if (fichas[i].InnerText.Contains("C16")) { botones[302].CssClass = color; } if (fichas[i].InnerText.Contains("D16")) { botones[303].CssClass = color; } if (fichas[i].InnerText.Contains("E16")) { botones[304].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F16")) { botones[305].CssClass = color; } if (fichas[i].InnerText.Contains("G16")) { botones[306].CssClass = color; } if (fichas[i].InnerText.Contains("H16")) { botones[307].CssClass = color; } if (fichas[i].InnerText.Contains("I16")) { botones[308].CssClass = color; } if (fichas[i].InnerText.Contains("J16")) { botones[309].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K16")) { botones[310].CssClass = color; } if (fichas[i].InnerText.Contains("L16")) { botones[311].CssClass = color; } if (fichas[i].InnerText.Contains("M16")) { botones[312].CssClass = color; } if (fichas[i].InnerText.Contains("N16")) { botones[313].CssClass = color; } if (fichas[i].InnerText.Contains("O16")) { botones[314].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P16")) { botones[315].CssClass = color; } if (fichas[i].InnerText.Contains("Q16")) { botones[316].CssClass = color; } if (fichas[i].InnerText.Contains("R16")) { botones[317].CssClass = color; } if (fichas[i].InnerText.Contains("S16")) { botones[318].CssClass = color; } if (fichas[i].InnerText.Contains("T16")) { botones[319].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A17")) { botones[320].CssClass = color; } if (fichas[i].InnerText.Contains("B17")) { botones[321].CssClass = color; } if (fichas[i].InnerText.Contains("C17")) { botones[322].CssClass = color; } if (fichas[i].InnerText.Contains("D17")) { botones[323].CssClass = color; } if (fichas[i].InnerText.Contains("E17")) { botones[324].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F17")) { botones[325].CssClass = color; } if (fichas[i].InnerText.Contains("G17")) { botones[326].CssClass = color; } if (fichas[i].InnerText.Contains("H17")) { botones[327].CssClass = color; } if (fichas[i].InnerText.Contains("I17")) { botones[328].CssClass = color; } if (fichas[i].InnerText.Contains("J17")) { botones[329].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K17")) { botones[330].CssClass = color; } if (fichas[i].InnerText.Contains("L17")) { botones[331].CssClass = color; } if (fichas[i].InnerText.Contains("M17")) { botones[332].CssClass = color; } if (fichas[i].InnerText.Contains("N17")) { botones[333].CssClass = color; } if (fichas[i].InnerText.Contains("O17")) { botones[334].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P17")) { botones[335].CssClass = color; } if (fichas[i].InnerText.Contains("Q17")) { botones[336].CssClass = color; } if (fichas[i].InnerText.Contains("R17")) { botones[337].CssClass = color; } if (fichas[i].InnerText.Contains("S17")) { botones[338].CssClass = color; } if (fichas[i].InnerText.Contains("T17")) { botones[339].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A18")) { botones[340].CssClass = color; } if (fichas[i].InnerText.Contains("B18")) { botones[341].CssClass = color; } if (fichas[i].InnerText.Contains("C18")) { botones[342].CssClass = color; } if (fichas[i].InnerText.Contains("D18")) { botones[343].CssClass = color; } if (fichas[i].InnerText.Contains("E18")) { botones[344].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F18")) { botones[345].CssClass = color; } if (fichas[i].InnerText.Contains("G18")) { botones[346].CssClass = color; } if (fichas[i].InnerText.Contains("H18")) { botones[347].CssClass = color; } if (fichas[i].InnerText.Contains("I18")) { botones[348].CssClass = color; } if (fichas[i].InnerText.Contains("J18")) { botones[349].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K18")) { botones[350].CssClass = color; } if (fichas[i].InnerText.Contains("L18")) { botones[351].CssClass = color; } if (fichas[i].InnerText.Contains("M18")) { botones[352].CssClass = color; } if (fichas[i].InnerText.Contains("N18")) { botones[353].CssClass = color; } if (fichas[i].InnerText.Contains("O18")) { botones[354].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P18")) { botones[355].CssClass = color; } if (fichas[i].InnerText.Contains("Q18")) { botones[356].CssClass = color; } if (fichas[i].InnerText.Contains("R18")) { botones[357].CssClass = color; } if (fichas[i].InnerText.Contains("S18")) { botones[358].CssClass = color; } if (fichas[i].InnerText.Contains("T18")) { botones[359].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A19")) { botones[360].CssClass = color; } if (fichas[i].InnerText.Contains("B19")) { botones[361].CssClass = color; } if (fichas[i].InnerText.Contains("C19")) { botones[362].CssClass = color; } if (fichas[i].InnerText.Contains("D19")) { botones[363].CssClass = color; } if (fichas[i].InnerText.Contains("E19")) { botones[364].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F19")) { botones[365].CssClass = color; } if (fichas[i].InnerText.Contains("G19")) { botones[366].CssClass = color; } if (fichas[i].InnerText.Contains("H19")) { botones[367].CssClass = color; } if (fichas[i].InnerText.Contains("I19")) { botones[368].CssClass = color; } if (fichas[i].InnerText.Contains("J19")) { botones[369].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K19")) { botones[370].CssClass = color; } if (fichas[i].InnerText.Contains("L19")) { botones[371].CssClass = color; } if (fichas[i].InnerText.Contains("M19")) { botones[372].CssClass = color; } if (fichas[i].InnerText.Contains("N19")) { botones[373].CssClass = color; } if (fichas[i].InnerText.Contains("O19")) { botones[374].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P19")) { botones[375].CssClass = color; } if (fichas[i].InnerText.Contains("Q19")) { botones[376].CssClass = color; } if (fichas[i].InnerText.Contains("R19")) { botones[377].CssClass = color; } if (fichas[i].InnerText.Contains("S19")) { botones[378].CssClass = color; } if (fichas[i].InnerText.Contains("T19")) { botones[379].CssClass = color; }
+
+                    if (fichas[i].InnerText.Contains("A20")) { botones[380].CssClass = color; } if (fichas[i].InnerText.Contains("B20")) { botones[381].CssClass = color; } if (fichas[i].InnerText.Contains("C20")) { botones[382].CssClass = color; } if (fichas[i].InnerText.Contains("D20")) { botones[383].CssClass = color; } if (fichas[i].InnerText.Contains("E20")) { botones[384].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("F20")) { botones[385].CssClass = color; } if (fichas[i].InnerText.Contains("G20")) { botones[386].CssClass = color; } if (fichas[i].InnerText.Contains("H20")) { botones[387].CssClass = color; } if (fichas[i].InnerText.Contains("I20")) { botones[388].CssClass = color; } if (fichas[i].InnerText.Contains("J20")) { botones[389].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("K20")) { botones[390].CssClass = color; } if (fichas[i].InnerText.Contains("L20")) { botones[391].CssClass = color; } if (fichas[i].InnerText.Contains("M20")) { botones[392].CssClass = color; } if (fichas[i].InnerText.Contains("N20")) { botones[393].CssClass = color; } if (fichas[i].InnerText.Contains("O20")) { botones[394].CssClass = color; }
+                    if (fichas[i].InnerText.Contains("P20")) { botones[395].CssClass = color; } if (fichas[i].InnerText.Contains("Q20")) { botones[396].CssClass = color; } if (fichas[i].InnerText.Contains("R20")) { botones[397].CssClass = color; } if (fichas[i].InnerText.Contains("S20")) { botones[398].CssClass = color; } if (fichas[i].InnerText.Contains("T20")) { botones[399].CssClass = color; }
+
+                }
+
                 XmlNodeList tiro = reader.GetElementsByTagName("siguienteTiro");
                 for (int i = 0; i < tiro.Count; i++)
                 {
-                    if (tiro[i].InnerText.Contains("blanco"))
-                    {
-                        turno.Text = "Blanco";
-                        movimiento_user.Visible = false;
-                        movimiento_oponente.Visible = true;
-                    }
-                    if (tiro[i].InnerText.Contains("negro"))
-                    {
-                        turno.Text = "Negro";
-                        movimiento_oponente.Visible = false;
-                        movimiento_user.Visible = true;
-                    }
+                    turno.Text = char.ToUpper(tiro[i].InnerText[0]) + tiro[i].InnerText.Substring(1);
                 }
 
                 XmlNodeList movimientos = reader.GetElementsByTagName("movimientos");
                 if (movimientos.Count > 0)
                 {
-                    XmlNodeList op_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("blanco");
+                    XmlNodeList op_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("Jugador1");
                     foreach (XmlElement Omoves in op_moves)
                     {
-                        movimiento_oponente.Text = Omoves.InnerText;
+                        movimiento_user.Text = Omoves.InnerText;
                     }
-                    XmlNodeList user_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("negro");
+                    XmlNodeList user_moves = ((XmlElement)movimientos[0]).GetElementsByTagName("Jugador2");
                     foreach (XmlElement Umoves in user_moves)
                     {
-                        movimiento_user.Text = Umoves.InnerText;
+                        movimiento_oponente.Text = Umoves.InnerText;
                     }
                 }
-                iniciar.Visible = false;
-                guardar.Enabled = true;
-                ceder_turno.Enabled = true;
-                end.Enabled = true;
+                //iniciar.Visible = false;
+                //guardar.Enabled = true;
+                //ceder_turno.Enabled = true;
+                //end.Enabled = true;
                 Get_Score(null);
+                //ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
             }
         }
 
         protected string Ver_ficha(int boton)
         {
-            if (boton == 1)
+
+            WebControl[] botones = { a1, b1, c1, d1, e1, f1, g1, h1, i1, j1, k1, l1, m1, n1, o1, p1, q1, r1, s1, t1, a2, b2, c2, d2, e2, f2, g2, h2, i2, j2, k2, l2, m2, n2, o2, p2, q2, r2, s2, t2, a3, b3, c3, d3, e3, f3, g3, h3, i3, j3, k3, l3, m3, n3, o3, p3, q3, r3, s3, t3, a4, b4, c4, d4, e4, f4, g4, h4, i4, j4, k4, l4, m4, n4, o4, p4, q4, r4, s4, t4, a5, b5, c5, d5, e5, f5, g5, h5, i5, j5, k5, l5, m5, n5, o5, p5, q5, r5, s5, t5, a6, b6, c6, d6, e6, f6, g6, h6, i6, j6, k6, l6, m6, n6, o6, p6, q6, r6, s6, t6, a7, b7, c7, d7, e7, f7, g7, h7, i7, j7, k7, l7, m7, n7, o7, p7, q7, r7, s7, t7, a8, b8, c8, d8, e8, f8, g8, h8, i8, j8, k8, l8, m8, n8, o8, p8, q8, r8, s8, t8, a9, b9, c9, d9, e9, f9, g9, h9, i9, j9, k9, l9, m9, n9, o9, p9, q9, r9, s9, t9, a10, b10, c10, d10, e10, f10, g10, h10, i10, j10, k10, l10, m10, n10, o10, p10, q10, r10, s10, t10, a11, b11, c11, d11, e11, f11, g11, h11, i11, j11, k11, l11, m11, n11, o11, p11, q11, r11, s11, t11, a12, b12, c12, d12, e12, f12, g12, h12, i12, j12, k12, l12, m12, n12, o12, p12, q12, r12, s12, t12, a13, b13, c13, d13, e13, f13, g13, h13, i13, j13, k13, l13, m13, n13, o13, p13, q13, r13, s13, t13, a14, b14, c14, d14, e14, f14, g14, h14, i14, j14, k14, l14, m14, n14, o14, p14, q14, r14, s14, t14, a15, b15, c15, d15, e15, f15, g15, h15, i15, j15, k15, l15, m15, n15, o15, p15, q15, r15, s15, t15, a16, b16, c16, d16, e16, f16, g16, h16, i16, j16, k16, l16, m16, n16, o16, p16, q16, r16, s16, t16, a17, b17, c17, d17, e17, f17, g17, h17, i17, j17, k17, l17, m17, n17, o17, p17, q17, r17, s17, t17, a18, b18, c18, d18, e18, f18, g18, h18, i18, j18, k18, l18, m18, n18, o18, p18, q18, r18, s18, t18, a19, b19, c19, d19, e19, f19, g19, h19, i19, j19, k19, l19, m19, n19, o19, p19, q19, r19, s19, t19, a20, b20, c20, d20, e20, f20, g20, h20, i20, j20, k20, l20, m20, n20, o20, p20, q20, r20, s20, t20, };
+
+            switch (botones[boton].CssClass.ToString())
             {
-                if (a1.CssClass == blanco)
+                case "btn btn-lg border-dark rounded-0 btn-Rojo":
+                    return "rojo";
+                case "btn btn-lg border-dark rounded-0 btn-Amarillo":
+                    return "amarillo";
+                case "btn btn-lg border-dark rounded-0 btn-Azul":
+                    return "azul";
+                case "btn btn-lg border-dark rounded-0 btn-Naranja":
+                    return "naranja";
+                case "btn btn-lg border-dark rounded-0 btn-Verde":
+                    return "verde";
+                case "btn btn-lg border-dark rounded-0 btn-Violeta":
+                    return "violeta";
+                case "btn btn-lg border-dark rounded-0 btn-Celeste":
+                    return "celeste";
+                case "btn btn-lg border-dark rounded-0 btn-Gris":
+                    return "gris";
+                case "btn btn-lg border-dark rounded-0 btn-Blanco":
                     return "blanco";
-                if (a1.CssClass == negro)
+                case "btn btn-lg border-dark rounded-0 btn-Negro":
                     return "negro";
-                else
+                default:
                     return "vacio";
             }
-            if (boton == 2)
-            { if (b1.CssClass == blanco) return "blanco"; if (b1.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 3)
-            { if (c1.CssClass == blanco) return "blanco"; if (c1.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 4)
-            { if (d1.CssClass == blanco) return "blanco"; if (d1.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 5)
-            { if (e1.CssClass == blanco) return "blanco"; if (e1.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 6)
-            { if (f1.CssClass == blanco) return "blanco"; if (f1.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 7)
-            { if (g1.CssClass == blanco) return "blanco"; if (g1.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 8)
-            { if (h1.CssClass == blanco) return "blanco"; if (h1.CssClass == negro) return "negro"; else return "vacio"; }
-
-            if (boton == 9)
-            { if (a2.CssClass == blanco) return "blanco"; if (a2.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 10)
-            { if (b2.CssClass == blanco) return "blanco"; if (b2.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 11)
-            { if (c2.CssClass == blanco) return "blanco"; if (c2.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 12)
-            { if (d2.CssClass == blanco) return "blanco"; if (d2.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 13)
-            { if (e2.CssClass == blanco) return "blanco"; if (e2.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 14)
-            { if (f2.CssClass == blanco) return "blanco"; if (f2.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 15)
-            { if (g2.CssClass == blanco) return "blanco"; if (g2.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 16)
-            { if (h2.CssClass == blanco) return "blanco"; if (h2.CssClass == negro) return "negro"; else return "vacio"; }
-
-            if (boton == 17)
-            { if (a3.CssClass == blanco) return "blanco"; if (a3.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 18)
-            { if (b3.CssClass == blanco) return "blanco"; if (b3.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 19)
-            { if (c3.CssClass == blanco) return "blanco"; if (c3.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 20)
-            { if (d3.CssClass == blanco) return "blanco"; if (d3.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 21)
-            { if (e3.CssClass == blanco) return "blanco"; if (e3.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 22)
-            { if (f3.CssClass == blanco) return "blanco"; if (f3.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 23)
-            { if (g3.CssClass == blanco) return "blanco"; if (g3.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 24)
-            { if (h3.CssClass == blanco) return "blanco"; if (h3.CssClass == negro) return "negro"; else return "vacio"; }
-
-            if (boton == 25)
-            { if (a4.CssClass == blanco) return "blanco"; if (a4.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 26)
-            { if (b4.CssClass == blanco) return "blanco"; if (b4.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 27)
-            { if (c4.CssClass == blanco) return "blanco"; if (c4.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 28)
-            { if (d4.CssClass == blanco) return "blanco"; if (d4.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 29)
-            { if (e4.CssClass == blanco) return "blanco"; if (e4.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 30)
-            { if (f4.CssClass == blanco) return "blanco"; if (f4.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 31)
-            { if (g4.CssClass == blanco) return "blanco"; if (g4.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 32)
-            { if (h4.CssClass == blanco) return "blanco"; if (h4.CssClass == negro) return "negro"; else return "vacio"; }
-
-            if (boton == 33)
-            { if (a5.CssClass == blanco) return "blanco"; if (a5.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 34)
-            { if (b5.CssClass == blanco) return "blanco"; if (b5.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 35)
-            { if (c5.CssClass == blanco) return "blanco"; if (c5.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 36)
-            { if (d5.CssClass == blanco) return "blanco"; if (d5.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 37)
-            { if (e5.CssClass == blanco) return "blanco"; if (e5.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 38)
-            { if (f5.CssClass == blanco) return "blanco"; if (f5.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 39)
-            { if (g5.CssClass == blanco) return "blanco"; if (g5.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 40)
-            { if (h5.CssClass == blanco) return "blanco"; if (h5.CssClass == negro) return "negro"; else return "vacio"; }
-
-            if (boton == 41)
-            { if (a6.CssClass == blanco) return "blanco"; if (a6.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 42)
-            { if (b6.CssClass == blanco) return "blanco"; if (b6.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 43)
-            { if (c6.CssClass == blanco) return "blanco"; if (c6.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 44)
-            { if (d6.CssClass == blanco) return "blanco"; if (d6.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 45)
-            { if (e6.CssClass == blanco) return "blanco"; if (e6.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 46)
-            { if (f6.CssClass == blanco) return "blanco"; if (f6.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 47)
-            { if (g6.CssClass == blanco) return "blanco"; if (g6.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 48)
-            { if (h6.CssClass == blanco) return "blanco"; if (h6.CssClass == negro) return "negro"; else return "vacio"; }
-
-            if (boton == 49)
-            { if (a7.CssClass == blanco) return "blanco"; if (a7.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 50)
-            { if (b7.CssClass == blanco) return "blanco"; if (b7.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 51)
-            { if (c7.CssClass == blanco) return "blanco"; if (c7.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 52)
-            { if (d7.CssClass == blanco) return "blanco"; if (d7.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 53)
-            { if (e7.CssClass == blanco) return "blanco"; if (e7.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 54)
-            { if (f7.CssClass == blanco) return "blanco"; if (f7.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 55)
-            { if (g7.CssClass == blanco) return "blanco"; if (g7.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 56)
-            { if (h7.CssClass == blanco) return "blanco"; if (h7.CssClass == negro) return "negro"; else return "vacio"; }
-
-            if (boton == 57)
-            { if (a8.CssClass == blanco) return "blanco"; if (a8.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 58)
-            { if (b8.CssClass == blanco) return "blanco"; if (b8.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 59)
-            { if (c8.CssClass == blanco) return "blanco"; if (c8.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 60)
-            { if (d8.CssClass == blanco) return "blanco"; if (d8.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 61)
-            { if (e8.CssClass == blanco) return "blanco"; if (e8.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 62)
-            { if (f8.CssClass == blanco) return "blanco"; if (f8.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 63)
-            { if (g8.CssClass == blanco) return "blanco"; if (g8.CssClass == negro) return "negro"; else return "vacio"; }
-            if (boton == 64)
-            { if (h8.CssClass == blanco) return "blanco"; if (h8.CssClass == negro) return "negro"; else return "vacio"; }
-            else return "error";
         }
 
         protected void GenerarXml(object sender, EventArgs e)
@@ -561,35 +493,69 @@ namespace Othello
                 IndentChars = "\t"
             };
 
-            string[] col = { "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H" };
-            string[] fila = { "1", "1", "1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3", "3", "3", "3", "3", "4", "4", "4", "4", "4", "4", "4", "4", "5", "5", "5", "5", "5", "5", "5", "5", "6", "6", "6", "6", "6", "6", "6", "6", "7", "7", "7", "7", "7", "7", "7", "7", "8", "8", "8", "8", "8", "8", "8", "8" };
+            string[] col = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T" };
+            string[] fila = { "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "3", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "4", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "8", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "10", "10", "10", "10", "10", "10", "10", "10", "10", "10", "10", "10", "10", "10", "10", "10", "10", "10", "10", "10", "11", "11", "11", "11", "11", "11", "11", "11", "11", "11", "11", "11", "11", "11", "11", "11", "11", "11", "11", "11", "12", "12", "12", "12", "12", "12", "12", "12", "12", "12", "12", "12", "12", "12", "12", "12", "12", "12", "12", "12", "13", "13", "13", "13", "13", "13", "13", "13", "13", "13", "13", "13", "13", "13", "13", "13", "13", "13", "13", "13", "14", "14", "14", "14", "14", "14", "14", "14", "14", "14", "14", "14", "14", "14", "14", "14", "14", "14", "14", "14", "15", "15", "15", "15", "15", "15", "15", "15", "15", "15", "15", "15", "15", "15", "15", "15", "15", "15", "15", "15", "16", "16", "16", "16", "16", "16", "16", "16", "16", "16", "16", "16", "16", "16", "16", "16", "16", "16", "16", "16", "17", "17", "17", "17", "17", "17", "17", "17", "17", "17", "17", "17", "17", "17", "17", "17", "17", "17", "17", "17", "18", "18", "18", "18", "18", "18", "18", "18", "18", "18", "18", "18", "18", "18", "18", "18", "18", "18", "18", "18", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "19", "20", "20", "20", "20", "20", "20", "20", "20", "20", "20", "20", "20", "20", "20", "20", "20", "20", "20", "20", "20" };
+            int filas = int.Parse(dimension.Text.Substring(0, dimension.Text.IndexOf(',')));
+            int columnas = int.Parse(dimension.Text.Substring(dimension.Text.IndexOf(',') + 1));
 
             string persona = "";
             if (Request.Params["Parametro"] != null)
             {
-                persona = Request.Params["Parametro"] + " ";
+                persona = Request.Params["Parametro"];
             }
 
             string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
             int id = 1;
-            string ruta = mdoc + "Partida Xtream " + modalidad + " - " + persona + "(" + id + ").xml";
+            string ruta = mdoc + "Partida Xtream" + modalidad + " - " + persona.Substring(persona.LastIndexOf('-')+1) + "(" + id + ").xml";
 
             while (File.Exists(ruta))
             {
                 id++;
-                ruta = mdoc + "Partida Xtream " + modalidad + " - " + persona + "(" + id + ").xml";
+                ruta = mdoc + "Partida Xtream" + modalidad + " - " + persona.Substring(persona.LastIndexOf('-') + 1) + "(" + id + ").xml";
             }
 
             XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
 
             xmlWriter.WriteStartDocument();
 
+            xmlWriter.WriteStartElement("partida");
+
+            xmlWriter.WriteStartElement("filas");
+            xmlWriter.WriteString(filas.ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("columnas");
+            xmlWriter.WriteString(columnas.ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Jugador1");
+            for (int i = 0; i < ColoresUsuario().Count; i++)
+            {
+                xmlWriter.WriteStartElement("color");
+                xmlWriter.WriteString(ColoresUsuario()[i].ToLower());
+                xmlWriter.WriteEndElement();
+            }
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Jugador2");
+            for (int j = 0; j < ColoresOponente().Count; j++)
+            {
+                xmlWriter.WriteStartElement("color");
+                xmlWriter.WriteString(ColoresOponente()[j].ToLower());
+                xmlWriter.WriteEndElement();
+            }
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("Modalidad");
+            xmlWriter.WriteString(char.ToUpper(Session["modalidad"].ToString()[0]) + Session["modalidad"].ToString().Substring(1));
+            xmlWriter.WriteEndElement();
+
             xmlWriter.WriteStartElement("tablero");
 
-            for (int i = 0; i < 64; i++)
+            for (int i = 0; i < 400; i++)
             {
-                string color = Ver_ficha(i + 1);
-                if (color == "blanco")
+                string color = Ver_ficha(i);
+                if (color != "vacio")
                 {
                     xmlWriter.WriteStartElement("ficha");
 
@@ -607,52 +573,30 @@ namespace Othello
 
                     xmlWriter.WriteEndElement();
                 }
-                if (color == "negro")
-                {
-                    xmlWriter.WriteStartElement("ficha");
-
-                    xmlWriter.WriteStartElement("color");
-                    xmlWriter.WriteString(color);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteStartElement("columna");
-                    xmlWriter.WriteString(col[i]);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteStartElement("fila");
-                    xmlWriter.WriteString(fila[i]);
-                    xmlWriter.WriteEndElement();
-
-                    xmlWriter.WriteEndElement();
-                }
-                else
-                    continue;
             }
 
             xmlWriter.WriteStartElement("siguienteTiro");
             xmlWriter.WriteStartElement("color");
-            if (turno.Text == "Blanco")
-                xmlWriter.WriteString("blanco");
-            else
-                xmlWriter.WriteString("negro");
+                xmlWriter.WriteString(turno.Text.ToLower());
             xmlWriter.WriteEndElement();
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("movimientos");
-            xmlWriter.WriteStartElement("usuario");
+            xmlWriter.WriteStartElement("Jugador1");
             xmlWriter.WriteString(movimiento_user.Text);
             xmlWriter.WriteEndElement();
 
-            xmlWriter.WriteStartElement("oponente");
+            xmlWriter.WriteStartElement("Jugador2");
             xmlWriter.WriteString(movimiento_oponente.Text);
             xmlWriter.WriteEndElement();
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteEndElement();
+            xmlWriter.WriteEndElement();
 
             xmlWriter.WriteEndDocument();
             xmlWriter.Close();
-            Response.Write("Partida guardada en: " + ruta);
+            ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"                               Partida guardada como:\\n" + ruta.Replace("\\","\\\\") + "\")", true);
         }
 
         public WebControl[] Tipo(string a)

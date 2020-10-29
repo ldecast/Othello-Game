@@ -285,6 +285,33 @@ namespace Othello
         protected global::System.Web.UI.WebControls.Label tmod;
 
         /// <summary>
+        /// Control loadTorneo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel loadTorneo;
+
+        /// <summary>
+        /// Control uploadTorneo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload uploadTorneo;
+
+        /// <summary>
+        /// Control crear_torneo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton crear_torneo;
+
+        /// <summary>
         /// Control selectMod.
         /// </summary>
         /// <remarks>

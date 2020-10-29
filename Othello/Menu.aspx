@@ -72,12 +72,18 @@
             </div>
 
             <div class="col-sm-12 col-md-6 col-lg-6  text-center mb-2">
-                <asp:Label runat="server" id="tmod" CssClass="h1" Text="Funcionalidades" /><br /><br />
+                <asp:Label runat="server" id="tmod" CssClass="h1" Text="Funcionalidades" />
+                
+                <asp:Panel runat="server" id="loadTorneo" CssClass="mt-1 mb-0 pt-0" Visible="false">
+                    <asp:FileUpload runat="server" id="uploadTorneo" accept=".xml" AllowMultiple="false" CssClass="btn btn-dark btn-lg mt-4" /><br/><br/>
+                    <asp:LinkButton runat="server" ID="crear_torneo" CssClass="btn btn-primary btn-lg text-body mt-0 mb-0" OnClick="Redireccionar6"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;&nbsp;Cargar torneo!</asp:LinkButton><br /><br />
+                </asp:Panel>
+                <br /><br />
 
                 <asp:Panel runat="server" id="selectMod" CssClass="mt-0 pt-0" Visible="false">
                     <br />
-                    <asp:Button runat="server" id="Button9" CssClass="btn btn-info btn-lg text-body mr-3" OnClick="ChooseColor3" Text="Juego normal"/>
-                    <asp:Button runat="server" id="Button10" CssClass="btn btn-info btn-lg text-body block" OnClick="ChooseColor4" Text="Reto inverso"/>
+                    <asp:Button runat="server" id="Button9" CssClass="btn btn-info btn-lg border-secondary text-body mr-3" OnClick="ChooseColor3" Text="Juego normal"/>
+                    <asp:Button runat="server" id="Button10" CssClass="btn btn-info btn-lg border-secondary text-body block" OnClick="ChooseColor4" Text="Reto inverso"/>
                 </asp:Panel>
 
                 <asp:Panel runat="server" id="selectColor3" CssClass="mt-0 pt-0" Visible="false">
@@ -116,8 +122,10 @@
                     <asp:LinkButton runat="server" ID="btnInverso" CssClass="btn btn-primary btn-lg text-body mt-0 mb-0" Visible="false" OnClick="Xtream_Inverso"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Comenzar!</asp:LinkButton><br /><br />
                 </asp:Panel>
 
+                
+
                     <asp:LinkButton runat="server" ID="xtream" CssClass="btn btn-primary btn-lg text-body mt-2 mod" OnClick="ChooseMod"><i class="fa fa-gamepad" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Othello Xtream</asp:LinkButton><br /><br />
-                    <asp:LinkButton runat="server" ID="torneo" CssClass="btn btn-primary btn-lg text-body mod"><i class="fa fa-trophy" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Campeonato</asp:LinkButton>
+                    <asp:LinkButton runat="server" ID="torneo" CssClass="btn btn-primary btn-lg text-body mod" OnClick="Subir_torneo"><i class="fa fa-trophy" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Campeonato</asp:LinkButton>
             </div>
 
         </div>

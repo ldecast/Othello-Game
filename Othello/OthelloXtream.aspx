@@ -16,6 +16,7 @@
 </style>
 
  <script type="text/javascript">
+     //Fuente: www.aprenderaprogramar.com/index.php?option=com_content&view=article&id=847:ejemplo-reloj-javascript
      function reloj1() {
          var tiempo = document.getElementById('<%= cronometro1.ClientID %>').innerHTML;
          var h = parseInt(tiempo.substring(0, tiempo.indexOf(':'))); var m = parseInt(tiempo.substring(tiempo.indexOf(':', 0) + 1)); var s = parseInt(tiempo.substring(tiempo.indexOf(':', 3) + 1));
@@ -82,7 +83,6 @@
         <br/>
     </div>
         <div class="container">
-            <asp:Button runat="server" id="iniciar" CssClass="text-center btn btn-warning btn-lg" Text="INICIAR" Visible="false" />
             <div class="row mb-5">
                 <div class="col-sm-12 col-lg-2 pr-5 mt-5 text-right panel border-left border-dark">
                     <h3>Turno de:</h3><hr>

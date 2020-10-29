@@ -20,17 +20,12 @@ namespace Othello
 
             if (!IsPostBack && Request.Params["Parametro"].Contains("Loaded"))
             {
-                //iniciar.Visible = true;
                 string parametro = Request.Params["Parametro"];
                 scoreLabel1.Text = parametro.Substring(parametro.LastIndexOf('-') + 1);
                 max.Text = (ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 + 8).ToString();
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
                 max.Text = "100";
                 Leer_xml();
-                //iniciar.Visible = true;
-                //ceder_turno.Enabled = false;
-                //guardar.Enabled = false;
-                //end.Enabled = false;
             }
 
             if (Request.Params["__EVENTTARGET"] == "dimensionar")
@@ -64,23 +59,25 @@ namespace Othello
                 {
                     string parametro = Request.Params["Parametro"];
                     scoreLabel1.Text = parametro.Substring(parametro.LastIndexOf('-') + 1);
-                    iniciar.Visible = false; ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
+                    ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
                 }
 
                 listaColores.Text = Convert.ToString(Session["coloresUsuario"]);
                 listaOponente.Text = Convert.ToString(Session["coloresPlayer2"]);
                 turno.Text = ColoresUsuario().First().ToString();
 
-                if (Session["modalidad"] != null)
-                {
-                    if (Session["modalidad"].ToString() == "normal")
-                        modalidad = "normal";
-                    else if (Session["modalidad"].ToString() == "inversa")
-                        modalidad = "inversa";
-                }
+            }
+
+            if (Session["modalidad"] != null)
+            {
+                if (Session["modalidad"].ToString() == "normal")
+                    modalidad = "normal";
+                else if (Session["modalidad"].ToString() == "inversa")
+                    modalidad = "inversa";
             }
 
             Get_Score(null);
+            //Fuente: stackoverflow.com/questions/20907112/how-to-maintain-the-value-of-label-after-postback-in-asp-net
             cronometro1.InnerText = estado1.Value;
             cronometro2.InnerText = estado2.Value;
         }
@@ -212,7 +209,7 @@ namespace Othello
         private readonly string grisCss = "btn btn-lg border-dark rounded-0 btn-Gris";
 
 
-        public void Leer_xml()//object sender, EventArgs e)
+        public void Leer_xml()
         {
             if (Session["archivo"] != null)
             {
@@ -444,12 +441,7 @@ namespace Othello
                         movimiento_oponente.Text = Umoves.InnerText;
                     }
                 }
-                //iniciar.Visible = false;
-                //guardar.Enabled = true;
-                //ceder_turno.Enabled = true;
-                //end.Enabled = true;
                 Get_Score(null);
-                //ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
             }
         }
 
@@ -596,7 +588,7 @@ namespace Othello
 
             xmlWriter.WriteEndDocument();
             xmlWriter.Close();
-            ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"                               Partida guardada como:\\n" + ruta.Replace("\\","\\\\") + "\")", true);
+            ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"                              Partida guardada como:\\n" + ruta.Replace("\\","\\\\") + "\")", true);
         }
 
         public WebControl[] Tipo(string a)
@@ -974,12 +966,6 @@ namespace Othello
                 }
                 Turno_siguiente(color);
             }
-            //edit luego, esta en el complete load
-            //int score_white = int.Parse(score1.Text);
-            //int score_black = int.Parse(score2.Text);
-            //if (score_white == 0 && score_black > 0) GameOver();
-            //else if (score_black == 0 && score_white > 0) GameOver();
-            //if (score_white + score_black == 64) GameOver();
         }
 
         public void Terminar_Juego(object sender, EventArgs e)

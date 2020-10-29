@@ -115,6 +115,19 @@ namespace Othello
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error: por favor seleccione un archivo\")", true);
         }
 
+        public void Redireccionar6(object sender, EventArgs e)
+        {
+            if (uploadTorneo.HasFile)
+            {
+                uploadTorneo.SaveAs(Server.MapPath(".") + "\\XML\\" + uploadTorneo.FileName);
+                string ruta = Server.MapPath(".") + "\\XML\\" + uploadTorneo.FileName;
+                Session["archivo"] = ruta;
+                Response.Redirect("OthelloTournament.aspx?Parametro=" + usuario.Text);
+            }
+            else
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error: por favor seleccione un archivo\")", true);
+        }
+
         protected void NewGame_Click_White(object sender, EventArgs e)
         {
             Response.Redirect("GameBoard.aspx?Parametro=" + usuario.Text+"-Blanco");
@@ -200,6 +213,14 @@ namespace Othello
             tmod.Text = "Colores para " + usuario.Text;
             tmod.CssClass = "h5 h5mod";
             btnInverso.Visible = true;
+        }
+
+        public void Subir_torneo(object sender, EventArgs e)
+        {
+            xtream.Visible = false;
+            torneo.Visible = false;
+            loadTorneo.Visible = true;
+            tmod.Text = "Torneo nuevo";
         }
 
         public void Xtream_Normal(object sender, EventArgs e)

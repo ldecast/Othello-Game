@@ -1,6 +1,6 @@
 ﻿body {
     background-image: url(https://motionarray-portfolio.imgix.net/preview-92385-bfbc45af1fbac16a1143a087c0ded259-high.jpg);
-    background-size: cover;
+    background-size: contain;
 }
 
 h1 {

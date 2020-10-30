@@ -561,24 +561,29 @@ namespace Othello
         //    return ganadores;
         //}
 
-        public List<string> Leer_jugadores(string team)
+        public List<string> Leer_jugadores(List<string> teams)
         {
             List<string> ganadores = new List<string>();
-            if (Session["archivo"] != null)
-            {
-                string ruta = Convert.ToString(Session["archivo"]);
-                XmlDocument reader = new XmlDocument();
-                reader.Load(ruta);
 
-                XmlNodeList equipo = reader.GetElementsByTagName("equipo");
-                for (int i = 0; i < equipo.Count; i++)
+            for (int k = 0; k < teams.Count; k++)
+            {
+                string team = teams[k];
+                if (Session["archivo"] != null)
                 {
-                    if (team == equipo.Item(i).FirstChild.InnerText)
+                    string ruta = Convert.ToString(Session["archivo"]);
+                    XmlDocument reader = new XmlDocument();
+                    reader.Load(ruta);
+
+                    XmlNodeList equipo = reader.GetElementsByTagName("equipo");
+                    for (int i = 0; i < equipo.Count; i++)
                     {
-                        XmlNodeList players = equipo.Item(i).ChildNodes;
-                        for (int j = 1; j < players.Count; j++)
+                        if (team == equipo.Item(i).FirstChild.InnerText)
                         {
-                            ganadores.Add(players[j].InnerText);
+                            XmlNodeList players = equipo.Item(i).ChildNodes;
+                            for (int j = 1; j < players.Count; j++)
+                            {
+                                ganadores.Add(players[j].InnerText);
+                            }
                         }
                     }
                 }
@@ -669,11 +674,23 @@ namespace Othello
 
             ListItem[] radio = { empateJ1, empateJ2, empateJ3, empateJ4, empateJ5, empateJ6 };
             //List<string> auxJugadores = Leer_jugadores(equiposEmpatados);
+            List<string> auxEquipos2 = new List<string>();
             List<string> auxEquipos = new List<string>();
-            for (int i = 0; i < jugadoresEmpatados.Count; i++)
+            int t = 0;
+            while (t<jugadoresEmpatados.Count)
             {
-                auxEquipos.Add(Leer_equipo(jugadoresEmpatados[i]));
+                auxEquipos.Add(Leer_equipo(jugadoresEmpatados[t]));
+                t += 3;
             }
+
+            //for (int i = 0; i < jugadoresEmpatados.Count; i++)
+            //{
+            //    auxEquipos2.Add(Leer_equipo(jugadoresEmpatados[i]));
+            //}
+            //for (int i = 0; i < auxEquipos2.Count*3; i++)
+            //{
+            //    auxEquipos.Add(auxEquipos2[i+3]);
+            //}
             try
             {
                 for (int i = 0; i < radio.Length; i++)

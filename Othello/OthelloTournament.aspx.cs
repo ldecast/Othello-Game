@@ -16,6 +16,12 @@ namespace Othello
         {
             if (!IsPostBack)
                 Crear_equipos();
+
+        }
+
+        protected void Page_LoadComplete(object sender, EventArgs e)
+        {
+            RadioButtonList1.ClearSelection();
         }
 
         public void Crear_equipos()
@@ -115,42 +121,42 @@ namespace Othello
             if (oc1.Count() == 1)
             {
                 ganadores.Add(oc1.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList1.Items[0].Text, CheckBoxList1.Items[1].Text, oc1.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList1.Items[0].Text, CheckBoxList1.Items[1].Text, oc1.ToList()[0].Text, "Octavos");
             }
             if (oc2.Count() == 1)
             {
                 ganadores.Add(oc2.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList2.Items[0].Text, CheckBoxList2.Items[1].Text, oc2.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList2.Items[0].Text, CheckBoxList2.Items[1].Text, oc2.ToList()[0].Text, "Octavos");
             }
             if (oc3.Count() == 1)
             {
                 ganadores.Add(oc3.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList3.Items[0].Text, CheckBoxList3.Items[1].Text, oc3.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList3.Items[0].Text, CheckBoxList3.Items[1].Text, oc3.ToList()[0].Text, "Octavos");
             }
             if (oc4.Count() == 1)
             {
                 ganadores.Add(oc4.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList4.Items[0].Text, CheckBoxList4.Items[1].Text, oc4.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList4.Items[0].Text, CheckBoxList4.Items[1].Text, oc4.ToList()[0].Text, "Octavos");
             }
             if (oc5.Count() == 1)
             {
                 ganadores.Add(oc5.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList5.Items[0].Text, CheckBoxList5.Items[1].Text, oc5.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList5.Items[0].Text, CheckBoxList5.Items[1].Text, oc5.ToList()[0].Text, "Octavos");
             }
             if (oc6.Count() == 1)
             {
                 ganadores.Add(oc6.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList6.Items[0].Text, CheckBoxList6.Items[1].Text, oc6.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList6.Items[0].Text, CheckBoxList6.Items[1].Text, oc6.ToList()[0].Text, "Octavos");
             }
             if (oc7.Count() == 1)
             {
                 ganadores.Add(oc7.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList7.Items[0].Text, CheckBoxList7.Items[1].Text, oc7.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList7.Items[0].Text, CheckBoxList7.Items[1].Text, oc7.ToList()[0].Text, "Octavos");
             }
             if (oc8.Count() == 1)
             {
                 ganadores.Add(oc8.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList8.Items[0].Text, CheckBoxList8.Items[1].Text, oc8.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList8.Items[0].Text, CheckBoxList8.Items[1].Text, oc8.ToList()[0].Text, "Octavos");
             }
 
 
@@ -158,49 +164,49 @@ namespace Othello
             {
                 empatados.Add(oc1.ToList()[0].Text);
                 empatados.Add(oc1.ToList()[1].Text);
-                Registrar_Empate(oc1.ToList()[0].Text, oc1.ToList()[1].Text);
+                Registrar_Empate(oc1.ToList()[0].Text, oc1.ToList()[1].Text, "Octavos");
             }
             if (oc2.Count() == 2)
             {
                 empatados.Add(oc2.ToList()[0].Text);
                 empatados.Add(oc2.ToList()[1].Text);
-                Registrar_Empate(oc2.ToList()[0].Text, oc2.ToList()[1].Text);
+                Registrar_Empate(oc2.ToList()[0].Text, oc2.ToList()[1].Text, "Octavos");
             }
             if (oc3.Count() == 2)
             {
                 empatados.Add(oc3.ToList()[0].Text);
                 empatados.Add(oc3.ToList()[1].Text);
-                Registrar_Empate(oc3.ToList()[0].Text, oc3.ToList()[1].Text);
+                Registrar_Empate(oc3.ToList()[0].Text, oc3.ToList()[1].Text, "Octavos");
             }
             if (oc4.Count() == 2)
             {
                 empatados.Add(oc4.ToList()[0].Text);
                 empatados.Add(oc4.ToList()[1].Text);
-                Registrar_Empate(oc4.ToList()[0].Text, oc4.ToList()[1].Text);
+                Registrar_Empate(oc4.ToList()[0].Text, oc4.ToList()[1].Text, "Octavos");
             }
             if (oc5.Count() == 2)
             {
                 empatados.Add(oc5.ToList()[0].Text);
                 empatados.Add(oc5.ToList()[1].Text);
-                Registrar_Empate(oc5.ToList()[0].Text, oc5.ToList()[1].Text);
+                Registrar_Empate(oc5.ToList()[0].Text, oc5.ToList()[1].Text, "Octavos");
             }
             if (oc6.Count() == 2)
             {
                 empatados.Add(oc6.ToList()[0].Text);
                 empatados.Add(oc6.ToList()[1].Text);
-                Registrar_Empate(oc6.ToList()[0].Text, oc6.ToList()[1].Text);
+                Registrar_Empate(oc6.ToList()[0].Text, oc6.ToList()[1].Text, "Octavos");
             }
             if (oc7.Count() == 2)
             {
                 empatados.Add(oc7.ToList()[0].Text);
                 empatados.Add(oc7.ToList()[1].Text);
-                Registrar_Empate(oc7.ToList()[0].Text, oc7.ToList()[1].Text);
+                Registrar_Empate(oc7.ToList()[0].Text, oc7.ToList()[1].Text, "Octavos");
             }
             if (oc8.Count() == 2)
             {
                 empatados.Add(oc8.ToList()[0].Text);
                 empatados.Add(oc8.ToList()[1].Text);
-                Registrar_Empate(oc8.ToList()[0].Text, oc8.ToList()[1].Text);
+                Registrar_Empate(oc8.ToList()[0].Text, oc8.ToList()[1].Text, "Octavos");
             }
 
 
@@ -240,22 +246,22 @@ namespace Othello
             if (oc1.Count() == 1)
             {
                 ganadores.Add(oc1.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList9.Items[0].Text, CheckBoxList9.Items[1].Text, oc1.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList9.Items[0].Text, CheckBoxList9.Items[1].Text, oc1.ToList()[0].Text, "Cuartos");
             }
             if (oc2.Count() == 1)
             {
                 ganadores.Add(oc2.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList10.Items[0].Text, CheckBoxList10.Items[1].Text, oc2.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList10.Items[0].Text, CheckBoxList10.Items[1].Text, oc2.ToList()[0].Text, "Cuartos");
             }
             if (oc3.Count() == 1)
             {
                 ganadores.Add(oc3.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList11.Items[0].Text, CheckBoxList11.Items[1].Text, oc3.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList11.Items[0].Text, CheckBoxList11.Items[1].Text, oc3.ToList()[0].Text, "Cuartos");
             }
             if (oc4.Count() == 1)
             {
                 ganadores.Add(oc4.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList12.Items[0].Text, CheckBoxList12.Items[1].Text, oc4.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList12.Items[0].Text, CheckBoxList12.Items[1].Text, oc4.ToList()[0].Text, "Cuartos");
             }
 
 
@@ -263,25 +269,25 @@ namespace Othello
             {
                 empatados.Add(oc1.ToList()[0].Text);
                 empatados.Add(oc1.ToList()[1].Text);
-                Registrar_Empate(oc1.ToList()[0].Text, oc1.ToList()[1].Text);
+                Registrar_Empate(oc1.ToList()[0].Text, oc1.ToList()[1].Text, "Cuartos");
             }
             if (oc2.Count() == 2)
             {
                 empatados.Add(oc2.ToList()[0].Text);
                 empatados.Add(oc2.ToList()[1].Text);
-                Registrar_Empate(oc2.ToList()[0].Text, oc2.ToList()[1].Text);
+                Registrar_Empate(oc2.ToList()[0].Text, oc2.ToList()[1].Text, "Cuartos");
             }
             if (oc3.Count() == 2)
             {
                 empatados.Add(oc3.ToList()[0].Text);
                 empatados.Add(oc3.ToList()[1].Text);
-                Registrar_Empate(oc3.ToList()[0].Text, oc3.ToList()[1].Text);
+                Registrar_Empate(oc3.ToList()[0].Text, oc3.ToList()[1].Text, "Cuartos");
             }
             if (oc4.Count() == 2)
             {
                 empatados.Add(oc4.ToList()[0].Text);
                 empatados.Add(oc4.ToList()[1].Text);
-                Registrar_Empate(oc4.ToList()[0].Text, oc4.ToList()[1].Text);
+                Registrar_Empate(oc4.ToList()[0].Text, oc4.ToList()[1].Text, "Cuartos");
             }
 
 
@@ -316,12 +322,12 @@ namespace Othello
             if (oc1.Count() == 1)
             {
                 ganadores.Add(oc1.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList13.Items[0].Text, CheckBoxList13.Items[1].Text, oc1.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList13.Items[0].Text, CheckBoxList13.Items[1].Text, oc1.ToList()[0].Text, "Semi");
             }
             if (oc2.Count() == 1)
             {
                 ganadores.Add(oc2.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList14.Items[0].Text, CheckBoxList14.Items[1].Text, oc2.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList14.Items[0].Text, CheckBoxList14.Items[1].Text, oc2.ToList()[0].Text, "Semi");
             }
 
 
@@ -329,13 +335,13 @@ namespace Othello
             {
                 empatados.Add(oc1.ToList()[0].Text);
                 empatados.Add(oc1.ToList()[1].Text);
-                Registrar_Empate(oc1.ToList()[0].Text, oc1.ToList()[1].Text);
+                Registrar_Empate(oc1.ToList()[0].Text, oc1.ToList()[1].Text, "Semi");
             }
             if (oc2.Count() == 2)
             {
                 empatados.Add(oc2.ToList()[0].Text);
                 empatados.Add(oc2.ToList()[1].Text);
-                Registrar_Empate(oc2.ToList()[0].Text, oc2.ToList()[1].Text);
+                Registrar_Empate(oc2.ToList()[0].Text, oc2.ToList()[1].Text, "Semi");
             }
 
 
@@ -366,14 +372,14 @@ namespace Othello
             if (oc1.Count() == 1)
             {
                 ganadores.Add(oc1.ToList()[0].Text);
-                Registrar_Ronda(CheckBoxList15.Items[0].Text, CheckBoxList15.Items[1].Text, oc1.ToList()[0].Text);
+                Registrar_Ronda(CheckBoxList15.Items[0].Text, CheckBoxList15.Items[1].Text, oc1.ToList()[0].Text, "Final");
             }
 
             if (oc1.Count() == 2)
             {
                 empatados.Add(oc1.ToList()[0].Text);
                 empatados.Add(oc1.ToList()[1].Text);
-                Registrar_Empate(oc1.ToList()[0].Text, oc1.ToList()[1].Text);
+                Registrar_Empate(oc1.ToList()[0].Text, oc1.ToList()[1].Text, "Final");
             }
 
             if (ganadores.Count == 1)
@@ -490,15 +496,15 @@ namespace Othello
             }
         }
 
-        public void Registrar_Ronda(string equipo1, string equipo2, string ganador)
+        public void Registrar_Ronda(string equipo1, string equipo2, string ganador, string tipo)
         {
             try
             {   //script de www.AspYa.com
                 string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
                 SqlConnection conexion = new SqlConnection(a);
                 conexion.Open();
-                SqlCommand script = new SqlCommand("insert into RondaTorneo(campeonato,equipo1,equipo2,ganador,empate,puntos) values('" + titulo.Text + "','" + 
-                equipo1 + "','" + equipo2  +"','"+ganador+"',0,3)", conexion);
+                SqlCommand script = new SqlCommand("insert into RondaTorneo(campeonato,equipo1,equipo2,ganador,empate,puntos,ronda) values('" + titulo.Text + "','" +
+                equipo1 + "','" + equipo2 + "','" + ganador + "',0,3,'" + tipo + "')", conexion);
                 script.ExecuteNonQuery();
                 conexion.Close();
             }
@@ -509,15 +515,15 @@ namespace Othello
             }
         }
 
-        public void Registrar_Empate(string equipo1, string equipo2)
+        public void Registrar_Empate(string equipo1, string equipo2, string tipo)
         {
             try
             {   //script de www.AspYa.com
                 string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
                 SqlConnection conexion = new SqlConnection(a);
                 conexion.Open();
-                SqlCommand script = new SqlCommand("insert into RondaTorneo(campeonato,equipo1,equipo2,ganador,empate,puntos) values('" + titulo.Text + "','" +
-                equipo1 + "','" + equipo2 + "','',1,1)", conexion);
+                SqlCommand script = new SqlCommand("insert into RondaTorneo(campeonato,equipo1,equipo2,empate,puntos,ronda) values('" + titulo.Text + "','" +
+                equipo1 + "','" + equipo2 + "',0,1,'" + tipo + "')", conexion);
                 script.ExecuteNonQuery();
                 conexion.Close();
             }
@@ -599,8 +605,8 @@ namespace Othello
             {
                 Response.Write(clasificados.Count+"hhh");
             }
-            
 
+            playersEmpates.Value = ""; equiposEmpates.Value = ""; auxCount.Value = ""; auxGanados.Value = "";
         }
 
         public void AvanzarSemi(List<string> clasificados)
@@ -612,6 +618,7 @@ namespace Othello
             {
                 semifinal[i].Text = clasificados[i];
             }
+            playersEmpates.Value = ""; equiposEmpates.Value = ""; auxCount.Value = ""; auxGanados.Value = "";
         }
 
         public void AvanzarFinal(List<string> clasificados)
@@ -623,28 +630,33 @@ namespace Othello
             {
                 final[i].Text = clasificados[i];
             }
+            playersEmpates.Value = ""; equiposEmpates.Value = ""; auxCount.Value = ""; auxGanados.Value = "";
         }
 
         public void Desempate(string tipo, List<string>equiposEmpatados, List<string> jugadoresEmpatados, List<string> equiposGanados)
         {
             //empates.Value = "";
             //equiposEmpates.Value = "";
-            auxGanados.Value = "";
+            //auxGanados.Value = "";
             desempatePanel.Visible = true;
             LabelDesempate.Text = "Desempate " + tipo;
 
             ListItem[] radio = { empateJ1, empateJ2, empateJ3, empateJ4, empateJ5, empateJ6 };
-
+            //List<string> auxJugadores = Leer_jugadores(equiposEmpatados);
             try
             {
                 for (int i = 0; i < radio.Length; i++)
                 {
                     radio[i].Text = jugadoresEmpatados[i];
                 }
-                for (int i = 0; i < 6; i++)
-                {
-                    jugadoresEmpatados.RemoveAt(0);
-                }
+                //for (int i = 0; i < 6; i++)
+                //{
+                //    jugadoresEmpatados.RemoveAt(0);
+                //}
+                //for (int i = 0; i < 2; i++)
+                //{
+                //    equiposEmpatados.RemoveAt(0);
+                //}
             }
             catch (Exception)
             {
@@ -655,6 +667,7 @@ namespace Othello
             if (jugadoresEmpatados.Count != 0)
             {
                 playersEmpates.Value = "";
+                //coloco en el value hidden los jugadores que me faltan poner en los radio button
                 for (int i = 0; i < jugadoresEmpatados.Count; i++)//probar  //son los que me quedan pendientes
                 {
                     //playersEmpates.Value = playersEmpates.Value + "," + jugadoresEmpatados[i];
@@ -671,33 +684,44 @@ namespace Othello
 
                 if (equiposEmpates.Value == "")
                 {
-                    equiposEmpates.Value = "";
-                    equiposEmpatados.RemoveAt(0);
-                    equiposEmpatados.RemoveAt(0);
+                    //equiposEmpates.Value = "";
+                    //equiposEmpatados.RemoveAt(0);
+                    //equiposEmpatados.RemoveAt(0);
                     for (int i = 0; i < equiposEmpatados.Count; i++)
                     {
                         equiposEmpates.Value = equiposEmpates.Value + "," + equiposEmpatados[i];
                     }
-                    equiposEmpates.Value = equiposEmpates.Value.Substring(1);
+                    
                 }
                 else
                 {
-                    equiposEmpates.Value = equiposEmpates.Value + "," + equiposEmpatados.Last();
+                    for (int i = 0; i < equiposEmpatados.Count; i++)
+                    {
+                        equiposEmpates.Value = equiposEmpates.Value + "," + equiposEmpatados[i];
+                    }
+                }
+                if (equiposEmpates.Value[0] == ',')
+                {
+                    equiposEmpates.Value = equiposEmpates.Value.Substring(1);
                 }
             }
 
-            if (auxGanados.Value == "" && equiposGanados.Count>0)
+            if (equiposGanados.Count > 0)//(auxGanados.Value == "" && equiposGanados.Count>0)
             {
                 for (int i = 0; i < equiposGanados.Count; i++)
                 {
                     auxGanados.Value = auxGanados.Value + "," + equiposGanados[i];
                 }
-                auxGanados.Value = auxGanados.Value.Substring(1);
+                if (auxGanados.Value[0] == ',')
+                {
+                    auxGanados.Value = auxGanados.Value.Substring(1);
+
+                }
             }
-            else if(auxGanados.Value !="")
-            {
-                auxGanados.Value = auxGanados.Value + "," + equiposGanados.Last();
-            }
+            //else if(auxGanados.Value !="")
+            //{
+            //    auxGanados.Value = auxGanados.Value + "," + equiposGanados.Last();
+            //}
 
 
             //if (equiposEmpates.Value == "")
@@ -717,12 +741,13 @@ namespace Othello
 
         protected void Desempate_Click(object sender, EventArgs e)
         {
+
+
             auxCount.Value = (int.Parse(auxCount.Value) - 1).ToString();
             string seleccionado = RadioButtonList1.SelectedValue;
+            Registrar_Ronda(Leer_equipo(empateJ1.Text), Leer_equipo(empateJ4.Text), Leer_equipo(seleccionado), LabelDesempate.Text); //leer j2.text
 
 
-            List<string> ganadores = auxGanados.Value.Split(',').ToList();
-            ganadores.Add(Leer_equipo(seleccionado));
             if (auxGanados.Value == "")
             {
                 auxGanados.Value = Leer_equipo(seleccionado);
@@ -732,37 +757,36 @@ namespace Othello
                 auxGanados.Value = auxGanados.Value + "," + Leer_equipo(seleccionado);
             }
 
+            List<string> ganadores = auxGanados.Value.Split(',').ToList();
+            //ganadores.Add(Leer_equipo(seleccionado));
 
             string tipo = LabelDesempate.Text.Replace("Desempate ", "");
-            if (seleccionado != "" && int.Parse(auxCount.Value) > -1)
+            if (seleccionado != "" && int.Parse(auxCount.Value) > -0)
             {
 
-                
-
-                if (playersEmpates.Value != "")
-                {
-                        
-                }
-
                 List<string> newEquiposEmpate = equiposEmpates.Value.Split(',').ToList();
-                List<string> newEquiposEmpate2 = new List<string>();
-                newEquiposEmpate2.Add(Leer_equipo(empateJ1.Text));
-                newEquiposEmpate2.Add(Leer_equipo(empateJ4.Text));
-                List<string> newGanados = auxGanados.Value.Split(',').ToList();
+                //List<string> newEquiposEmpate2 = new List<string>();
+                //newEquiposEmpate2.Add(Leer_equipo(empateJ1.Text));
+                //newEquiposEmpate2.Add(Leer_equipo(empateJ4.Text));
+                //List<string> newGanados = auxGanados.Value.Split(',').ToList();
 
                 if (playersEmpates.Value != "")
                 {
                     List<string> newEmpate = playersEmpates.Value.Split(',').ToList();
-
-                    for (int i = 0; i < 2; i++)
+                    try
                     {
-                        newEquiposEmpate.RemoveAt(0);
+                        for (int i = 0; i < 2; i++)
+                        {
+                            newEquiposEmpate.RemoveAt(0);
+                        }
                     }
-
-                    //for (int i = 0; i < 6; i++)
-                    //{
-                    //    newEmpate.RemoveAt(0);
-                    //}
+                    catch (Exception)
+                    {
+                    }
+                    for (int i = 0; i < 6; i++)
+                    {
+                        newEmpate.RemoveAt(0);
+                    }
 
                     Response.Write(newEquiposEmpate.Count + "ggg");
                     Desempate(tipo, newEquiposEmpate, newEmpate, ganadores);
@@ -787,15 +811,24 @@ namespace Othello
                     {
                         Display_Winner(Leer_equipo(seleccionado));
                     }
+                    desempatePanel.Visible = false;
                 }
 
                 if (equiposEmpates.Value != "")
                 {
+
                     List<string> equiposAux = equiposEmpates.Value.Split(',').ToList();
-                    for (int i = 0; i < 2; i++)
+                    try
                     {
-                        equiposAux.RemoveAt(0);
+                        for (int i = 0; i < 2; i++)
+                        {
+                            equiposAux.RemoveAt(0);
+                        }
                     }
+                    catch (Exception)
+                    {
+                    }
+
 
                     for (int i = 0; i < equiposAux.Count; i++)
                     {
@@ -814,7 +847,6 @@ namespace Othello
                 //string equipo1 = Leer_equipo(empateJ2.Text);
                 //string equipo2 = Leer_equipo(empateJ5.Text);
                 ////Response.Write(equipo2);
-                //Registrar_Ronda(equipo1, equipo2, Leer_equipo(seleccionado)); //leer j2.text
 
             }
             else if(seleccionado=="")
@@ -839,6 +871,7 @@ namespace Othello
                 {
                     Display_Winner(Leer_equipo(seleccionado));
                 }
+                desempatePanel.Visible = false;
             }
         }
 

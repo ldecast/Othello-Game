@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -535,7 +536,32 @@ namespace Othello
         }
 
 
-        public List<string> Leer_jugadores(List<string> clasificados)
+        //public List<string> Leer_jugadores(List<string> clasificados)
+        //{
+        //    List<string> ganadores = new List<string>();
+        //    if (Session["archivo"] != null)
+        //    {
+        //        string ruta = Convert.ToString(Session["archivo"]);
+        //        XmlDocument reader = new XmlDocument();
+        //        reader.Load(ruta);
+
+        //        XmlNodeList equipo = reader.GetElementsByTagName("equipo");
+        //        for (int i = 0; i < equipo.Count; i++)
+        //        {
+        //            if (clasificados.Contains(equipo.Item(i).FirstChild.InnerText))
+        //            {
+        //                XmlNodeList players = equipo.Item(i).ChildNodes;
+        //                for (int j = 1; j < players.Count; j++)
+        //                {
+        //                    ganadores.Add(players[j].InnerText);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return ganadores;
+        //}
+
+        public List<string> Leer_jugadores(string team)
         {
             List<string> ganadores = new List<string>();
             if (Session["archivo"] != null)
@@ -547,7 +573,7 @@ namespace Othello
                 XmlNodeList equipo = reader.GetElementsByTagName("equipo");
                 for (int i = 0; i < equipo.Count; i++)
                 {
-                    if (clasificados.Contains(equipo.Item(i).FirstChild.InnerText))
+                    if (team == equipo.Item(i).FirstChild.InnerText)
                     {
                         XmlNodeList players = equipo.Item(i).ChildNodes;
                         for (int j = 1; j < players.Count; j++)
@@ -574,7 +600,7 @@ namespace Othello
                 {
                     for (int j = 0; j < equipo.Item(i).ChildNodes.Count; j++)
                     {
-                        if (equipo.Item(i).ChildNodes.Item(j).InnerText.Contains(seleccionado))
+                        if (equipo.Item(i).ChildNodes.Item(j).InnerText == seleccionado) //quite el contains
                         {
                             XmlNodeList players = equipo.Item(i).ChildNodes;
                             equipos.Add(players[0].InnerText);
@@ -643,6 +669,11 @@ namespace Othello
 
             ListItem[] radio = { empateJ1, empateJ2, empateJ3, empateJ4, empateJ5, empateJ6 };
             //List<string> auxJugadores = Leer_jugadores(equiposEmpatados);
+            List<string> auxEquipos = new List<string>();
+            for (int i = 0; i < jugadoresEmpatados.Count; i++)
+            {
+                auxEquipos.Add(Leer_equipo(jugadoresEmpatados[i]));
+            }
             try
             {
                 for (int i = 0; i < radio.Length; i++)
@@ -687,17 +718,17 @@ namespace Othello
                     //equiposEmpates.Value = "";
                     //equiposEmpatados.RemoveAt(0);
                     //equiposEmpatados.RemoveAt(0);
-                    for (int i = 0; i < equiposEmpatados.Count; i++)
+                    for (int i = 0; i < auxEquipos.Count; i++)
                     {
-                        equiposEmpates.Value = equiposEmpates.Value + "," + equiposEmpatados[i];
+                        equiposEmpates.Value = equiposEmpates.Value + "," + auxEquipos[i];
                     }
                     
                 }
                 else
                 {
-                    for (int i = 0; i < equiposEmpatados.Count; i++)
+                    for (int i = 0; i < auxEquipos.Count; i++)
                     {
-                        equiposEmpates.Value = equiposEmpates.Value + "," + equiposEmpatados[i];
+                        equiposEmpates.Value = equiposEmpates.Value + "," + auxEquipos[i];
                     }
                 }
                 if (equiposEmpates.Value[0] == ',')
@@ -708,6 +739,7 @@ namespace Othello
 
             if (equiposGanados.Count > 0)//(auxGanados.Value == "" && equiposGanados.Count>0)
             {
+                auxGanados.Value = "";
                 for (int i = 0; i < equiposGanados.Count; i++)
                 {
                     auxGanados.Value = auxGanados.Value + "," + equiposGanados[i];
@@ -797,15 +829,15 @@ namespace Othello
                     desempatePanel.Visible = false;
                     if (tipo == "Octavos")
                     {
-                        AvanzarCuartos(ganadores);
+                        AvanzarCuartos(auxGanados.Value.Split(',').ToList());
                     }
                     if (tipo == "Cuartos")
                     {
-                        AvanzarSemi(ganadores);
+                        AvanzarSemi(auxGanados.Value.Split(',').ToList());
                     }
                     if (tipo == "Semi")
                     {
-                        AvanzarFinal(ganadores);
+                        AvanzarFinal(auxGanados.Value.Split(',').ToList());
                     }
                     if (tipo == "Final")
                     {
@@ -857,15 +889,15 @@ namespace Othello
             {
                 if (tipo == "Octavos")
                 {
-                    AvanzarCuartos(ganadores);
+                    AvanzarCuartos(auxGanados.Value.Split(',').ToList());
                 }
                 if (tipo == "Cuartos")
                 {
-                    AvanzarSemi(ganadores);
+                    AvanzarSemi(auxGanados.Value.Split(',').ToList());
                 }
                 if (tipo == "Semi")
                 {
-                    AvanzarFinal(ganadores);
+                    AvanzarFinal(auxGanados.Value.Split(',').ToList());
                 }
                 if (tipo == "Final")
                 {

@@ -15,6 +15,7 @@ namespace Othello
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (!IsPostBack && Request.Params["Parametro"].Contains("New"))
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "Tamaño_tablero()", true);
 
@@ -65,7 +66,7 @@ namespace Othello
                 listaColores.Text = Convert.ToString(Session["coloresUsuario"]);
                 listaOponente.Text = Convert.ToString(Session["coloresPlayer2"]);
                 turno.Text = ColoresUsuario().First().ToString();
-
+                ColocarColores();
             }
 
             if (Session["modalidad"] != null)
@@ -180,6 +181,31 @@ namespace Othello
         {
             string coloresOponente = Convert.ToString(Session["coloresPlayer2"]);
             return coloresOponente.Split(',').ToList();
+        }
+
+        public void ColocarColores()
+        {
+            if (Session["apertura"] != null)
+            {
+                string apertura = Convert.ToString(Session["apertura"]);
+                if (apertura == "false")
+                {
+                    string colorUser = ColoresUsuario()[0];
+                    string colorOponent = ColoresOponente()[0];
+                    int filas = (int)Math.Round(double.Parse(dimension.Text.Substring(0, dimension.Text.IndexOf(','))) / 2) - 1;
+                    int columnas = (int)Math.Round(double.Parse(dimension.Text.Substring(dimension.Text.IndexOf(',') + 1)) / 2) - 1;
+                    WebControl[][] fila = { Tipo("fila1"), Tipo("fila2"), Tipo("fila3"), Tipo("fila4"), Tipo("fila5"), Tipo("fila6"), Tipo("fila7"), Tipo("fila8"), Tipo("fila9"), Tipo("fila10"), Tipo("fila11"), Tipo("fila12"), Tipo("fila13"), Tipo("fila14"), Tipo("fila15"), Tipo("fila16"), Tipo("fila17"), Tipo("fila18"), Tipo("fila19"), Tipo("fila20") };
+                    for (int i = 0; i < 2; i++)
+                    {
+                        fila[i+filas][i+columnas].CssClass = Colorear(colorUser);
+                    }
+                    for (int i = 0; i < 2; i++)
+                    {
+                        fila[filas + i][columnas+1 - i].CssClass = Colorear(colorOponent);
+                    }
+                    max.Text = "100";
+                }
+            }
         }
 
 
@@ -442,6 +468,36 @@ namespace Othello
                     }
                 }
                 Get_Score(null);
+            }
+        }
+
+
+        public string Colorear(string color)
+        {
+            switch (color)
+            {
+                case "Rojo":
+                    return rojoCss;
+                case "Amarillo":
+                    return amarilloCss;
+                case "Azul":
+                    return azulCss;
+                case "Verde":
+                    return verdeCss;
+                case "Naranja":
+                    return naranjaCss;
+                case "Violeta":
+                    return violetaCss;
+                case "Blanco":
+                    return blanco;
+                case "Negro":
+                    return negro;
+                case "Celeste":
+                    return celesteCss;
+                case "Gris":
+                    return grisCss;
+                default:
+                    return "";
             }
         }
 
@@ -1300,17 +1356,17 @@ namespace Othello
                         {
                             if (ColoresUsuario().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
                             {
-                                if (ColoresUsuario().Count == 1 && ColoresOponente().Count == 1) 
-                                {
+                                //if (ColoresUsuario().Count == 1 && ColoresOponente().Count == 1) 
+                                //{
                                     permitido = true;
                                     aux = i;
-                                }
-                                else
-                                {
-                                    permitido = true;
-                                    aux = i;
-                                    break;
-                                }
+                                //}
+                                //else
+                                //{
+                                //    permitido = true;
+                                //    aux = i;
+                                //    break;
+                                //}
                             }
                         }
                     }
@@ -1339,17 +1395,17 @@ namespace Othello
                         {
                             if (ColoresOponente().Contains(casilla[i].CssClass.ToString().Replace("btn btn-lg border-dark rounded-0 btn-", "")))
                             {
-                                if (ColoresUsuario().Count == 1 && ColoresOponente().Count == 1)
-                                {
+                                //if (ColoresUsuario().Count == 1 && ColoresOponente().Count == 1)
+                                //{
                                     permitido = true;
                                     aux = i;
-                                }
-                                else
-                                {
-                                    permitido = true;
-                                    aux = i;
-                                    break;
-                                }
+                                //}
+                                //else
+                                //{
+                                //    permitido = true;
+                                //    aux = i;
+                                //    break;
+                                //}
                             }
                         }
                     }

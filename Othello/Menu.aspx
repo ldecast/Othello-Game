@@ -49,7 +49,7 @@
             <div class="col-sm-12 col-md-6 col-lg-6 text-center mb-2">
                 <asp:Label runat="server" id="juegoNuevo" CssClass="h1" Text="Othello Clásico" /><br/>
 
-                    <asp:Button runat="server" id="newGame" CssClass="btn btn-warning btn-lg mt-4 clasic" Text="Uno contra uno" OnClick="ChooseColor1"/><br/><br/>
+                    <asp:Button runat="server" id="newGame" CssClass="btn btn-warning btn-lg mt-4 mb-4 clasic" Text="Uno contra uno" OnClick="ChooseColor1"/><br/>
                     <asp:Button runat="server" id="juegoSolo" CssClass="btn btn-warning btn-lg clasic" Text="Contra la máquina" OnClick="ChooseColor2"/>
 
                 <asp:Panel runat="server" id="selectColor" CssClass="mt-0 pt-0" Visible="false">
@@ -67,7 +67,7 @@
 
             <div class="col-sm-12 col-md-6 col-lg-6 border-right border-secondary text-center mb-2">
                 <asp:Label runat="server" id="Label4" CssClass="h1" Text="Perfil de usuario" /><br/><br/>
-                <asp:LinkButton runat="server" ID="perfil" OnClick="Ver_perfil" CssClass="btn btn-success btn-lg mt-2 text-body prof"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Ver perfil</asp:LinkButton><br/><br/>
+                <asp:LinkButton runat="server" ID="perfil" OnClick="Ver_perfil" CssClass="btn btn-success btn-lg mb-4 mt-2 text-body prof"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Ver perfil</asp:LinkButton><br/>
                 <asp:LinkButton runat="server" ID="cerrar" OnClick="Cerrar_sesion" CssClass="btn btn-danger btn-lg text-body prof"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Cerrar sesión</asp:LinkButton><br/><br/>
             </div>
 
@@ -118,13 +118,15 @@
                     </asp:CheckBoxList>
                     </div>
                     <br /><br />
-                    <asp:LinkButton runat="server" ID="btnNormal" CssClass="btn btn-primary btn-lg text-body mt-4 mb-0" Visible="false" OnClick="Xtream_Normal"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Comenzar!</asp:LinkButton><br /><br />
-                    <asp:LinkButton runat="server" ID="btnInverso" CssClass="btn btn-primary btn-lg text-body mt-0 mb-0" Visible="false" OnClick="Xtream_Inverso"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Comenzar!</asp:LinkButton><br /><br />
+                    <asp:CheckBox runat="server" ID="modoApertura" CssClass="apertura" Text="Apertura personalizada"  />
+                    <br />
+                    <asp:LinkButton runat="server" ID="btnNormal" CssClass="btn btn-primary btn-lg text-body mt-4 mb-0" Visible="false" OnClick="Xtream_Normal"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Comenzar!</asp:LinkButton>
+                    <asp:LinkButton runat="server" ID="btnInverso" CssClass="btn btn-primary btn-lg text-body mt-4 mb-0" Visible="false" OnClick="Xtream_Inverso"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Comenzar!</asp:LinkButton>
                 </asp:Panel>
 
                 
 
-                    <asp:LinkButton runat="server" ID="xtream" CssClass="btn btn-primary btn-lg text-body mt-2 mod" OnClick="ChooseMod"><i class="fa fa-gamepad" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Othello Xtream</asp:LinkButton><br /><br />
+                    <asp:LinkButton runat="server" ID="xtream" CssClass="btn btn-primary btn-lg text-body mb-4 mt-2 mod" OnClick="ChooseMod"><i class="fa fa-gamepad" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Othello Xtream</asp:LinkButton><br />
                     <asp:LinkButton runat="server" ID="torneo" CssClass="btn btn-primary btn-lg text-body mod" OnClick="Subir_torneo"><i class="fa fa-trophy" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Campeonato</asp:LinkButton>
             </div>
 

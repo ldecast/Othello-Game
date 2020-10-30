@@ -13,25 +13,21 @@
 <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <title>Campeonato Othello</title>
-
-    <%--<style> body{ background-image: url(https://png.pngtree.com/thumb_back/fw800/background/20190223/ourmid/pngtree-fresh-gold-trophy-advertising-background-backgroundfreshtrophyfestivechinese-stylegolden-lightribbonshining-image_73504.jpg); } .panel{ height: 600px; }</style>--%>
     <style>
         .panel{ height:400px; } .equipo{ font-size:50px; background-color: #c72b2b; padding: 4px 11px 6px 11px; border-radius: 5px; font-size: 25px; } .cuarto{ position:absolute; left:0px; margin-top:30px; margin-bottom:30px; }
-        .partida { margin-left:115px; } .final { margin-left:380px; } .rowFinal{ height:300px; } .radio{ font-size:18px; height:175px; background-color:sienna; border-radius: 5px;} .equipo input[type="checkbox"] { margin-right: 10px; } input[type="radio"] {margin-right: 10px;}
+        .partida {margin-left:115px; } .final { margin-left:380px; } .rowFinal{ height:300px; } .radio{ font-size:18px; height:175px; background-color:sienna; border-radius: 5px;} .equipo input[type="checkbox"] { margin-right: 10px; } input[type="radio"] {margin-right: 10px;}
     </style>
   </head>
   <body>
     <form id="menu" runat="server">
         <div class="container-fluid text-center mt-3 mb-4">
-        <%--<asp:Label runat="server" id="Label1" CssClass="display-1 text-white titulo" Text=""/>--%>
         <asp:Label runat="server" id="titulo" CssClass="display-1 text-white font-weight-bold titulo" Text="Campeonato"/>
-        <%--<asp:Label runat="server" id="Label2" CssClass="display-1 text-white titulo" Text="!"/>--%>
         </div>
 
-        <input id="playersEmpates"  value=""  runat="server"/>
-        <input id="auxGanados"  value=""  runat="server"/>
-        <input id="equiposEmpates"  value=""  runat="server"/>
-        <input id="auxCount"  value=""  runat="server"/>
+        <input id="playersEmpates" type="hidden" value="" runat="server"/>
+        <input id="auxGanados" type="hidden" value="" runat="server"/>
+        <input id="equiposEmpates" type="hidden" value="" runat="server"/>
+        <input id="auxCount" type="hidden" value="" runat="server"/>
 
 
     <asp:Panel runat="server" ID="octavosPanel" CssClass="container" Visible="false">
@@ -41,7 +37,7 @@
             <div class="col-sm-12 col-md-6 col-lg-6 mb-2 border-right border-secondary text-center">
                 <asp:Label runat="server" id="Label3" CssClass="h1 text-center" Text="Disputa" /><br/>
                     <asp:CheckBoxList ID="CheckBoxList1" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="octavo1" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 1</asp:ListItem>
+                        <asp:ListItem ID="octavo1" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 1</asp:ListItem>
                         <asp:ListItem ID="octavo2" class="h6 equipo" Value="equipo">&nbsp;Equipo 2</asp:ListItem>
                     </asp:CheckBoxList>
             </div>
@@ -49,7 +45,7 @@
                 <asp:Label runat="server" id="Label4" CssClass="h1" Text="Disputa" /><br/>
 
                 <asp:CheckBoxList ID="CheckBoxList2" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="octavo3" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 3</asp:ListItem>
+                        <asp:ListItem ID="octavo3" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 3</asp:ListItem>
                         <asp:ListItem ID="octavo4" class="h6 equipo" Value="equipo">&nbsp;Equipo 4</asp:ListItem>
                 </asp:CheckBoxList>    
             </div>
@@ -59,7 +55,7 @@
             <div class="col-sm-12 col-md-6 col-lg-6 mb-2 border-right border-secondary text-center">
                 <asp:Label runat="server" id="Label7" CssClass="h1 text-center" Text="Disputa" /><br/>
                     <asp:CheckBoxList ID="CheckBoxList3" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="octavo5" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 5</asp:ListItem>
+                        <asp:ListItem ID="octavo5" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 5</asp:ListItem>
                         <asp:ListItem ID="octavo6" class="h6 equipo" Value="equipo">&nbsp;Equipo 6</asp:ListItem>
                     </asp:CheckBoxList>
             </div>
@@ -67,7 +63,7 @@
                 <asp:Label runat="server" id="Label8" CssClass="h1" Text="Disputa" /><br/>
 
                 <asp:CheckBoxList ID="CheckBoxList4" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="octavo7" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 7</asp:ListItem>
+                        <asp:ListItem ID="octavo7" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 7</asp:ListItem>
                         <asp:ListItem ID="octavo8" class="h6 equipo" Value="equipo">&nbsp;Equipo 8</asp:ListItem>
                 </asp:CheckBoxList>    
             </div>
@@ -77,7 +73,7 @@
             <div class="col-sm-12 col-md-6 col-lg-6 mb-2 border-right border-secondary text-center">
                 <asp:Label runat="server" id="Label6" CssClass="h1 text-center" Text="Disputa" /><br/>
                     <asp:CheckBoxList ID="CheckBoxList5" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="octavo9" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 9</asp:ListItem>
+                        <asp:ListItem ID="octavo9" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 9</asp:ListItem>
                         <asp:ListItem ID="octavo10" class="h6 equipo" Value="equipo">&nbsp;Equipo 10</asp:ListItem>
                     </asp:CheckBoxList>
             </div>
@@ -85,7 +81,7 @@
                 <asp:Label runat="server" id="Label9" CssClass="h1" Text="Disputa" /><br/>
 
                 <asp:CheckBoxList ID="CheckBoxList6" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="octavo11" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 11</asp:ListItem>
+                        <asp:ListItem ID="octavo11" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 11</asp:ListItem>
                         <asp:ListItem ID="octavo12" class="h6 equipo" Value="equipo">&nbsp;Equipo 12</asp:ListItem>
                 </asp:CheckBoxList>    
             </div>
@@ -95,7 +91,7 @@
             <div class="col-sm-12 col-md-6 col-lg-6 mb-2 border-right border-secondary text-center">
                 <asp:Label runat="server" id="Label10" CssClass="h1 text-center" Text="Disputa" /><br/>
                     <asp:CheckBoxList ID="CheckBoxList7" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="octavo13" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 13</asp:ListItem>
+                        <asp:ListItem ID="octavo13" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 13</asp:ListItem>
                         <asp:ListItem ID="octavo14" class="h6 equipo" Value="equipo">&nbsp;Equipo 14</asp:ListItem>
                     </asp:CheckBoxList>
             </div>
@@ -103,7 +99,7 @@
                 <asp:Label runat="server" id="Label11" CssClass="h1" Text="Disputa" /><br/>
 
                 <asp:CheckBoxList ID="CheckBoxList8" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="octavo15" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 15</asp:ListItem>
+                        <asp:ListItem ID="octavo15" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 15</asp:ListItem>
                         <asp:ListItem ID="octavo16" class="h6 equipo" Value="equipo">&nbsp;Equipo 16</asp:ListItem>
                 </asp:CheckBoxList>    
             </div>
@@ -126,7 +122,7 @@
             <div class="col-sm-12 col-md-6 col-lg-6 mb-2 border-right border-secondary text-center">
                 <asp:Label runat="server" id="Label16" CssClass="h1 text-center" Text="Disputa" /><br/>
                     <asp:CheckBoxList ID="CheckBoxList9" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="cuartos1" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 1</asp:ListItem>
+                        <asp:ListItem ID="cuartos1" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 1</asp:ListItem>
                         <asp:ListItem ID="cuartos2" class="h6 equipo" Value="equipo">&nbsp;Equipo 2</asp:ListItem>
                     </asp:CheckBoxList>
             </div>
@@ -134,7 +130,7 @@
                 <asp:Label runat="server" id="Label17" CssClass="h1" Text="Disputa" /><br/>
 
                 <asp:CheckBoxList ID="CheckBoxList10" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="cuartos3" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 3</asp:ListItem>
+                        <asp:ListItem ID="cuartos3" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 3</asp:ListItem>
                         <asp:ListItem ID="cuartos4" class="h6 equipo" Value="equipo">&nbsp;Equipo 4</asp:ListItem>
                 </asp:CheckBoxList>    
             </div>
@@ -144,7 +140,7 @@
             <div class="col-sm-12 col-md-6 col-lg-6 mb-2 border-right border-secondary text-center">
                 <asp:Label runat="server" id="Label18" CssClass="h1 text-center" Text="Disputa" /><br/>
                     <asp:CheckBoxList ID="CheckBoxList11" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="cuartos5" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 5</asp:ListItem>
+                        <asp:ListItem ID="cuartos5" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 5</asp:ListItem>
                         <asp:ListItem ID="cuartos6" class="h6 equipo" Value="equipo">&nbsp;Equipo 6</asp:ListItem>
                     </asp:CheckBoxList>
             </div>
@@ -152,7 +148,7 @@
                 <asp:Label runat="server" id="Label19" CssClass="h1" Text="Disputa" /><br/>
 
                 <asp:CheckBoxList ID="CheckBoxList12" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="cuartos7" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 7</asp:ListItem>
+                        <asp:ListItem ID="cuartos7" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 7</asp:ListItem>
                         <asp:ListItem ID="cuartos8" class="h6 equipo" Value="equipo">&nbsp;Equipo 8</asp:ListItem>
                 </asp:CheckBoxList>    
             </div>
@@ -178,7 +174,7 @@
             <div class="col-sm-12 col-md-6 col-lg-6 mb-2 border-right border-secondary text-center">
                 <asp:Label runat="server" id="Label13" CssClass="h1 text-center" Text="Disputa" /><br/>
                     <asp:CheckBoxList ID="CheckBoxList13" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="semi1" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 1</asp:ListItem>
+                        <asp:ListItem ID="semi1" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 1</asp:ListItem>
                         <asp:ListItem ID="semi2" class="h6 equipo" Value="equipo">&nbsp;Equipo 2</asp:ListItem>
                     </asp:CheckBoxList>
             </div>
@@ -186,7 +182,7 @@
                 <asp:Label runat="server" id="Label14" CssClass="h1" Text="Disputa" /><br/>
 
                 <asp:CheckBoxList ID="CheckBoxList14" CssClass="my-4 partida text-center" RepeatDirection="Horizontal" RepeatColumns="2" CellPadding="4" runat="server">
-                        <asp:ListItem ID="semi3" class="h6 equipo mr-3 " Value="equipo">&nbsp;Equipo 3</asp:ListItem>
+                        <asp:ListItem ID="semi3" class="h6 equipo mr-3" Value="equipo">&nbsp;Equipo 3</asp:ListItem>
                         <asp:ListItem ID="semi4" class="h6 equipo" Value="equipo">&nbsp;Equipo 4</asp:ListItem>
                 </asp:CheckBoxList>    
             </div>

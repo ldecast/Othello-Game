@@ -225,22 +225,36 @@ namespace Othello
 
         public void Xtream_Normal(object sender, EventArgs e)
         {
+            string apertura;
+            if (modoApertura.Checked)
+                apertura = "true";
+            else
+                apertura = "false";
+
             if (!SelectedIndexChanged())
             {
                 Session["coloresUsuario"] = ColoresUsuario();
                 Session["coloresPlayer2"] = ColoresPlayer2();
                 Session["modalidad"] = "normal";
+                Session["apertura"] = apertura;
                 Response.Redirect("OthelloXtream.aspx?Parametro=New-" + usuario.Text);
             }
         }
 
         protected void Xtream_Inverso(object sender, EventArgs e)
         {
+            string apertura;
+            if (modoApertura.Checked)
+                apertura = "true";
+            else
+                apertura = "false";
+
             if (!SelectedIndexChanged())
             {
                 Session["coloresUsuario"] = ColoresUsuario();
                 Session["coloresPlayer2"] = ColoresPlayer2();
                 Session["modalidad"] = "inversa";
+                Session["apertura"] = apertura;
                 Response.Redirect("OthelloXtream.aspx?Parametro=New-" + usuario.Text);
             }
         }

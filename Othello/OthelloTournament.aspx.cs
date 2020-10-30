@@ -18,6 +18,7 @@ namespace Othello
             if (!IsPostBack)
                 Crear_equipos();
 
+            //Session.Timeout = 60;
         }
 
         protected void Page_LoadComplete(object sender, EventArgs e)
@@ -210,19 +211,26 @@ namespace Othello
                 Registrar_Empate(oc8.ToList()[0].Text, oc8.ToList()[1].Text, "Octavos");
             }
 
-
-            if (ganadores.Count == 8)
+            if (oc1.Count() > 0 && oc2.Count() > 0 && oc3.Count() > 0 && oc4.Count() > 0 && oc5.Count() > 0 && oc6.Count() > 0 && oc7.Count() > 0 && oc8.Count() > 0)
             {
-                octavosPanel.Visible = false;
-                AvanzarCuartos(ganadores);
-            }
+                if (ganadores.Count == 8)
+                {
+                    octavosPanel.Visible = false;
+                    AvanzarCuartos(ganadores);
+                }
 
-            if (empatados.Count >= 2)
-            {
-                octavosPanel.Visible = false;
-                auxCount.Value = (empatados.Count / 2).ToString();
-                Desempate("Octavos", empatados, Leer_jugadores(empatados), ganadores);
+                if (empatados.Count >= 2)
+                {
+                    octavosPanel.Visible = false;
+                    auxCount.Value = (empatados.Count / 2).ToString();
+                    Desempate("Octavos", empatados, Leer_jugadores(empatados), ganadores);
+                }
             }
+            else
+            {
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Debe seleccionar al menos un equipo por disputa que ascienda a la siguiente ronda.\")", true);
+            }
+            
         }
 
         public void Cuartos_Click(object sender, EventArgs e)
@@ -242,7 +250,6 @@ namespace Othello
             var oc4 = from ListItem cuarto in CheckBoxList12.Items
                       where cuarto.Selected == true
                       select cuarto;
-            
 
             if (oc1.Count() == 1)
             {
@@ -291,19 +298,26 @@ namespace Othello
                 Registrar_Empate(oc4.ToList()[0].Text, oc4.ToList()[1].Text, "Cuartos");
             }
 
-
-            if (ganadores.Count == 4)
+            if (oc1.Count() > 0 && oc2.Count() > 0 && oc3.Count() > 0 && oc4.Count() > 0)
             {
-                cuartosPanel.Visible = false;
-                AvanzarSemi(ganadores);
-            }
+                if (ganadores.Count == 4)
+                {
+                    cuartosPanel.Visible = false;
+                    AvanzarSemi(ganadores);
+                }
 
-            if (empatados.Count >= 2)
-            {
-                cuartosPanel.Visible = false;
-                auxCount.Value = (empatados.Count / 2).ToString();
-                Desempate("Cuartos", empatados, Leer_jugadores(empatados), ganadores);
+                if (empatados.Count >= 2)
+                {
+                    cuartosPanel.Visible = false;
+                    auxCount.Value = (empatados.Count / 2).ToString();
+                    Desempate("Cuartos", empatados, Leer_jugadores(empatados), ganadores);
+                }
             }
+            else
+            {
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Debe seleccionar al menos un equipo por disputa que ascienda a la siguiente ronda.\")", true);
+            }
+            
         }
 
 
@@ -345,19 +359,26 @@ namespace Othello
                 Registrar_Empate(oc2.ToList()[0].Text, oc2.ToList()[1].Text, "Semi");
             }
 
-
-            if (ganadores.Count == 2)
+            if (oc1.Count() > 0 && oc2.Count() > 0)
             {
-                semiPanel.Visible = false;
-                AvanzarFinal(ganadores);
-            }
+                if (ganadores.Count == 2)
+                {
+                    semiPanel.Visible = false;
+                    AvanzarFinal(ganadores);
+                }
 
-            if (empatados.Count >= 2)
-            {
-                semiPanel.Visible = false;
-                auxCount.Value = (empatados.Count / 2).ToString();
-                Desempate("Semi", empatados, Leer_jugadores(empatados),ganadores);
+                if (empatados.Count >= 2)
+                {
+                    semiPanel.Visible = false;
+                    auxCount.Value = (empatados.Count / 2).ToString();
+                    Desempate("Semi", empatados, Leer_jugadores(empatados), ganadores);
+                }
             }
+            else
+            {
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Debe seleccionar al menos un equipo por disputa que ascienda a la siguiente ronda.\")", true);
+            }
+            
         }
 
 
@@ -383,17 +404,25 @@ namespace Othello
                 Registrar_Empate(oc1.ToList()[0].Text, oc1.ToList()[1].Text, "Final");
             }
 
-            if (ganadores.Count == 1)
-            {
-                finalPanel.Visible = false;
-                Display_Winner(ganadores[0]);
-            }
 
-            if (empatados.Count >= 2)
+            if (oc1.Count()>0)
             {
-                finalPanel.Visible = false;
-                auxCount.Value = (empatados.Count / 2).ToString();
-                Desempate("Final", empatados, Leer_jugadores(empatados), ganadores);
+                if (ganadores.Count == 1)
+                {
+                    finalPanel.Visible = false;
+                    Display_Winner(ganadores[0]);
+                }
+
+                if (empatados.Count >= 2)
+                {
+                    finalPanel.Visible = false;
+                    auxCount.Value = (empatados.Count / 2).ToString();
+                    Desempate("Final", empatados, Leer_jugadores(empatados), ganadores);
+                }
+            }
+            else
+            {
+                ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Debe seleccionar al menos un equipo por disputa que ascienda a la siguiente ronda.\")", true);
             }
         }
 
@@ -412,6 +441,7 @@ namespace Othello
                 Response.Redirect("Menu.aspx?Parametro=" + parametro);
             }
             else Response.Redirect("Login.aspx");
+            Session.Abandon();
         }
 
         public void Registrar_Torneo(string nombre, int cantidad)
@@ -509,9 +539,8 @@ namespace Othello
                 script.ExecuteNonQuery();
                 conexion.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Response.Write(ex);
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo registrar el resultado de la ronda en la base de datos.\")", true);
             }
         }
@@ -528,38 +557,12 @@ namespace Othello
                 script.ExecuteNonQuery();
                 conexion.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Response.Write(ex);
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"Error interno: No se pudo registrar el resultado de la ronda en la base de datos.\")", true);
             }
         }
 
-
-        //public List<string> Leer_jugadores(List<string> clasificados)
-        //{
-        //    List<string> ganadores = new List<string>();
-        //    if (Session["archivo"] != null)
-        //    {
-        //        string ruta = Convert.ToString(Session["archivo"]);
-        //        XmlDocument reader = new XmlDocument();
-        //        reader.Load(ruta);
-
-        //        XmlNodeList equipo = reader.GetElementsByTagName("equipo");
-        //        for (int i = 0; i < equipo.Count; i++)
-        //        {
-        //            if (clasificados.Contains(equipo.Item(i).FirstChild.InnerText))
-        //            {
-        //                XmlNodeList players = equipo.Item(i).ChildNodes;
-        //                for (int j = 1; j < players.Count; j++)
-        //                {
-        //                    ganadores.Add(players[j].InnerText);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return ganadores;
-        //}
 
         public List<string> Leer_jugadores(List<string> teams)
         {
@@ -611,11 +614,6 @@ namespace Othello
                             equipos.Add(players[0].InnerText);
                         }
                     }
-                    //if (equipo.Item(i).ChildNodes.Item(i).InnerText.Contains(seleccionado))
-                    //{
-                    //    XmlNodeList players = equipo.Item(i).ChildNodes;
-                    //    equipos.Add(players[0].InnerText);
-                    //}
                 }
             }
             return equipos[0];
@@ -634,7 +632,6 @@ namespace Othello
             }
             catch (Exception)
             {
-                Response.Write(clasificados.Count+"hhh");
             }
 
             playersEmpates.Value = ""; equiposEmpates.Value = ""; auxCount.Value = ""; auxGanados.Value = "";
@@ -666,15 +663,10 @@ namespace Othello
 
         public void Desempate(string tipo, List<string>equiposEmpatados, List<string> jugadoresEmpatados, List<string> equiposGanados)
         {
-            //empates.Value = "";
-            //equiposEmpates.Value = "";
-            //auxGanados.Value = "";
             desempatePanel.Visible = true;
             LabelDesempate.Text = "Desempate " + tipo;
 
             ListItem[] radio = { empateJ1, empateJ2, empateJ3, empateJ4, empateJ5, empateJ6 };
-            //List<string> auxJugadores = Leer_jugadores(equiposEmpatados);
-            List<string> auxEquipos2 = new List<string>();
             List<string> auxEquipos = new List<string>();
             int t = 0;
             while (t<jugadoresEmpatados.Count)
@@ -683,42 +675,23 @@ namespace Othello
                 t += 3;
             }
 
-            //for (int i = 0; i < jugadoresEmpatados.Count; i++)
-            //{
-            //    auxEquipos2.Add(Leer_equipo(jugadoresEmpatados[i]));
-            //}
-            //for (int i = 0; i < auxEquipos2.Count*3; i++)
-            //{
-            //    auxEquipos.Add(auxEquipos2[i+3]);
-            //}
             try
             {
                 for (int i = 0; i < radio.Length; i++)
                 {
                     radio[i].Text = jugadoresEmpatados[i];
                 }
-                //for (int i = 0; i < 6; i++)
-                //{
-                //    jugadoresEmpatados.RemoveAt(0);
-                //}
-                //for (int i = 0; i < 2; i++)
-                //{
-                //    equiposEmpatados.RemoveAt(0);
-                //}
             }
             catch (Exception)
             {
-                Response.Write(jugadoresEmpatados.Count+"mmmm");
             }
-
 
             if (jugadoresEmpatados.Count != 0)
             {
                 playersEmpates.Value = "";
                 //coloco en el value hidden los jugadores que me faltan poner en los radio button
-                for (int i = 0; i < jugadoresEmpatados.Count; i++)//probar  //son los que me quedan pendientes
+                for (int i = 0; i < jugadoresEmpatados.Count; i++)
                 {
-                    //playersEmpates.Value = playersEmpates.Value + "," + jugadoresEmpatados[i];
                     playersEmpates.Value = playersEmpates.Value + "," + jugadoresEmpatados[i];
                 }
                 if (playersEmpates.Value.Length != 0)
@@ -732,14 +705,10 @@ namespace Othello
 
                 if (equiposEmpates.Value == "")
                 {
-                    //equiposEmpates.Value = "";
-                    //equiposEmpatados.RemoveAt(0);
-                    //equiposEmpatados.RemoveAt(0);
                     for (int i = 0; i < auxEquipos.Count; i++)
                     {
                         equiposEmpates.Value = equiposEmpates.Value + "," + auxEquipos[i];
                     }
-                    
                 }
                 else
                 {
@@ -754,7 +723,7 @@ namespace Othello
                 }
             }
 
-            if (equiposGanados.Count > 0)//(auxGanados.Value == "" && equiposGanados.Count>0)
+            if (equiposGanados.Count > 0)
             {
                 auxGanados.Value = "";
                 for (int i = 0; i < equiposGanados.Count; i++)
@@ -767,34 +736,13 @@ namespace Othello
 
                 }
             }
-            //else if(auxGanados.Value !="")
-            //{
-            //    auxGanados.Value = auxGanados.Value + "," + equiposGanados.Last();
-            //}
-
-
-            //if (equiposEmpates.Value == "")
-            //{
-            //    for (int i = 0; i < equiposEmpatados.Count; i++)
-            //    {
-            //        equiposEmpates.Value = equiposEmpates.Value + "," + equiposEmpatados[i];
-            //    }
-            //    equiposEmpates.Value = equiposEmpates.Value.Substring(1);
-            //}
-            //else
-            //{
-            //    equiposEmpates.Value = equiposEmpates.Value + "," + equiposEmpatados.Last();
-            //}
-
         }
 
         protected void Desempate_Click(object sender, EventArgs e)
         {
-
-
             auxCount.Value = (int.Parse(auxCount.Value) - 1).ToString();
             string seleccionado = RadioButtonList1.SelectedValue;
-            Registrar_Ronda(Leer_equipo(empateJ1.Text), Leer_equipo(empateJ4.Text), Leer_equipo(seleccionado), LabelDesempate.Text); //leer j2.text
+            Registrar_Ronda(Leer_equipo(empateJ1.Text), Leer_equipo(empateJ4.Text), Leer_equipo(seleccionado), LabelDesempate.Text);
 
 
             if (auxGanados.Value == "")
@@ -807,17 +755,11 @@ namespace Othello
             }
 
             List<string> ganadores = auxGanados.Value.Split(',').ToList();
-            //ganadores.Add(Leer_equipo(seleccionado));
 
             string tipo = LabelDesempate.Text.Replace("Desempate ", "");
             if (seleccionado != "" && int.Parse(auxCount.Value) > -0)
             {
-
                 List<string> newEquiposEmpate = equiposEmpates.Value.Split(',').ToList();
-                //List<string> newEquiposEmpate2 = new List<string>();
-                //newEquiposEmpate2.Add(Leer_equipo(empateJ1.Text));
-                //newEquiposEmpate2.Add(Leer_equipo(empateJ4.Text));
-                //List<string> newGanados = auxGanados.Value.Split(',').ToList();
 
                 if (playersEmpates.Value != "")
                 {
@@ -837,7 +779,6 @@ namespace Othello
                         newEmpate.RemoveAt(0);
                     }
 
-                    Response.Write(newEquiposEmpate.Count + "ggg");
                     Desempate(tipo, newEquiposEmpate, newEmpate, ganadores);
                 }
 
@@ -892,11 +833,6 @@ namespace Othello
                         equiposEmpates.Value = equiposEmpates.Value.Substring(1);
                     }
                 }
-
-                //string equipo1 = Leer_equipo(empateJ2.Text);
-                //string equipo2 = Leer_equipo(empateJ5.Text);
-                ////Response.Write(equipo2);
-
             }
             else if(seleccionado=="")
             {

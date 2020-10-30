@@ -7,6 +7,14 @@ h1 {
     margin-bottom: 35px;
 }
 
+.apertura{
+    font-size:large;
+}
+
+.apertura input[type="checkbox"] {
+    margin-right: 6px;
+}
+
 .h5mod {
     margin-bottom: 35px;
 }

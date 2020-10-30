@@ -17,21 +17,21 @@
     <%--<style> body{ background-image: url(https://png.pngtree.com/thumb_back/fw800/background/20190223/ourmid/pngtree-fresh-gold-trophy-advertising-background-backgroundfreshtrophyfestivechinese-stylegolden-lightribbonshining-image_73504.jpg); } .panel{ height: 600px; }</style>--%>
     <style>
         .panel{ height:400px; } .equipo{ font-size:50px; background-color: #c72b2b; padding: 4px 11px 6px 11px; border-radius: 5px; font-size: 25px; } .cuarto{ position:absolute; left:0px; margin-top:30px; margin-bottom:30px; }
-        .partida { margin-left:115px; } .final { margin-left:380px; } .rowFinal{ height:300px; } .radio{ font-size:18px; height:175px; background-color:sienna; border-radius: 5px;} .equipo input[type="checkbox"] { margin-right: 10px; }
+        .partida { margin-left:115px; } .final { margin-left:380px; } .rowFinal{ height:300px; } .radio{ font-size:18px; height:175px; background-color:sienna; border-radius: 5px;} .equipo input[type="checkbox"] { margin-right: 10px; } input[type="radio"] {margin-right: 10px;}
     </style>
   </head>
   <body>
     <form id="menu" runat="server">
         <div class="container-fluid text-center mt-3 mb-4">
-        <asp:Label runat="server" id="Label1" CssClass="display-1 text-white titulo" Text=""/>
-        <asp:Label runat="server" id="titulo" CssClass="display-1 text-white titulo" Text="Campeonato"/>
-        <asp:Label runat="server" id="Label2" CssClass="display-1 text-white titulo" Text="!"/>
+        <%--<asp:Label runat="server" id="Label1" CssClass="display-1 text-white titulo" Text=""/>--%>
+        <asp:Label runat="server" id="titulo" CssClass="display-1 text-white font-weight-bold titulo" Text="Campeonato"/>
+        <%--<asp:Label runat="server" id="Label2" CssClass="display-1 text-white titulo" Text="!"/>--%>
         </div>
 
-        <input id="playersEmpates" value=""  runat="server"/>
-        <input id="auxGanados" value=""  runat="server"/>
-        <input id="equiposEmpates" value=""  runat="server"/>
-        <input id="auxCount" value=""  runat="server"/>
+        <input id="playersEmpates"  value=""  runat="server"/>
+        <input id="auxGanados"  value=""  runat="server"/>
+        <input id="equiposEmpates"  value=""  runat="server"/>
+        <input id="auxCount"  value=""  runat="server"/>
 
 
     <asp:Panel runat="server" ID="octavosPanel" CssClass="container" Visible="false">
@@ -226,14 +226,15 @@
 
     <asp:Panel runat="server" ID="winnerPanel" CssClass="container" Visible="false">
     <div class="row mt-3 py-4 resultado">
-        <div class="col-12 mb-5 text-center"><asp:Label runat="server" id="Label22" CssClass="h1 text-center" Text="GAME OVER" /><hr /></div>
-        <div class="col-sm-12 col-md-6 col-lg-12 mb-2 text-center">
-            <asp:Label runat="server" CssClass="display-1" id="ganador" Visible="true"/><br />
+        <div class="col-12 mb-4 text-center"><asp:Label runat="server" id="Label22" CssClass="h1 text-center" Text="GAME OVER" /><hr /></div>
+        <div class="col-sm-12 col-md-6 col-lg-12 my-2 text-center">
+            <asp:Label runat="server" CssClass="display-1"  Text="Guatemala" id="ganador" Visible="true"/><br />
+            <asp:Label runat="server" CssClass="display-4" id="info" Text="gana el campeonato" Visible="true"/><br />
         </div>
     </div>
     <div class="row py-5">
         <div class="col-12 text-center">
-            <asp:LinkButton runat="server" ID="exit" OnClick="Salir" CssClass="btn btn-warning btn-lg text-body"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;&nbsp;Salir&nbsp;</asp:LinkButton><br /><br />
+            <asp:LinkButton runat="server" ID="exit" OnClick="Salir" CssClass="btn btn-warning btn-lg"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i>&nbsp;&nbsp;Salir&nbsp;</asp:LinkButton><br /><br />
         </div>
     </div>
     </asp:Panel>

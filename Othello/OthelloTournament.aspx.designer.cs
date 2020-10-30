@@ -39,7 +39,7 @@ namespace Othello
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText playersEmpates;
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden playersEmpates;
 
         /// <summary>
         /// Control auxGanados.
@@ -48,7 +48,7 @@ namespace Othello
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText auxGanados;
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden auxGanados;
 
         /// <summary>
         /// Control equiposEmpates.
@@ -57,7 +57,7 @@ namespace Othello
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText equiposEmpates;
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden equiposEmpates;
 
         /// <summary>
         /// Control auxCount.
@@ -66,7 +66,7 @@ namespace Othello
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText auxCount;
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden auxCount;
 
         /// <summary>
         /// Control octavosPanel.

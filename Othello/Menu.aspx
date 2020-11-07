@@ -17,10 +17,10 @@
   <body>
     <form id="menu" runat="server">
     <div class="container">
-        <div class="container-fluid text-center mt-1 mb-0">
-        <asp:Label runat="server" id="Label1" CssClass="display-1 text-white titulo" Text="Hola "/>
-        <asp:Label runat="server" id="usuario" CssClass="display-1 text-white titulo" Text="Usuario"/>
-        <asp:Label runat="server" id="Label2" CssClass="display-1 text-white titulo" Text="!"/>
+        <div class="container-fluid text-center mt-1 mb-0 titulo">
+        <asp:Label runat="server" id="Label1" CssClass="display-1 text-white" Text="Hola "/>
+        <asp:Label runat="server" id="usuario" CssClass="display-1 text-white" Text="Usuario"/>
+        <asp:Label runat="server" id="Label2" CssClass="display-1 text-white" Text="!"/>
         </div>
         <div class="row mt-3 py-4">
             <div class="col-sm-12 col-md-6 col-lg-6 text-center mb-2 border-right border-secondary">

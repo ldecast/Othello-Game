@@ -23,7 +23,6 @@ namespace Othello
             {
                 string parametro = Request.Params["Parametro"];
                 scoreLabel1.Text = parametro.Substring(parametro.LastIndexOf('-') + 1);
-                max.Text = (ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 + 8).ToString();
                 ClientScript.RegisterStartupScript(GetType(), "hwa", "reloj1()", true);
                 max.Text = "100";
                 Leer_xml();
@@ -143,7 +142,7 @@ namespace Othello
 
             if (IsPostBack)
             {
-                if (int.Parse(max.Text) >= ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 && int.Parse(max.Text) >= 16 && forzado == false)
+                if (int.Parse(max.Text) >= 16 && forzado == false)
                 {
                     max.Text = "100";
                     int filas = int.Parse(dimension.Text.Substring(0, dimension.Text.IndexOf(',')));
@@ -1472,7 +1471,7 @@ namespace Othello
             int clic = Posicion(casilla, boton);
             int index = Verificar(casilla, color, clic);
 
-            if (int.Parse(max.Text) < ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 || int.Parse(max.Text) < 16)
+            if (int.Parse(max.Text) < 16)
             {
                 if (color == "Negro")
                 {
@@ -1526,7 +1525,7 @@ namespace Othello
                 }
             }
 
-            else if (int.Parse(max.Text) >= ColoresUsuario().Count() * 4 + ColoresOponente().Count() * 4 && int.Parse(max.Text) >= 16)
+            else if (int.Parse(max.Text) >= 16)
             {
                 if (FichaAlApar(casilla, color, clic))
                 {

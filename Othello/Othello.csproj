@@ -94,6 +94,7 @@
     <Content Include="OthelloLoaded.aspx" />
     <Content Include="OthelloTournament.aspx" />
     <Content Include="OthelloXtream.aspx" />
+    <Content Include="Profile.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +146,13 @@
     </Compile>
     <Compile Include="OthelloTournament.aspx.designer.cs">
       <DependentUpon>OthelloTournament.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Profile.aspx.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Profile.aspx.designer.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="OthelloXtream.aspx.cs">

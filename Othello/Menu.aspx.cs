@@ -28,7 +28,8 @@ namespace Othello
 
         public void Ver_perfil(object sender, EventArgs e)
         {
-            //Response.Redirect("UserProfile.aspx");
+            Session["usuario"] = usuario.Text;
+            Response.Redirect("Profile.aspx?User=" + usuario.Text);
         }
 
         public void Redireccionar1(object sender, EventArgs e)

@@ -155,7 +155,7 @@ namespace Othello
         public void TorneosGanados()
         {
             try
-            {//Codigo de AspNet Ya.com
+            {//Script de www.incanatoit.com/2015/01/funciones-agregadas-funcion-count-sql-server-2014.html
                 string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
                 SqlConnection conexion = new SqlConnection(a);
                 conexion.Open();
@@ -178,7 +178,7 @@ namespace Othello
         public void PuntosTorneo()
         {
             try
-            {//Codigo de AspNet Ya.com
+            {//Script de www.incanatoit.com/2015/01/funciones-agregadas-funcion-count-sql-server-2014.html
                 string a = System.Configuration.ConfigurationManager.ConnectionStrings["conexionDB"].ConnectionString;
                 SqlConnection conexion = new SqlConnection(a);
                 conexion.Open();

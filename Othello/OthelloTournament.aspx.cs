@@ -553,7 +553,7 @@ namespace Othello
                 SqlConnection conexion = new SqlConnection(a);
                 conexion.Open();
                 SqlCommand script = new SqlCommand("insert into RondaTorneo(campeonato,equipo1,equipo2,empate,puntos,ronda) values('" + titulo.Text + "','" +
-                equipo1 + "','" + equipo2 + "',0,1,'" + tipo + "')", conexion);
+                equipo1 + "','" + equipo2 + "',1,1,'" + tipo + "')", conexion);
                 script.ExecuteNonQuery();
                 conexion.Close();
             }

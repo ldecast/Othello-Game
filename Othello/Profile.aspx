@@ -14,56 +14,56 @@
 
 <title>Perfil de usuario</title>
     <style>
-        .regresar{ position:absolute; left:40px; top:35px; font-size:50px;}
+        .regresar{ position:absolute; left:40px; top:35px; font-size:50px;} .panel{ background-color: #95a5a6; width:1100px; }
     </style>
   </head>
   <body>
     <form id="menu" runat="server">
-        <div class="container-fluid py-4 pl-5 titulo2">
+        <div class="container-fluid border-bottom border-secondary py-4 pl-5 titulo2">
         <asp:LinkButton runat="server" ID="exit" OnClick="Regresar" CssClass="btn"><i class="fa fa-arrow-circle-left regresar" aria-hidden="true"></i></asp:LinkButton>
-        <asp:Label runat="server" id="Label11" CssClass="display-4 pl-5" Text="Perfil de "/>
+        <asp:Label runat="server" id="lblInfo" CssClass="display-4 pl-5" Text="Perfil de "/>
         <asp:Label runat="server" id="user" CssClass="display-4" Text="Usuario"/>
         </div>
 
-    <div class="container py-4 fondo">
 
-        <div class="row pl-3 mr-0">
-          <div class="col-sm-12 col-lg-6 mb-5 pb-2 pl-4 border-right border-secondary registro">
-          <asp:Label runat="server" id="Label1" CssClass="h1" Text="Partidas ganadas" /><br/><br />
-          <asp:Label runat="server" id="partidasGanadas" CssClass="h1 text-center" Text="0" /><br/>
+    <asp:Panel runat="server" ID="panelDatos">
+        <div class="container pt-4 panel">
+
+        <div class="row pl-3 pb-4 mr-0">
+
+          <div class="col-sm-12 col-lg-7 pt-3 pb-2 pl-4 border-right border-secondary registro">
+              <br />
+              <asp:Label runat="server" id="Label4" CssClass="h3" Text="Nombres" /><br />
+          <asp:Label runat="server" id="Unombre" CssClass="h5" Text=" -" /><br/><br />
+              <asp:Label runat="server" id="Label1" CssClass="h3" Text="Apellidos" /><br />
+          <asp:Label runat="server" id="Uapellido" CssClass="h5" Text=" -" /><br/><br />
+              <asp:Label runat="server" id="Label11" CssClass="h3" Text="Correo" /><br />
+          <asp:Label runat="server" id="Ucorreo" CssClass="h5" Text=" -" /><br/><br />
+              <asp:Label runat="server" id="Label13" CssClass="h3" Text="Fecha de nacimiento" /><br />
+          <asp:Label runat="server" id="Ufecha" CssClass="h5" Text=" -" /><br/><br />
+              <asp:Label runat="server" id="Label15" CssClass="h3" Text="País" /><br />
+          <asp:Label runat="server" id="Upais" CssClass="h5" Text=" -" />
+          </div>
+
+          <div class="col-sm-12 col-lg-5 py-2 pl-4 registro">
+              <asp:Label runat="server" id="Label8" CssClass="h4" Text="Partidas ganadas:" /><br/>
+          <asp:Label runat="server" id="Pganadas" CssClass="h4 font-weight-bold" Text="0" /><br/><br />
+              <asp:Label runat="server" id="Label16" CssClass="h4" Text="Partidas empatadas:" /><br/>
+          <asp:Label runat="server" id="Pempatadas" CssClass="h4 font-weight-bold" Text="0" /><br/><br />
+              <asp:Label runat="server" id="Label18" CssClass="h4" Text="Partidas perdidas:" /><br/>
+          <asp:Label runat="server" id="Pperdidas" CssClass="h4 font-weight-bold" Text="0" /><br/><br />
+              <asp:Label runat="server" id="Label20" CssClass="h4" Text="Torneos participados:" /><br/>
+          <asp:Label runat="server" id="Tjugados" CssClass="h4 font-weight-bold" Text="0" /><br/><br />
+              <asp:Label runat="server" id="Label22" CssClass="h4" Text="Torneos ganados:" /><br/>
+          <asp:Label runat="server" id="Tganados" CssClass="h4 font-weight-bold" Text="0" /><br/><br />
+              <asp:Label runat="server" id="Label24" CssClass="h4" Text="Puntos de torneos:" /><br/>
+          <asp:Label runat="server" id="Tpuntos" CssClass="h4 font-weight-bold" Text="0" />
+          </div>
 
         </div>
-          <div class="col-sm-12 col-lg-6 mb-5 pb-2 pl-4 registro">
-          <asp:Label runat="server" id="Label2" CssClass="h1" Text="Torneos participados:" /><br/><br />
-          <asp:Label runat="server" id="torneosParticipados" CssClass="h1 text-center" Text="0" /><br/>
-        </div>
-        </div>
-
-          <div class="row pl-3 mr-0">
-          <div class="col-sm-12 col-lg-6 mb-5 pb-2 pl-4 border-right border-secondary registro">
-          <asp:Label runat="server" id="Label3" CssClass="h1" Text="Partidas empatadas" /><br/><br />
-          <asp:Label runat="server" id="partidasEmpatadas" CssClass="h1 text-center" Text="0" /><br/>
 
         </div>
-          <div class="col-sm-12 col-lg-6 mb-5 pb-2 pl-4 registro">
-          <asp:Label runat="server" id="Label5" CssClass="h1" Text="Torneos ganados:" /><br/><br />
-          <asp:Label runat="server" id="torneosGanados" CssClass="h1 text-center" Text="0" /><br/>
-        </div>
-        </div>
-
-        <div class="row pl-3 mr-0">
-          <div class="col-sm-12 col-lg-6 mb-5 pb-2 pl-4 border-right border-secondary registro">
-          <asp:Label runat="server" id="Label7" CssClass="h1" Text="Partidas perdidas" /><br/><br />
-          <asp:Label runat="server" id="partidasPerdidas" CssClass="h1 text-center" Text="0" /><br/>
-
-        </div>
-          <div class="col-sm-12 col-lg-6 mb-5 pb-2 pl-4 registro">
-          <asp:Label runat="server" id="Label9" CssClass="h1" Text="Puntos de torneos:" /><br/><br />
-          <asp:Label runat="server" id="puntosTorneos" CssClass="h1 text-center" Text="0" />
-        </div>
-        </div>
-
-    </div>
+    </asp:Panel>
 
     </form>
     <!-- Optional JavaScript -->

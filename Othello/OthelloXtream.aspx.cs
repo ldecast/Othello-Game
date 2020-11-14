@@ -545,21 +545,7 @@ namespace Othello
             int filas = int.Parse(dimension.Text.Substring(0, dimension.Text.IndexOf(',')));
             int columnas = int.Parse(dimension.Text.Substring(dimension.Text.IndexOf(',') + 1));
 
-            string persona = "";
-            if (Request.Params["Parametro"] != null)
-            {
-                persona = Request.Params["Parametro"];
-            }
-
-            string mdoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
-            int id = 1;
-            string ruta = mdoc + "Partida Xtream" + modalidad + " - " + persona.Substring(persona.LastIndexOf('-')+1) + "(" + id + ").xml";
-
-            while (File.Exists(ruta))
-            {
-                id++;
-                ruta = mdoc + "Partida Xtream" + modalidad + " - " + persona.Substring(persona.LastIndexOf('-') + 1) + "(" + id + ").xml";
-            }
+            string ruta = Server.MapPath(".") + "\\XML\\" + "Partida Xtream.xml";
 
             XmlWriter xmlWriter = XmlWriter.Create(ruta, settings);
 
@@ -643,7 +629,13 @@ namespace Othello
 
             xmlWriter.WriteEndDocument();
             xmlWriter.Close();
-            ClientScript.RegisterStartupScript(GetType(), "hwa", "alert(\"                              Partida guardada como:\\n" + ruta.Replace("\\","\\\\") + "\")", true);
+
+            Response.Clear();
+            Response.ClearHeaders();
+            Response.ContentType = "text/xml";
+            Response.AppendHeader("Content-Disposition", "attachment; filename=\"Partida Xtream.xml\"");
+            Response.TransmitFile(ruta);
+            Response.End();
         }
 
         public WebControl[] Tipo(string a)
@@ -670,7 +662,7 @@ namespace Othello
             WebControl[] fila20 = { a20, b20, c20, d20, e20, f20, g20, h20, i20, j20, k20, l20, m20, n20, o20, p20, q20, r20, s20, t20 };
 
             WebControl[] colA = { a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 };
-            WebControl[] colB = { b1, b2, b3, b4, b5, b6, b7, b8, a9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20 };
+            WebControl[] colB = { b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20 };
             WebControl[] colC = { c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c20 };
             WebControl[] colD = { d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20 };
             WebControl[] colE = { e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20 };
@@ -2199,7 +2191,7 @@ namespace Othello
         protected void I1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (i1.CssClass == vacio)
             {
                 ComerFicha(Tipo("colH"), color, i1);
                 ComerFicha(Tipo("fila1"), color, i1);
@@ -2214,7 +2206,7 @@ namespace Othello
         protected void J1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (j1.CssClass == vacio)
             {
                 ComerFicha(Arreglo(j1, "fila"), color, j1);
                 ComerFicha(Arreglo(j1, "columna"), color, j1);
@@ -2229,7 +2221,7 @@ namespace Othello
         protected void K1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (k1.CssClass == vacio)
             {
                 ComerFicha(Arreglo(k1, "fila"), color, k1);
                 ComerFicha(Arreglo(k1, "columna"), color, k1);
@@ -2244,7 +2236,7 @@ namespace Othello
         protected void L1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (l1.CssClass == vacio)
             {
                 ComerFicha(Arreglo(l1, "fila"), color, l1);
                 ComerFicha(Arreglo(l1, "columna"), color, l1);
@@ -2259,7 +2251,7 @@ namespace Othello
         protected void M1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (m1.CssClass == vacio)
             {
                 ComerFicha(Arreglo(m1, "fila"), color, m1);
                 ComerFicha(Arreglo(m1, "columna"), color, m1);
@@ -2274,7 +2266,7 @@ namespace Othello
         protected void N1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (n1.CssClass == vacio)
             {
                 ComerFicha(Arreglo(n1, "fila"), color, n1);
                 ComerFicha(Arreglo(n1, "columna"), color, n1);
@@ -2289,7 +2281,7 @@ namespace Othello
         protected void O1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (o1.CssClass == vacio)
             {
                 ComerFicha(Arreglo(o1, "fila"), color, o1);
                 ComerFicha(Arreglo(o1, "columna"), color, o1);
@@ -2304,7 +2296,7 @@ namespace Othello
         protected void P1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (p1.CssClass == vacio)
             {
                 ComerFicha(Arreglo(p1, "fila"), color, p1);
                 ComerFicha(Arreglo(p1, "columna"), color, p1);
@@ -2319,7 +2311,7 @@ namespace Othello
         protected void Q1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (q1.CssClass == vacio)
             {
                 ComerFicha(Arreglo(q1, "fila"), color, q1);
                 ComerFicha(Arreglo(q1, "columna"), color, q1);
@@ -2334,7 +2326,7 @@ namespace Othello
         protected void R1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (r1.CssClass == vacio)
             {
                 ComerFicha(Arreglo(r1, "fila"), color, r1);
                 ComerFicha(Arreglo(r1, "columna"), color, r1);
@@ -2349,7 +2341,7 @@ namespace Othello
         protected void S1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (s1.CssClass == vacio)
             {
                 ComerFicha(Arreglo(s1, "fila"), color, s1);
                 ComerFicha(Arreglo(s1, "columna"), color, s1);
@@ -2364,7 +2356,7 @@ namespace Othello
         protected void T1_Click(object sender, EventArgs e)
         {
             string color = turno.Text;
-            if (h1.CssClass == vacio)
+            if (t1.CssClass == vacio)
             {
                 ComerFicha(Arreglo(t1, "fila"), color, t1);
                 ComerFicha(Arreglo(t1, "columna"), color, t1);

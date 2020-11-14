@@ -26,6 +26,7 @@ namespace Othello
 
         protected void Regresar(object sender, EventArgs e)
         {
+            Session.Abandon();
             Response.Redirect("Menu.aspx?Parametro=" + user.Text);
         }
 

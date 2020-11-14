@@ -511,9 +511,6 @@ namespace Othello
                             SqlConnection conexion = new SqlConnection(a);
                             conexion.Open();
 
-                            SqlCommand nuevo = new SqlCommand("insert into Usuario(username,contraseña) values('" + usuarios + "','')", conexion);
-                            nuevo.ExecuteNonQuery();
-
                             SqlCommand script = new SqlCommand("insert into Jugador(usuario,equipo) values('" + usuarios + "','" + nombreEquipo + "')", conexion);
                             script.ExecuteNonQuery();
                             conexion.Close();

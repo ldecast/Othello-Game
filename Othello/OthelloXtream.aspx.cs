@@ -2071,10 +2071,10 @@ namespace Othello
             string color = turno.Text;
             if (a1.CssClass == vacio)
             {
-                ComerFicha(Tipo("colA"), color, a1);
-                ComerFicha(Tipo("fila1"), color, a1);
-                ComerFicha(Tipo("diagPos1"), color, a1);
-                ComerFicha(Tipo("diagNeg20"), color, a1);
+                ComerFicha(Arreglo(a1, "fila"), color, a1);
+                ComerFicha(Arreglo(a1, "columna"), color, a1);
+                ComerFicha(Arreglo(a1, "positiva"), color, a1);
+                ComerFicha(Arreglo(a1, "negativa"), color, a1);
 
                 Get_Score(a1);
                 Get_Move(a1, color);
@@ -2086,10 +2086,10 @@ namespace Othello
             string color = turno.Text;
             if (b1.CssClass == vacio)
             {
-                ComerFicha(Tipo("colB"), color, b1);
-                ComerFicha(Tipo("fila1"), color, b1);
-                ComerFicha(Tipo("diagPos2"), color, b1);
-                ComerFicha(Tipo("diagNeg19"), color, b1);
+                ComerFicha(Arreglo(b1, "fila"), color, b1);
+                ComerFicha(Arreglo(b1, "columna"), color, b1);
+                ComerFicha(Arreglo(b1, "positiva"), color, b1);
+                ComerFicha(Arreglo(b1, "negativa"), color, b1);
 
                 Get_Score(b1);
                 Get_Move(b1, color);
@@ -2101,10 +2101,10 @@ namespace Othello
             string color = turno.Text;
             if (c1.CssClass == vacio)
             {
-                ComerFicha(Tipo("colC"), color, c1);
-                ComerFicha(Tipo("fila1"), color, c1);
-                ComerFicha(Tipo("diagPos3"), color, c1);
-                ComerFicha(Tipo("diagNeg18"), color, c1);
+                ComerFicha(Arreglo(c1, "fila"), color, c1);
+                ComerFicha(Arreglo(c1, "columna"), color, c1);
+                ComerFicha(Arreglo(c1, "positiva"), color, c1);
+                ComerFicha(Arreglo(c1, "negativa"), color, c1);
 
                 Get_Score(c1);
                 Get_Move(c1, color);
@@ -2117,10 +2117,10 @@ namespace Othello
             string color = turno.Text;
             if (d1.CssClass == vacio)
             {
-                ComerFicha(Tipo("colD"), color, d1);
-                ComerFicha(Tipo("fila1"), color, d1);
-                ComerFicha(Tipo("diagPos4"), color, d1);
-                ComerFicha(Tipo("diagNeg17"), color, d1);
+                ComerFicha(Arreglo(d1, "fila"), color, d1);
+                ComerFicha(Arreglo(d1, "columna"), color, d1);
+                ComerFicha(Arreglo(d1, "positiva"), color, d1);
+                ComerFicha(Arreglo(d1, "negativa"), color, d1);
 
                 Get_Score(d1);
                 Get_Move(d1, color);
@@ -2132,10 +2132,10 @@ namespace Othello
             string color = turno.Text;
             if (e1.CssClass == vacio)
             {
-                ComerFicha(Tipo("colE"), color, e1);
-                ComerFicha(Tipo("fila1"), color, e1);
-                ComerFicha(Tipo("diagPos5"), color, e1);
-                ComerFicha(Tipo("diagNeg16"), color, e1);
+                ComerFicha(Arreglo(e1, "fila"), color, e1);
+                ComerFicha(Arreglo(e1, "columna"), color, e1);
+                ComerFicha(Arreglo(e1, "positiva"), color, e1);
+                ComerFicha(Arreglo(e1, "negativa"), color, e1);
 
                 Get_Score(e1);
                 Get_Move(e1, color);
@@ -2147,10 +2147,10 @@ namespace Othello
             string color = turno.Text;
             if (f1.CssClass == vacio)
             {
-                ComerFicha(Tipo("colF"), color, f1);
-                ComerFicha(Tipo("fila1"), color, f1);
-                ComerFicha(Tipo("diagPos6"), color, f1);
-                ComerFicha(Tipo("diagNeg15"), color, f1);
+                ComerFicha(Arreglo(f1, "fila"), color, f1);
+                ComerFicha(Arreglo(f1, "columna"), color, f1);
+                ComerFicha(Arreglo(f1, "positiva"), color, f1);
+                ComerFicha(Arreglo(f1, "negativa"), color, f1);
 
                 Get_Score(f1);
                 Get_Move(f1, color);
@@ -2163,10 +2163,10 @@ namespace Othello
             string color = turno.Text;
             if (g1.CssClass == vacio)
             {
-                ComerFicha(Tipo("colG"), color, g1);
-                ComerFicha(Tipo("fila1"), color, g1);
-                ComerFicha(Tipo("diagPos7"), color, g1);
-                ComerFicha(Tipo("diagNeg14"), color, g1);
+                ComerFicha(Arreglo(g1, "fila"), color, g1);
+                ComerFicha(Arreglo(g1, "columna"), color, g1);
+                ComerFicha(Arreglo(g1, "positiva"), color, g1);
+                ComerFicha(Arreglo(g1, "negativa"), color, g1);
 
                 Get_Score(g1);
                 Get_Move(g1, color);
@@ -2178,10 +2178,10 @@ namespace Othello
             string color = turno.Text;
             if (h1.CssClass == vacio)
             {
-                ComerFicha(Tipo("colH"), color, h1);
-                ComerFicha(Tipo("fila1"), color, h1);
-                ComerFicha(Tipo("diagPos8"), color, h1);
-                ComerFicha(Tipo("diagNeg13"), color, h1);
+                ComerFicha(Arreglo(h1, "fila"), color, h1);
+                ComerFicha(Arreglo(h1, "columna"), color, h1);
+                ComerFicha(Arreglo(h1, "positiva"), color, h1);
+                ComerFicha(Arreglo(h1, "negativa"), color, h1);
 
                 Get_Score(h1);
                 Get_Move(h1, color);
@@ -2193,10 +2193,10 @@ namespace Othello
             string color = turno.Text;
             if (i1.CssClass == vacio)
             {
-                ComerFicha(Tipo("colH"), color, i1);
-                ComerFicha(Tipo("fila1"), color, i1);
-                ComerFicha(Tipo("diagPos8"), color, i1);
-                ComerFicha(Tipo("diagNeg13"), color, i1);
+                ComerFicha(Arreglo(i1, "fila"), color, i1);
+                ComerFicha(Arreglo(i1, "columna"), color, i1);
+                ComerFicha(Arreglo(i1, "positiva"), color, i1);
+                ComerFicha(Arreglo(i1, "negativa"), color, i1);
 
                 Get_Score(i1);
                 Get_Move(i1, color);

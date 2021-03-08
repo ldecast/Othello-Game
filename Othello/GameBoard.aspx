@@ -185,7 +185,7 @@
                     <h4>Negro</h4>
                     <asp:Label runat="server" id="score2" CssClass="display-4" text="0" />
                     <br/><br/>
-                    <asp:Button runat="server" type="button" id="end" CssClass="btn btn-outline-dark btn-lg" text="Terminar juego" OnClick="Terminar_Juego"/>
+                    <asp:Button runat="server" type="button" id="end" CssClass="btn btn-outline-dark btn-lg" text="Terminar juego" OnClick="Terminar_Juego" />
                 </div>
             </div>
         </div>

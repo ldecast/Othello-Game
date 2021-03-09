@@ -114,7 +114,11 @@
 
                 <asp:Panel runat="server" id="gameBoard">
 
+<<<<<<< HEAD
                     <div class="tablero col-sm-12 pr-5 mb-5 col-lg-5">
+=======
+                    <div class=" tablero col-sm-12 pr-5 mb-5 col-lg-5">
+>>>>>>> master
 
                         <div class="btn-group text-center">
                     <asp:HyperLink runat="server" href="#" Visible="true" ID="none" CssClass="btn vacio disabled none"></asp:HyperLink>
